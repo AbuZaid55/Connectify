@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import LoginSVG from "../SVG/SignupSVG.jsx"
+import SignupSVG from "../SVG/SignupSVG.jsx"
 import {Link} from 'react-router-dom'
 
 const SignUp = () => {
@@ -13,12 +13,12 @@ const SignUp = () => {
   }
   return (
     <div className="flex items-center justify-center h-screen bg-primary-800">
-    <div className="flex md:w-[90%] px-10 sm:px-16 md:px-0 bg-white rounded-xl h-[80vh] m-4">
+    <div className="flex md:w-[90%] px-10 sm:px-16 md:px-0 bg-white rounded-xl m-4">
   <div className="md:w-1/2 pl-10 hidden md:flex items-center justify-center">
-    <LoginSVG />
+    <SignupSVG />
   </div>
   <div className="w-full md:w-1/2 flex items-center flex-col justify-evenly">
-    <h1 className="text-center text-4xl text-primary-800 font-semibold">Connectify</h1>
+    <h1 className="text-center text-4xl text-primary-800 font-semibold my-5">Connectify</h1>
     <form className="flex items-center justify-center flex-col md:w-[90%]" onSubmit={submitForm}>
       <div className="w-full">
         <label className="block text-primary-800 font-semibold" htmlFor="name">Name*</label>
@@ -40,7 +40,7 @@ const SignUp = () => {
         <button className=" bg-primary-800 text-white px-10 py-1 border-2 border-primary-800 hover:bg-[#b141fc24] mt-5 hover:text-primary-800 rounded-md transition duration-300 ease-in-out" type="submit">Sign Up</button>
       </div>
     </form>
-    <p className="text-center">Have an account? <Link className=" text-primary-800" to={'/login'}>Log In</Link></p>
+    <p className="text-center my-5">Have an account? <Link className=" text-primary-800" to={'/login'}>Log In</Link></p>
   </div>
 </div>
 </div>

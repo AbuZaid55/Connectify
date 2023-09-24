@@ -1,8 +1,14 @@
 .svgicon {
-  width: 90%;
+  max-height: 300px;
 }
 .sendLinkSvgicon {
-  width: 75%;
+  max-height: 250px;
+}
+.changePassSVGicon{
+  max-height: 330px;
+}
+.verifyEmailSVGicon{
+  max-height: 250px;
 }
 /* .inputloginSvg1 {
   animation: fillColor1 10s infinite;
