@@ -32,7 +32,10 @@ const Login = () => {
             <button className=" bg-primary-800 text-white px-10 py-2 text-2xl border-2 border-primary-800 hover:bg-[#b141fc24] mt-5 hover:text-primary-800 rounded-md transition duration-300 ease-in-out" type="submit">Log In</button>
           </div>
         </form>
-        <p className="text-center text-xl">New user? <Link className=" text-primary-800" to={'/signup'}>Sign Up</Link></p>
+       <div className="flex items-center justify-between flex-col md:flex-row w-full px-2">
+        <p className="text-md mx-2">Forgot Password? <Link className=" text-primary-800" to={'/sendresetlink'}>Click!</Link></p>
+        <p className="text-md mx-2">New user? <Link className=" text-primary-800" to={'/signup'}>Sign Up</Link></p>
+       </div>
       </div>
     </div>
     </div>

@@ -1,5 +1,8 @@
-#loginSVG {
+.svgicon {
   width: 90%;
+}
+.sendLinkSvgicon {
+  width: 75%;
 }
 /* .inputloginSvg1 {
   animation: fillColor1 10s infinite;
