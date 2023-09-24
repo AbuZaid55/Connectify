@@ -19,17 +19,17 @@ const Login = () => {
       </div>
       <div className="w-full md:w-1/2 flex items-center flex-col justify-evenly">
         <h1 className="text-center text-4xl text-primary-800 font-semibold">Connectify</h1>
-        <form className="flex items-center justify-center flex-col" onSubmit={submitForm}>
-          <div>
-            <label className="block text-2xl text-primary-800 font-semibold" htmlFor="email">Email</label>
+        <form className="flex items-center justify-center flex-col md:w-[90%]" onSubmit={submitForm}>
+          <div className="w-full">
+            <label className="block text-2xl text-primary-800 font-semibold" htmlFor="email">Email*</label>
             <input className="text-xl py-2 px-5 mb-5 mt-2 border-2 border-primary-800 rounded-md w-full" type="text" id="email" autoComplete="new-off" placeholder="Enter Your Email" name="email" value={input.email} onChange={handleInput} />
           </div>
-          <div>
-            <label className="block text-2xl text-primary-800 font-semibold" htmlFor="password">Password</label>
+          <div className="w-full">
+            <label className="block text-2xl text-primary-800 font-semibold" htmlFor="password">Password*</label>
             <input className="text-xl py-2 px-5 mb-5 mt-2 border-2 border-primary-800 rounded-md w-full" type="password" id="password" placeholder="Enter Your Password" name="password" value={input.password} onChange={handleInput} />
           </div>
           <div>
-            <button className=" bg-primary-800 text-white px-10 py-2 text-2xl border-2 border-primary-800 hover:bg-[#b141fc24] mt-5 hover:text-primary-800 rounded-md transition duration-300 ease-in-out" type="submit">Login</button>
+            <button className=" bg-primary-800 text-white px-10 py-2 text-2xl border-2 border-primary-800 hover:bg-[#b141fc24] mt-5 hover:text-primary-800 rounded-md transition duration-300 ease-in-out" type="submit">Log In</button>
           </div>
         </form>
         <p className="text-center text-xl">New user? <Link className=" text-primary-800" to={'/signup'}>Sign Up</Link></p>
