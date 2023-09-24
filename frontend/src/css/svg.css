@@ -1,0 +1,41 @@
+#loginSVG {
+  width: 90%;
+}
+.inputloginSvg1 {
+  animation: fillColor1 10s infinite;
+}
+.inputloginSvg2 {
+  animation: fillColor2 10s infinite;
+}
+.circleloginSvg {
+  animation: fillColor3 10s infinite;
+}
+
+@keyframes fillColor1 {
+  0% {
+    fill: green;
+  }
+  90% {
+    fill: green;
+  }
+}
+@keyframes fillColor2 {
+  0% {
+  }
+  30% {
+    fill: green;
+  }
+  90% {
+    fill: green;
+  }
+}
+@keyframes fillColor3 {
+  0% {
+  }
+  60% {
+    fill: green;
+  }
+  90% {
+    fill: green;
+  }
+}
