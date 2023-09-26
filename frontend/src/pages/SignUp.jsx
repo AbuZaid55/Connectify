@@ -1,9 +1,12 @@
 import React, { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import SignupSVG from "../SVG/SignupSVG.jsx"
 import {Link} from 'react-router-dom'
+import {toast} from 'react-toastify'
 import axios from 'axios'
 
 const SignUp = () => {
+  const navigate = useNavigate()
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
   const [input,setInput]=useState({name:'', email:'',password:'', confirm_pass:''})
   const handleInput = (e)=>{
@@ -13,9 +16,11 @@ const SignUp = () => {
     e.preventDefault()
     try {
       const res = await axios.post(`${BACKEND_URL}/signup`,input)
-      console.log(res)
+      console.log(res.data)
+      toast.success(res.data.massage)
+      navigate('/verifyemail')
     } catch (error) {
-      console.log(error)
+      toast.error(error.response.data.massage)
     }
   }
   return (

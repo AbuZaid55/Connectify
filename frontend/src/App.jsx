@@ -5,10 +5,13 @@ import SignUp from './pages/SignUp.jsx'
 import SendResetLink from './pages/SendResetLink.jsx'
 import ChangePassword from './pages/ChangePass.jsx'
 import VerifyEmail from './pages/VerifyEmail.jsx'
+import {ToastContainer} from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   return (
-    <Routes>
+   <>
+     <Routes>
      <Route path='/' element={<Home/>}/>
      <Route path='/login' element={<Login/>}/>
      <Route path='/signup' element={<SignUp/>}/>
@@ -16,6 +19,8 @@ function App() {
      <Route path='/changepass' element={<ChangePassword/>}/>
      <Route path='/verifyemail' element={<VerifyEmail/>}/>
     </Routes>
+    <ToastContainer position="bottom-right"/>
+   </>
   )
 }
 

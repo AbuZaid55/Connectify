@@ -52,8 +52,8 @@ const userSchema = mongoose.Schema({
 })
 
 userSchema.pre('save',async function (next){
-    if(this.modified('password')){
-        const hastPass = await bcrypt.hash(this.password)
+    if(this.isModified('password')){
+        const hastPass = await bcrypt.hash(this.password,12)
         this.password = hastPass
     }
     next()
@@ -72,3 +72,5 @@ userSchema.methods = {
         return JWT.verify(token,process.env.JWT_KEY)
     }
 }
+
+module.exports = mongoose.model('user',userSchema)
