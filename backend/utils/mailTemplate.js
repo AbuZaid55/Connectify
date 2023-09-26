@@ -1,6 +1,61 @@
+const otpTemplate = (otp)=>{
+    return `<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+        *{
+            box-sizing: border-box;
+            font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+        }
+        h1{
+            font-size: 70px;
+            color: #b141fc;
+            width: 100%;
+            text-align: center;
+            margin: 1.5rem 0 ;
+        }
+        h2{
+            text-align: center;
+            color: #b141fc;
+        }
+        @media (min-width: 300px) and (max-width: 600px) {
+        h1{
+            font-size: 60px;
+        }
+        }
+        @media (min-width: 200px) and (max-width: 300px) {
+        h1{
+            font-size: 40px;
+        }
+        }
+        @media (min-width: 100px) and (max-width: 200px) {
+        h1{
+            font-size: 20px;
+        }
+        }
+        @media only screen and (max-width: 100px) {
+        h1{
+            font-size: 20px;
+        }
+        }
+    
+        </style>
+    </head>
+    <body>
+        <div>
+            <h1>Connectify</h1>
+            <h2>OTP=> ${otp}</h2>
+        </div>
+    </body>
+    </html> `
+}
 
-<!-- sendLink Template  -->
-<!-- <!DOCTYPE html>
+const sendLinkTemplate = (link) =>{
+    return `<!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -74,97 +129,11 @@
             <h2>Change your password</h2>
             <button type="button"><a style="color: white;" href=${link}>Open Link</a></button>
         </div>
-    </body> -->
+    </body> `
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- send Otp Template  -->
-
-<!-- 
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-        *{
-            box-sizing: border-box;
-            font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-            padding: 0;
-            margin: 0;
-        }
-        h1{
-            font-size: 70px;
-            color: #b141fc;
-            width: 100%;
-            text-align: center;
-            margin: 1.5rem 0 ;
-        }
-        h2{
-            text-align: center;
-            color: #b141fc;
-        }
-        @media (min-width: 300px) and (max-width: 600px) {
-        h1{
-            font-size: 60px;
-        }
-        }
-        @media (min-width: 200px) and (max-width: 300px) {
-        h1{
-            font-size: 40px;
-        }
-        }
-        @media (min-width: 100px) and (max-width: 200px) {
-        h1{
-            font-size: 20px;
-        }
-        }
-        @media only screen and (max-width: 100px) {
-        h1{
-            font-size: 20px;
-        }
-        }
-    
-        </style>
-    </head>
-    <body>
-        <div>
-            <h1>Connectify</h1>
-            <h2>OTP=> {otp}</h2>
-        </div>
-    </body>
-    </html>  -->
-
-
-
-
-
-    
-<!-- greeting mail template  -->
-<!-- <!DOCTYPE html>
+const greetingTemplate = (massage)=>{
+    return` <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
@@ -252,4 +221,11 @@
             <button type="button"><a style="color: white;" href=${process.env.FRONTEND_URL}>Go to homepage</a></button>
         </div>
     </body>
-    </html> -->
+    </html> `
+}
+
+module.exports = {
+    otpTemplate,
+    sendLinkTemplate,
+    greetingTemplate
+}
