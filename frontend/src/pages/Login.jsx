@@ -1,8 +1,8 @@
 import React, { useState } from "react"
 import LoginSVG from "../SVG/LoginSVG.jsx"
 import {Link} from 'react-router-dom'
-
 const Login = () => {
+  // console.log(import.meta.env.VITE_BACKEND_URL)
   const [input,setInput]=useState({email:'',password:''})
   const handleInput = (e)=>{
     setInput({...input,[e.target.name]:e.target.value})
