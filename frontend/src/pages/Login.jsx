@@ -1,15 +1,30 @@
 import React, { useState } from "react"
 import LoginSVG from "../SVG/LoginSVG.jsx"
+import {useNavigate} from 'react-router-dom'
 import {Link} from 'react-router-dom'
+import axios from 'axios'
+import {toast} from 'react-toastify'
 const Login = () => {
-  // console.log(import.meta.env.VITE_BACKEND_URL)
+  const BACKEND_URL=import.meta.env.VITE_BACKEND_URL  
+  const navigate = useNavigate()
   const [input,setInput]=useState({email:'',password:''})
   const handleInput = (e)=>{
     setInput({...input,[e.target.name]:e.target.value})
   }
   const submitForm = async(e)=>{
     e.preventDefault()
-    console.log(input)
+    try {
+      const res = await axios.post(`${BACKEND_URL}/login`,input)
+      if(res.status===200){
+        navigate('/')
+      }
+      if(res.status===202){
+        toast.success(res.data.massage)
+        navigate('/verifyemail',{state:{userId:res.data.userId,path:'/'}})
+      }
+    } catch (error) {
+      toast.error(error.response.data.massage)
+    }
   }
   return (
     <div className="flex items-center justify-center h-screen bg-primary-800">

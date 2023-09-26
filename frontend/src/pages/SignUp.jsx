@@ -16,9 +16,9 @@ const SignUp = () => {
     e.preventDefault()
     try {
       const res = await axios.post(`${BACKEND_URL}/signup`,input)
-      console.log(res.data)
       toast.success(res.data.massage)
-      navigate('/verifyemail')
+      setInput({name:'', email:'',password:'', confirm_pass:''})
+      navigate('/verifyemail',{state:{userId:res.data.userId,path:'/login'}})
     } catch (error) {
       toast.error(error.response.data.massage)
     }
