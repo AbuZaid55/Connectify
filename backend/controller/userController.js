@@ -1,6 +1,7 @@
+const {sendSuccess,sendError} = require('../utils/sendResponse.js')
 
 const signUp = (req,res)=>{
-    res.send('aaaaaaaaaaaaaaaaa')
+    sendSuccess(res,{massage:"welcome"})
 }
 
 module.exports = {

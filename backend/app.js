@@ -8,6 +8,11 @@ const PORT = process.env.PORT
 
 db_Connect()
 
+app.use(express.json())
+app.use(cors({
+    origin:process.env.FRONTEND_URL,
+    credentials:true
+}))
 app.use(require('./routes/userRouter.js'))
 
 app.listen(PORT,()=>{

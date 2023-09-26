@@ -1,15 +1,22 @@
 import React, { useState } from "react"
 import SignupSVG from "../SVG/SignupSVG.jsx"
 import {Link} from 'react-router-dom'
+import axios from 'axios'
 
 const SignUp = () => {
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
   const [input,setInput]=useState({name:'', email:'',password:'', confirm_pass:''})
   const handleInput = (e)=>{
     setInput({...input,[e.target.name]:e.target.value})
   }
   const submitForm = async(e)=>{
     e.preventDefault()
-    console.log(input)
+    try {
+      const res = await axios.post(`${BACKEND_URL}/signup`,input)
+      console.log(res)
+    } catch (error) {
+      console.log(error)
+    }
   }
   return (
     <div className="flex items-center justify-center h-screen bg-primary-800">
