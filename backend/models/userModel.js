@@ -63,9 +63,10 @@ userSchema.methods = {
     async comparePass(password){
         return await bcrypt.compare(password,this.password)
     },
-    generateToken(){
+    async generateToken(){
         const token = JWT.sign({_id:this._id,email:this.email},process.env.JWT_KEY)
         this.loggedIn = this.loggedIn.concat({token:token,deviceName:os.hostname()})
+        await this.save()
         return token
     },
     verifyToken(token){

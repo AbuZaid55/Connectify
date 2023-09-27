@@ -65,7 +65,25 @@ const verifyEmail = async(req,res)=>{
     greetingMail(user.email,"Your account has been verfied.")
     sendSuccess(res,{massage:"Your account has been verified."})
 }
-
+const resendOtp = async(req,res)=>{
+    const {userId}=req.body
+    try {
+        const user = await userModel.findById(userId)
+        if(!user){
+            return sendError(res,"Invalid User!")
+        }
+        if(user.validated){
+            return sendError(res,"This account is already verified!")
+        }
+        await verifyEmailModel.deleteMany({userId:user._id})
+        const OTP = generateOtp()
+        await verifyEmailModel({userId:user._id,otp:OTP}).save()
+        sendOtp(user.email,OTP)
+        sendSuccess(res,{massage:'Otp has been send to your email id'})
+    } catch (error) {
+        sendError(res,"Something went wrong!")
+    }
+}
 const logIn = async(req,res)=>{
     const {email,password}=req.body
     if(!email || !password){
@@ -83,6 +101,11 @@ const logIn = async(req,res)=>{
         if(!matchPass){
             return sendError(res,"Password does not match!")
         }
+        const token = await user.generateToken()
+        res.cookie('ConnectifyToken',token,{
+            expires:new Date(Date.now() + Number(process.env.EXPIRE_COOKIE_TIME)),
+            httpOnly:true
+        })
         if(!user.validated){
             const verifyEmailData = await verifyEmailModel.findOne({userId:user._id})
             if(verifyEmailData){
@@ -103,4 +126,5 @@ module.exports = {
     signUp,
     verifyEmail,
     logIn,
+    resendOtp,
 }

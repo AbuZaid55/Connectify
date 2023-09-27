@@ -4,17 +4,20 @@ import {useNavigate} from 'react-router-dom'
 import {Link} from 'react-router-dom'
 import axios from 'axios'
 import {toast} from 'react-toastify'
+
 const Login = () => {
+  
   const BACKEND_URL=import.meta.env.VITE_BACKEND_URL  
   const navigate = useNavigate()
-  const [input,setInput]=useState({email:'',password:''})
+  const [input,setInput]=useState({email:'zaid70979a@gmail.com',password:'12345678Aa'})
+
   const handleInput = (e)=>{
     setInput({...input,[e.target.name]:e.target.value})
   }
   const submitForm = async(e)=>{
     e.preventDefault()
     try {
-      const res = await axios.post(`${BACKEND_URL}/login`,input)
+      const res = await axios.post(`${BACKEND_URL}/login`,input,{withCredentials:true})
       if(res.status===200){
         navigate('/')
       }
@@ -26,6 +29,7 @@ const Login = () => {
       toast.error(error.response.data.massage)
     }
   }
+
   return (
     <div className="flex items-center justify-center h-screen bg-primary-800">
         <div className="flex md:w-[90%] px-10 sm:px-16 md:px-0 bg-white rounded-xl m-4">
