@@ -1,12 +1,14 @@
-import React, { useState } from "react"
+import React, { useState,useEffect } from "react"
 import LoginSVG from "../SVG/LoginSVG.jsx"
 import {useNavigate} from 'react-router-dom'
 import {Link} from 'react-router-dom'
 import axios from 'axios'
 import {toast} from 'react-toastify'
+import { useSelector } from 'react-redux'
 
 const Login = () => {
   
+  const user = useSelector((state)=>(state.user))
   const BACKEND_URL=import.meta.env.VITE_BACKEND_URL  
   const navigate = useNavigate()
   const [input,setInput]=useState({email:'',password:''})
@@ -31,6 +33,11 @@ const Login = () => {
     }
   }
 
+  useEffect(()=>{
+    if(user && user.validated){
+      navigate('/')
+    }
+  },[user])
   return (
     <div className="flex items-center justify-center h-screen bg-primary-800">
         <div className="flex md:w-[90%] px-10 sm:px-16 md:px-0 bg-white rounded-xl m-4">

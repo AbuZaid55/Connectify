@@ -9,18 +9,22 @@ import {ToastContainer} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from 'react'
 import axios from 'axios'
+import {useDispatch} from 'react-redux'
+import { setUser } from '../Redux/slices/userSlice.js'
 
 function App() {
+  const dispatch = useDispatch()
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
   const authentication = async()=>{
     try {
       const res = await axios.get(`${BACKEND_URL}/auth/user`,{withCredentials:true})
-      console.log(res)
+      dispatch(setUser(res.data.user))
     } catch (error) {
-      console.log(error)
+      dispatch(setUser({validated:false}))
     }
   }
+  
   useEffect(()=>{
     authentication()
   },[])

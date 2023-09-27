@@ -15,6 +15,12 @@ const auth=async(req,res,next)=>{
         if(!user || !user.validated){
             return sendError(res,"Unauthorized user")
         }
+        const isTokenExist = user.loggedIn.filter((data)=>{
+            return data.token===token
+        })
+        if(isTokenExist.length<=0){
+            return sendError(res,"Unauthorized user")
+        }
         user.password = undefined;
         req.rootUser = user;
          
