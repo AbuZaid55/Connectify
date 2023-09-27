@@ -1,12 +1,24 @@
 import React, { useState } from "react"
 import SendLinkSVG from "../SVG/SendLinkSVG.jsx"
-import {Link} from 'react-router-dom'
+import {Link, useNavigate} from 'react-router-dom'
+import axios from 'axios'
+import {toast} from 'react-toastify'
 
 const SendResetLink = () => {
-  const [email,setEmail]=useState('')
+  const [email,setEmail]=useState('zaid70979a@gmail.com')
+  const navigate = useNavigate()
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+
   const submitForm = async(e)=>{
     e.preventDefault()
-    console.log(email)
+    try {
+      const res =await axios.post(`${BACKEND_URL}/sendresetlink`,{email})
+      setEmail('')
+      toast.success(res.data.massage)
+      navigate('/login')
+    } catch (error) {
+      toast.error(error.response.data.massage)
+    }
   }
   return (
     <div className="flex items-center justify-center h-screen bg-primary-800">

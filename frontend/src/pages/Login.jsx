@@ -9,7 +9,7 @@ const Login = () => {
   
   const BACKEND_URL=import.meta.env.VITE_BACKEND_URL  
   const navigate = useNavigate()
-  const [input,setInput]=useState({email:'zaid70979a@gmail.com',password:'12345678Aa'})
+  const [input,setInput]=useState({email:'',password:''})
 
   const handleInput = (e)=>{
     setInput({...input,[e.target.name]:e.target.value})
@@ -18,6 +18,7 @@ const Login = () => {
     e.preventDefault()
     try {
       const res = await axios.post(`${BACKEND_URL}/login`,input,{withCredentials:true})
+      setInput({email:'',password:''})
       if(res.status===200){
         navigate('/')
       }

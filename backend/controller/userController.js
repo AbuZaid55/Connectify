@@ -2,8 +2,10 @@ const {sendSuccess,sendError} = require('../utils/sendResponse.js')
 const emailValidator = require('email-validator')
 const userModel = require('../models/userModel.js')
 const verifyEmailModel = require('../models/verifyEmailModel.js')
+const changePassModel = require('../models/changePassModel.js')
 const generateOtp = require('../utils/generateOtp.js')
-const {sendOtp,greetingMail} = require('../utils/sendMail.js')
+const {sendOtp,greetingMail,sendLink} = require('../utils/sendMail.js')
+const JWT = require('jsonwebtoken')
 
 const signUp = async(req,res)=>{
     const {name,email,password,confirm_pass}=req.body
@@ -36,7 +38,6 @@ const signUp = async(req,res)=>{
         sendError(res,"Sign Up Failed")
     }
 }
-
 const verifyEmail = async(req,res)=>{
     const {userId,otp} = req.body 
     if(!userId || !otp){
@@ -94,7 +95,7 @@ const logIn = async(req,res)=>{
     }
     const user = await userModel.findOne({email:email})
     if(!user){
-        return sendError(res,"User not found!")
+        return sendError(res,"Invalid User!")
     }
     try {
         const matchPass = await user.comparePass(password)
@@ -121,10 +122,79 @@ const logIn = async(req,res)=>{
         sendError(res,"Login Failed!")
     }
 }
+const sendResetLink = async(req,res)=>{
+    const {email} = req.body
+    if(!email){
+        return sendError(res,"Please enter your email!")
+    }
+    if(!emailValidator.validate(email)){
+        return sendError(res,"Invalid Email!")
+    }
+    try {
+        const user = await userModel.findOne({email})
+        if(!user){
+            return sendError(res,"Invalid User!")
+        }
+        const isExistToken = await changePassModel.findOne({userId:user._id})
+        if(isExistToken){
+            return sendError(res,"Reset Link already send to your email id!")
+        }
+        const token = JWT.sign({_id:user._id},process.env.JWT_KEY)
+        await changePassModel({userId:user._id,token:token}).save()
+
+        sendLink(user.email,`${process.env.FRONTEND_URL}/changepass?id=${user._id}&token=${token}`)
+        sendSuccess(res,{massage:"Reset link sent successfull to your email id"})
+    } catch (error) {
+        sendError(res,"Something went wrong!")
+    }
+}
+const changePass = async(req,res)=>{
+    const {token,userId,new_pass,confirm_pass}=req.body
+    if(!new_pass || !confirm_pass){
+        return sendError(res,"All field are required!")
+    }
+    if(new_pass.length<8 || new_pass.length>12){
+        return sendError(res,"Your password should be between 8 to 12 character!")
+    }
+    if(new_pass!==confirm_pass){
+        return sendError(res,'Password does not match!')
+    }
+    if(!token || !userId){
+        return sendError(res,"Invalid credentials!")
+    }
+    try {
+        const user = await userModel.findById(userId)
+        if(!user){
+            return sendError(res,"Invalid User!")
+        }
+        const DB_Token = await changePassModel.findOne({userId:user._id})
+        if(!DB_Token){
+            return sendError(res,"Invalid credentials!")
+        }
+       
+        if(DB_Token.token!==token){
+            return sendError(res,"Invalid credentials!")
+        }
+        const oldpassMatch = await user.comparePass(new_pass)
+        if(oldpassMatch){
+            return sendError(res,"The new password must be different from the old password!")
+        }
+        user.password = new_pass
+        await changePassModel.findByIdAndDelete(DB_Token._id)
+        await user.save()
+        greetingMail(user.email,"Your password has been changed.")
+        sendSuccess(res,{massage:"Your password has been changed."})
+    } catch (error) {
+        sendError(res,"Something went wrong!")
+    }
+    
+}
 
 module.exports = {
     signUp,
     verifyEmail,
     logIn,
     resendOtp,
+    sendResetLink,
+    changePass,
 }
