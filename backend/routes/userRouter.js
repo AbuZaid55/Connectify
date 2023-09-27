@@ -1,6 +1,8 @@
 const router = require('express').Router()
-const {signUp,verifyEmail,logIn,resendOtp,sendResetLink, changePass} = require('../controller/userController.js')
+const auth = require('../middleware/userAuth.js')
+const {user,signUp,verifyEmail,logIn,resendOtp,sendResetLink, changePass} = require('../controller/userController.js')
 
+router.get('/auth/user',auth,user)
 router.post('/signup',signUp)
 router.post('/verifyemail',verifyEmail)
 router.post('/resendotp',resendOtp)

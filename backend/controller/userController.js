@@ -7,6 +7,9 @@ const generateOtp = require('../utils/generateOtp.js')
 const {sendOtp,greetingMail,sendLink} = require('../utils/sendMail.js')
 const JWT = require('jsonwebtoken')
 
+const user = (req,res)=>{
+    sendSuccess(res,{user:req.rootUser})
+}
 const signUp = async(req,res)=>{
     const {name,email,password,confirm_pass}=req.body
     
@@ -191,6 +194,7 @@ const changePass = async(req,res)=>{
 }
 
 module.exports = {
+    user,
     signUp,
     verifyEmail,
     logIn,
