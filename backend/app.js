@@ -16,8 +16,8 @@ app.use(cors({
     credentials:true
 }))
 app.use(require('./routes/userRouter.js'))
-app.use('/singleChat',require('./routes/singleChatRouter.js'))
-app.use('/singlemassage',require('./routes/singleMassageRouter.js'))
+app.use('/chat',require('./routes/chatRouter.js'))
+app.use('/massage',require('./routes/massageRouter.js'))
 
 app.listen(PORT,()=>{
     console.log(`App is listening on port no ${PORT}`)

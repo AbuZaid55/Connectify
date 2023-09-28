@@ -1,8 +1,8 @@
 const router = require('express').Router()
-const {createChat, getChat, blockChat} = require('../controller/singleChatController.js')
+const {createChat, getSingleChat, blockChat} = require('../controller/chatController.js')
 
 router.post('/createchat',createChat)
-router.post('/getchat',getChat)
+router.post('/getsinglechat',getSingleChat)
 router.post('/blockChat',blockChat)
 
 module.exports = router

@@ -1,5 +1,5 @@
 const massageModel = require('../models/massageModel.js')
-const singleChatModel = require('../models/singleChatModel.js')
+const singleChatModel = require('../models/chatModel.js')
 
 const createMassage = async(req,res)=>{
     const {senderId,content,chatId,isHidden}=req.body 
