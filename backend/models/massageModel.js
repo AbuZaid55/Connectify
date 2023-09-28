@@ -21,6 +21,7 @@ const massageSchema = mongoose.Schema({
     isHidden:[
         {
             type:mongoose.Schema.Types.ObjectId,
+            ref:'user'
         }
     ]
 })

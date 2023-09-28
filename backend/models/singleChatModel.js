@@ -26,7 +26,10 @@ const singleChatSchema = mongoose.Schema({
             }
         }
     ],
-    massage:[]
+    massage:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'massage'
+    }]
 },{timestamps:true},{_id:false})
 
 module.exports = mongoose.model('singleChat',singleChatSchema)
