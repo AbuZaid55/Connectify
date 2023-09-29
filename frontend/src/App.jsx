@@ -16,24 +16,26 @@ function App() {
   const dispatch = useDispatch()
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
-  const authentication = async()=>{
+  const getUser = async()=>{
     try {
       const res = await axios.get(`${BACKEND_URL}/auth/user`,{withCredentials:true})
       dispatch(setUser(res.data.user))
+      return res.data.user
     } catch (error) {
-      dispatch(setUser({validated:false}))
+      dispatch(setUser(''))
+      return ''
     }
   }
   
   useEffect(()=>{
-    authentication()
+    getUser()
   },[])
 
   return (
    <>
      <Routes>
-     <Route path='/' element={<Home/>}/>
-     <Route path='/login' element={<Login/>}/>
+     <Route path='/' element={<Home getUser={getUser}/>}/>
+     <Route path='/login' element={<Login />}/>
      <Route path='/signup' element={<SignUp/>}/>
      <Route path='/sendresetlink' element={<SendResetLink/>}/>
      <Route path='/changepass' element={<ChangePassword/>}/>

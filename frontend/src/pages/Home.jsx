@@ -1,18 +1,22 @@
 import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate ,Link} from 'react-router-dom'
 
-const Home = () => {
-  const user = useSelector((state)=>(state.user))
+const Home = (props) => {
   const navigate = useNavigate()
-  useEffect(()=>{
-    if(user && !user.validated){
+  
+  async function getUser(){
+    const user =  await props.getUser()
+    if(!user){
       navigate('/login')
     }
-  },[user])
+  }
+
+  useEffect(()=>{
+    getUser()
+  },[])
   return (
     <div>
-      Home
+     <Link to='/login'>Click</Link>
     </div>
   )
 }

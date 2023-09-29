@@ -1,10 +1,13 @@
-import React, { useState } from "react"
+import React, { useState ,useEffect} from "react"
 import SendLinkSVG from "../SVG/SendLinkSVG.jsx"
 import {Link, useNavigate} from 'react-router-dom'
 import axios from 'axios'
 import {toast} from 'react-toastify'
+import { useSelector } from 'react-redux'
 
 const SendResetLink = () => {
+
+  const user = useSelector((state)=>(state.user))
   const [email,setEmail]=useState('zaid70979a@gmail.com')
   const navigate = useNavigate()
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
@@ -20,6 +23,12 @@ const SendResetLink = () => {
       toast.error(error.response.data.massage)
     }
   }
+
+  useEffect(()=>{
+    if(user && user.validated){
+      navigate('/')
+    }
+  },[user])
   return (
     <div className="flex items-center justify-center h-screen bg-primary-800">
     <div className="flex md:w-[90%] px-10 sm:px-16 md:px-0 bg-white rounded-xl m-4">

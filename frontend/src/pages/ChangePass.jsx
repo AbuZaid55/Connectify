@@ -3,11 +3,13 @@ import ChangePassSVG from "../SVG/ChangePassSVG.jsx"
 import {useLocation, useNavigate} from 'react-router-dom'
 import axios from 'axios'
 import {toast} from 'react-toastify'
+import { useSelector } from 'react-redux'
 
 
 const ChangePass = () => {
 
   const navigate = useNavigate()
+  const user = useSelector((state)=>(state.user))
   const token = new URLSearchParams(useLocation().search).get("token")
   const userId = new URLSearchParams(useLocation().search).get("id")
   const [input,setInput]=useState({token:token,userId:userId,new_pass:'',confirm_pass:''})
@@ -33,6 +35,12 @@ const ChangePass = () => {
       navigate('/login')
     }
   },[])
+
+  useEffect(()=>{
+    if(user && user.validated){
+      navigate('/')
+    }
+  },[user])
 
   return (
     <div className="flex items-center justify-center h-screen bg-primary-800">

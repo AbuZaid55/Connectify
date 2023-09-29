@@ -3,6 +3,7 @@ import VerifyEmailSVG from "../SVG/VerifyEmailSVG.jsx"
 import { useLocation, useNavigate } from "react-router-dom"
 import { toast } from 'react-toastify'
 import axios from 'axios'
+import { useSelector } from 'react-redux'
 
 const VerifyEmail = () => {
 
@@ -10,6 +11,7 @@ const VerifyEmail = () => {
   const navigate = useNavigate()
   const [otp, setOtp] = useState('')
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+  const user = useSelector((state)=>(state.user))
   const [userId, setUserId] = useState('')
   const [path, setPath] = useState('')
   const [timer,setTimer]=useState(60)
@@ -55,7 +57,11 @@ const VerifyEmail = () => {
     }
   }, [location,timer])
 
-
+  useEffect(()=>{
+    if(user && user.validated){
+      navigate('/')
+    }
+  },[user])
   return (
     <div className="flex items-center justify-center h-screen bg-primary-800">
       <div className="flex md:w-[90%] px-10 sm:px-16 md:px-0 bg-white rounded-xl m-4">
