@@ -35,7 +35,7 @@ const Login = () => {
 
   useEffect(()=>{
     if(user && user.validated){
-      navigate('/')
+      // navigate('/')
     }
   },[user])
   
