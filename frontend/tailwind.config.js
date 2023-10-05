@@ -12,6 +12,9 @@ export default {
       },
       secondary:{
         400:'#ffd8fc'
+      },
+      hover:{
+        200:'#f7ebff'
       }
     }
   },

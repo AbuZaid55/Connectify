@@ -23,7 +23,7 @@ const Home = (props) => {
         {/* sectioin one  */}
 
 
-        <div className='w-1/4 h-full border-2 border-white flex flex-col'>
+        <section className='w-1/4 h-full flex flex-col'>
 
           <div className='flex items-center justify-between px-3 py-2'>
             <h1 className=" text-3xl text-primary-800 font-semibold">Connectify</h1>
@@ -35,30 +35,143 @@ const Home = (props) => {
           </div>
 
 
-          <div className='flex items-center justify-around bg-primary-800 text-white text-2xl py-2 my-2'>
-            <div className='cursor-pointer' onClick={() => { setSlide(0) }}>Chats</div>
-            <div className='cursor-pointer' onClick={() => { setSlide(100) }}>Groups</div>
+          <div className=' bg-primary-800 mt-2 border-2 border-white'>
+            <div className='flex items-center justify-around text-white text-2xl py-2 '>
+              <div className='cursor-pointer' onClick={() => { setSlide(0) }}>Chats</div>
+              <div className='cursor-pointer' onClick={() => { setSlide(100) }}>Groups</div>
+            </div>
+            <div className='w-[50%] relative bg-white h-1' style={{ left: `${slide / 2}%`, transition: '0.5s' }} ></div>
           </div>
 
-          <div className='w-full flex-grow-[1] overflow-hidden overflow-y-auto'>
-            <div className='w-[205%] flex' style={{left:'-100px'}}>
-            <div className=' w-1/2 bg-blue-200'>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda, consectetur? Voluptas fuga a saepe nesciunt asperiores quam voluptatum velit consectetur quia impedit, distinctio veritatis obcaecati non tempore ducimus minus consequatur optio nobis officia! Harum hic quod deserunt enim reiciendis voluptatibus quia, incidunt similique excepturi commodi, nostrum inventore debitis blanditiis sunt quaerat expedita, cumque at aliquid rerum culpa nulla cum atque unde. Excepturi repellendus modi quasi quod ab harum provident assumenda neque labore tempora? Quidem sapiente est ad a eveniet. Cupiditate iusto cum deserunt saepe cumque laudantium quis ea assumenda! Nam omnis enim, repellat fuga quas sapiente corporis, saepe eaque iusto velit aperiam magnam nulla voluptates nostrum qui quidem mollitia dolores incidunt vel ipsam excepturi doloremque numquam? Ab quae saepe maxime impedit. Modi est necessitatibus asperiores autem recusandae deserunt officia officiis neque aspernatur eos laborum, culpa quisquam odit odio ullam a voluptate exercitationem sunt! Modi nobis autem reiciendis quod in delectus, corrupti praesentium. Reprehenderit earum quasi sequi corrupti nulla asperiores. Commodi veniam consectetur velit adipisci nemo reprehenderit aliquam labore distinctio nisi culpa, a molestiae excepturi? Saepe, alias! Cumque, nihil quod. Doloremque officia vero nisi non ut at voluptas ipsam molestiae quo quasi maxime, quod vitae ad obcaecati dolores id sunt nemo placeat est hic amet recusandae. Quisquam, nihil! Nihil provident laudantium quas nulla totam quis obcaecati quos rem dolorum ea. Rerum libero sunt provident, voluptate quisquam dolor eveniet saepe, quia aliquam minus nostrum suscipit accusamus veritatis non, voluptatum totam? Perferendis corrupti mollitia enim sint consequatur earum vitae voluptate est autem suscipit? Voluptatibus natus consequuntur repellat minima asperiores qui maxime eius voluptate libero quas, illum modi aut quisquam culpa nobis, perferendis blanditiis voluptas! Unde temporibus aliquam ad qui aspernatur commodi molestias dolores, sint illum, ea quia, vero culpa nesciunt consequatur ipsa minima magni vitae. Ipsum quasi facilis exercitationem nemo obcaecati rem et.
-            </div>
-            <div className='w-1/2 bg-blue-800'>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Assumenda, consectetur? Voluptas fuga a saepe nesciunt asperiores quam voluptatum velit consectetur quia impedit, distinctio veritatis obcaecati non tempore ducimus minus consequatur optio nobis officia! Harum hic quod deserunt enim reiciendis voluptatibus quia, incidunt similique excepturi commodi, nostrum inventore debitis blanditiis sunt quaerat expedita, cumque at aliquid rerum culpa nulla cum atque unde. Excepturi repellendus modi quasi quod ab harum provident assumenda neque labore tempora? Quidem sapiente est ad a eveniet. Cupiditate iusto cum deserunt saepe cumque laudantium quis ea assumenda! Nam omnis enim, repellat fuga quas sapiente corporis, saepe eaque iusto velit aperiam magnam nulla voluptates nostrum qui quidem mollitia dolores incidunt vel ipsam excepturi doloremque numquam? Ab quae saepe maxime impedit. Modi est necessitatibus asperiores autem recusandae deserunt officia officiis neque aspernatur eos laborum, culpa quisquam odit odio ullam a voluptate exercitationem sunt! Modi nobis autem reiciendis quod in delectus, corrupti praesentium. Reprehenderit earum quasi sequi corrupti nulla asperiores. Commodi veniam consectetur velit adipisci nemo reprehenderit aliquam labore distinctio nisi culpa, a molestiae excepturi? Saepe, alias! Cumque, nihil quod. Doloremque officia vero nisi non ut at voluptas ipsam molestiae quo quasi maxime, quod vitae ad obcaecati dolores id sunt nemo placeat est hic amet recusandae. Quisquam, nihil! Nihil provident laudantium quas nulla totam quis obcaecati quos rem dolorum ea. Rerum libero sunt provident, voluptate quisquam dolor eveniet saepe, quia aliquam minus nostrum suscipit accusamus veritatis non, voluptatum totam? Perferendis corrupti mollitia enim sint consequatur earum vitae voluptate est autem suscipit? Voluptatibus natus consequuntur repellat minima asperiores qui maxime eius voluptate libero quas, illum modi aut quisquam culpa nobis, perferendis blanditiis voluptas! Unde temporibus aliquam ad qui aspernatur commodi molestias dolores, sint illum, ea quia, vero culpa nesciunt consequatur ipsa minima magni vitae. Ipsum quasi facilis exercitationem nemo obcaecati rem et.
-            </div>
+          <div className='w-full flex-grow-[1] overflow-hidden'>
+            <div className='w-[200%] h-full flex relative' style={{ left: `-${slide}%`, transition: '0.5s' }}>
+              <div className=' w-1/2  h-full overflow-hidden overflow-y-scroll no-scrollbar'>
+
+                <div className='flex items-center py-2 border-b-2 border-primary-800 cursor-pointer hover:bg-hover-200 transition ease-in-out duration-300'>
+                  <img src="./profile.jpg" className=' w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' />
+                  <div >
+                    <h1 className=' text-base h-6 overflow-hidden'>Abu Zaid Shibli</h1>
+                    <p className='w-full text-sm h-5 overflow-hidden'>hi hellow what are your doing
+                    </p>
+                  </div>
+                  <div className=' ml-auto w-20 text-center'><span className=' bg-primary-800 inline-block w-6 h-6 rounded-full text-white'>5</span></div>
+                </div>
+                <div className='flex items-center py-2 border-b-2 border-primary-800 cursor-pointer hover:bg-hover-200 transition ease-in-out duration-300'>
+                  <img src="./profile.jpg" className=' w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' />
+                  <div >
+                    <h1 className=' text-base h-6 overflow-hidden'>Abu Zaid Shibli</h1>
+                    <p className='w-full text-sm h-5 overflow-hidden'>hi hellow what are your doing
+                    </p>
+                  </div>
+                  <div className=' ml-auto w-20 text-center'><span className=' bg-primary-800 inline-block w-6 h-6 rounded-full text-white'>5</span></div>
+                </div>
+                <div className='flex items-center py-2 border-b-2 border-primary-800 cursor-pointer hover:bg-hover-200 transition ease-in-out duration-300'>
+                  <img src="./profile.jpg" className=' w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' />
+                  <div >
+                    <h1 className=' text-base h-6 overflow-hidden'>Abu Zaid Shibli</h1>
+                    <p className='w-full text-sm h-5 overflow-hidden'>hi hellow what are your doing
+                    </p>
+                  </div>
+                  <div className=' ml-auto w-20 text-center'><span className=' bg-primary-800 inline-block w-6 h-6 rounded-full text-white'>5</span></div>
+                </div>
+                <div className='flex items-center py-2 border-b-2 border-primary-800 cursor-pointer hover:bg-hover-200 transition ease-in-out duration-300'>
+                  <img src="./profile.jpg" className=' w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' />
+                  <div >
+                    <h1 className=' text-base h-6 overflow-hidden'>Abu Zaid Shibli</h1>
+                    <p className='w-full text-sm h-5 overflow-hidden'>hi hellow what are your doing
+                    </p>
+                  </div>
+                  <div className=' ml-auto w-20 text-center'><span className=' bg-primary-800 inline-block w-6 h-6 rounded-full text-white'>5</span></div>
+                </div>
+
+              </div>
+              <div className='w-1/2 h-full overflow-hidden overflow-y-scroll no-scrollbar'>
+
+                <div className='flex items-center py-2 border-b-2 border-primary-800 cursor-pointer hover:bg-hover-200 transition ease-in-out duration-300'>
+                  <img src="./profile.jpg" className=' w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' />
+                  <div >
+                    <h1 className=' text-base h-6 overflow-hidden'>Abu Zaid Shibli</h1>
+                    <p className='w-full text-sm h-5 overflow-hidden'>hi hellow what are your doing
+                    </p>
+                  </div>
+                  <div className=' ml-auto w-20 text-center'><span className=' bg-primary-800 inline-block w-6 h-6 rounded-full text-white'>5</span></div>
+                </div>
+                <div className='flex items-center py-2 border-b-2 border-primary-800 cursor-pointer hover:bg-hover-200 transition ease-in-out duration-300'>
+                  <img src="./profile.jpg" className=' w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' />
+                  <div >
+                    <h1 className=' text-base h-6 overflow-hidden'>Abu Zaid Shibli</h1>
+                    <p className='w-full text-sm h-5 overflow-hidden'>hi hellow what are your doing
+                    </p>
+                  </div>
+                  <div className=' ml-auto w-20 text-center'><span className=' bg-primary-800 inline-block w-6 h-6 rounded-full text-white'>5</span></div>
+                </div>
+                <div className='flex items-center py-2 border-b-2 border-primary-800 cursor-pointer hover:bg-hover-200 transition ease-in-out duration-300'>
+                  <img src="./profile.jpg" className=' w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' />
+                  <div >
+                    <h1 className=' text-base h-6 overflow-hidden'>Abu Zaid Shibli</h1>
+                    <p className='w-full text-sm h-5 overflow-hidden'>hi hellow what are your doing
+                    </p>
+                  </div>
+                  <div className=' ml-auto w-20 text-center'><span className=' bg-primary-800 inline-block w-6 h-6 rounded-full text-white'>5</span></div>
+                </div>
+                <div className='flex items-center py-2 border-b-2 border-primary-800 cursor-pointer hover:bg-hover-200 transition ease-in-out duration-300'>
+                  <img src="./profile.jpg" className=' w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' />
+                  <div >
+                    <h1 className=' text-base h-6 overflow-hidden'>Abu Zaid Shibli</h1>
+                    <p className='w-full text-sm h-5 overflow-hidden'>hi hellow what are your doing
+                    </p>
+                  </div>
+                  <div className=' ml-auto w-20 text-center'><span className=' bg-primary-800 inline-block w-6 h-6 rounded-full text-white'>5</span></div>
+                </div>
+                <div className='flex items-center py-2 border-b-2 border-primary-800 cursor-pointer hover:bg-hover-200 transition ease-in-out duration-300'>
+                  <img src="./profile.jpg" className=' w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' />
+                  <div >
+                    <h1 className=' text-base h-6 overflow-hidden'>Abu Zaid Shibli</h1>
+                    <p className='w-full text-sm h-5 overflow-hidden'>hi hellow what are your doing
+                    </p>
+                  </div>
+                  <div className=' ml-auto w-20 text-center'><span className=' bg-primary-800 inline-block w-6 h-6 rounded-full text-white'>5</span></div>
+                </div>
+                <div className='flex items-center py-2 border-b-2 border-primary-800 cursor-pointer hover:bg-hover-200 transition ease-in-out duration-300'>
+                  <img src="./profile.jpg" className=' w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' />
+                  <div >
+                    <h1 className=' text-base h-6 overflow-hidden'>Abu Zaid Shibli</h1>
+                    <p className='w-full text-sm h-5 overflow-hidden'>hi hellow what are your doing
+                    </p>
+                  </div>
+                  <div className=' ml-auto w-20 text-center'><span className=' bg-primary-800 inline-block w-6 h-6 rounded-full text-white'>5</span></div>
+                </div>
+                <div className='flex items-center py-2 border-b-2 border-primary-800 cursor-pointer hover:bg-hover-200 transition ease-in-out duration-300'>
+                  <img src="./profile.jpg" className=' w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' />
+                  <div >
+                    <h1 className=' text-base h-6 overflow-hidden'>Abu Zaid Shibli</h1>
+                    <p className='w-full text-sm h-5 overflow-hidden'>hi hellow what are your doing
+                    </p>
+                  </div>
+                  <div className=' ml-auto w-20 text-center'><span className=' bg-primary-800 inline-block w-6 h-6 rounded-full text-white'>5</span></div>
+                </div>
+                <div className='flex items-center py-2 border-b-2 border-primary-800 cursor-pointer hover:bg-hover-200 transition ease-in-out duration-300'>
+                  <img src="./profile.jpg" className=' w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' />
+                  <div >
+                    <h1 className=' text-base h-6 overflow-hidden'>Abu Zaid Shibli</h1>
+                    <p className='w-full text-sm h-5 overflow-hidden'>hi hellow what are your doing
+                    </p>
+                  </div>
+                  <div className=' ml-auto w-20 text-center'><span className=' bg-primary-800 inline-block w-6 h-6 rounded-full text-white'>5</span></div>
+                </div>
+
+              </div>
             </div>
           </div>
-        </div>
+        </section>
 
 
 
 
         {/* section two  */}
-        <div className='w-3/4 bg-black h-full'>
-
-        </div>
+        <section className='w-3/4'>
+            <div></div>
+        </section>
 
 
 
