@@ -1,5 +1,6 @@
 .svgicon {
   max-height: 300px;
+  position: relative;
 }
 .sendLinkSvgicon {
   max-height: 250px;
@@ -10,41 +11,17 @@
 .verifyEmailSVGicon{
   max-height: 250px;
 }
-/* .inputloginSvg1 {
-  animation: fillColor1 10s infinite;
-}
-.inputloginSvg2 {
-  animation: fillColor2 10s infinite;
-}
-.circleloginSvg {
-  animation: fillColor3 10s infinite;
+.massageicon{
+  animation: svgicon 4s linear infinite;
+  transform-box: fill-box;
+  transition: all;
 }
 
-@keyframes fillColor1 {
+@keyframes svgicon {
   0% {
-    fill: green;
+    scale: 1;
   }
-  90% {
-    fill: green;
+  100% {
+    scale: 0.5;
   }
 }
-@keyframes fillColor2 {
-  0% {
-  }
-  30% {
-    fill: green;
-  }
-  90% {
-    fill: green;
-  }
-}
-@keyframes fillColor3 {
-  0% {
-  }
-  60% {
-    fill: green;
-  }
-  90% {
-    fill: green;
-  }
-} */
