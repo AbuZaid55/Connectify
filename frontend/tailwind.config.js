@@ -10,9 +10,6 @@ export default {
       primary:{
         800:'#b141fc'
       },
-      secondary:{
-        400:'#ffd8fc'
-      },
       hover:{
         200:'#f7ebff'
       }

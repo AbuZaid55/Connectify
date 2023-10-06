@@ -12,5 +12,16 @@
           -ms-overflow-style: none; 
           scrollbar-width: none; 
       }
+      .myMassage{
+        background-color: #b141fc;
+        color:white;
+        margin-left:auto;
+        border-top-right-radius: 0;
+      }
+      .otherMassage{
+        background-color:#efd6ff;
+        color: #3f0066;
+        border-top-left-radius: 0;
+      }
     }
   }
