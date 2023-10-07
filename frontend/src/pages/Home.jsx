@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BsPersonCircle } from "react-icons/bs";
+import { useSelector } from 'react-redux';
 import HomeSVG from "../SVG/HomeSVG.jsx"
 import SingleChat from '../components/SingleChat.jsx';
 import GroupChat from '../components/GroupChat.jsx';
 import SingleMassage from '../components/SingleMassage.jsx';
+import GroupMassage from '../components/GroupMassage.jsx'
 
 
 const Home = (props) => {
   const navigate = useNavigate()
   const [slide, setSlide] = useState(0)
+  const chat = useSelector((state)=>(state.chat))
 
   async function getUser() {
     const user = await props.getUser()
@@ -51,8 +54,9 @@ const Home = (props) => {
         
 
         <section className='w-[70%] bg-[#f5f5f5]'>
-          <div className='w-full h-full items-center justify-center hidden'><HomeSVG/></div>
-          <SingleMassage/>
+          <div className={`w-full h-full items-center justify-center ${(chat.singleChat==='' && chat.groupChat==='')?'flex':'hidden'}`}><HomeSVG/></div>
+          <div className={`h-full flex-col justify-between ${(chat.singleChat!=='' && chat.groupChat==='')?'flex':'hidden'}`}><SingleMassage/></div>
+          <div className={`h-full flex-col justify-between ${(chat.singleChat==='' && chat.groupChat!=='')?'flex':'hidden'}`}><GroupMassage/></div>
         </section>
 
       </div>

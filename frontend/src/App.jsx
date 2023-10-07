@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from 'react'
 import axios from 'axios'
 import {useDispatch} from 'react-redux'
-import { setUser } from '../Redux/slices/userSlice.js'
+import { setUser } from './Redux/slices/userSlice.js'
 
 function App() {
   const dispatch = useDispatch()
