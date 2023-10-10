@@ -54,9 +54,9 @@ const Home = (props) => {
         
 
         <section className='w-[70%] bg-[#f5f5f5]'>
-          <div className={`w-full h-full items-center justify-center ${(chat.singleChat==='' && chat.groupChat==='')?'flex':'hidden'}`}><HomeSVG/></div>
-          <div className={`h-full flex-col justify-between ${(chat.singleChat!=='' && chat.groupChat==='')?'flex':'hidden'}`}><SingleMassage/></div>
-          <div className={`h-full flex-col justify-between ${(chat.singleChat==='' && chat.groupChat!=='')?'flex':'hidden'}`}><GroupMassage/></div>
+          <div className={`w-full relative bg-white z-30 h-full items-center justify-center ${(chat.singleChat==='' && chat.groupChat==='')?'flex':'hidden'}`}><HomeSVG/></div>
+          <div className={`h-full relative z-30 bg-white  flex-col justify-between ${(chat.singleChat!=='' && chat.groupChat==='')?'flex':'hidden'}`}><SingleMassage/></div>
+          <div className={`h-full relative z-30 bg-white flex-col justify-between ${(chat.singleChat==='' && chat.groupChat!=='')?'flex':'hidden'}`}><GroupMassage/></div>
         </section>
 
       </div>

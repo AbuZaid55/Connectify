@@ -52,7 +52,7 @@ const SingleMassage = () => {
         </div>
       </div>
 
-      <div className=" flex-grow-[1]  p-2 w-full flex flex-col overflow-y-auto no-scrollbar">
+      <div className=" flex-grow-[1]  p-2 w-full flex flex-col overflow-y-auto no-scrollbar bg-[#f5f5f5]">
 
         <div className="w-[50%] myMassage p-3 rounded-lg my-1 mx-2">
           <p>hi hellow Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem sunt quos delectus harum veniam modi natus voluptatem sapiente odit labore lore asdf asdf sdf sdf sdf sdaf sadf sdf dsf df!</p>

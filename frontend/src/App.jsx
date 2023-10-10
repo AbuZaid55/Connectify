@@ -5,6 +5,8 @@ import SignUp from './pages/SignUp.jsx'
 import SendResetLink from './pages/SendResetLink.jsx'
 import ChangePassword from './pages/ChangePass.jsx'
 import VerifyEmail from './pages/VerifyEmail.jsx'
+import NewChat from './pages/NewChat.jsx'
+import NewGroupChat from './pages/NewGroupChat.jsx'
 import {ToastContainer} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import { useEffect } from 'react'
@@ -40,6 +42,8 @@ function App() {
      <Route path='/sendresetlink' element={<SendResetLink/>}/>
      <Route path='/changepass' element={<ChangePassword/>}/>
      <Route path='/verifyemail' element={<VerifyEmail/>}/>
+     <Route path='/newchat' element={<NewChat/>}/>
+     <Route path='/newgroupchat' element={<NewGroupChat/>}/>
     </Routes>
     <ToastContainer position="bottom-right"/>
    </>
