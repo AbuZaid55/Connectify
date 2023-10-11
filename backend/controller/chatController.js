@@ -8,7 +8,7 @@ const createChat = async(req,res)=>{
 
 const getSingleChat = async(req,res)=>{
     const {userId}= req.body
-    const chat = await chatModel.find({joinChat:userId}).populate({path:'joinChat',match:{_id:{$ne:userId}},select:'name profile'}).populate({
+    const chat = await chatModel.find({joinChat:userId}).populate({path:'joinChat',match:{_id:{$ne:userId}},select:'name profile bio'}).populate({
         path:'massage',
         match:{isHidden:{$nin:userId}}
     })
@@ -28,7 +28,7 @@ const getSingleChat = async(req,res)=>{
     })
     s_chat.chatName=s_chat.joinChat[0].name
     s_chat.notReadMassage=notReadMassage
-    s_chat.profile=undefined
+    s_chat.profile=s_chat.joinChat[0].profile.secure_url
     s_chat.admin=undefined
     return s_chat
    })

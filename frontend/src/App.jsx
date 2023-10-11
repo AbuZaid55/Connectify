@@ -13,10 +13,13 @@ import { useEffect } from 'react'
 import axios from 'axios'
 import {useDispatch} from 'react-redux'
 import { setUser } from './Redux/slices/userSlice.js'
+import {setSingleChat} from './Redux/slices/chatSlice.js'
+import { useSelector } from 'react-redux'
 
 function App() {
   const dispatch = useDispatch()
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+  const user = useSelector((state)=>(state.user))
 
   const getUser = async()=>{
     try {
@@ -28,10 +31,23 @@ function App() {
       return ''
     }
   }
-  
+  const getSingleChat  = async()=>{
+    try {
+      const res = await axios.post(`${BACKEND_URL}/chat/getsinglechat`,{userId:user._id})
+      dispatch(setSingleChat(res.data))
+    } catch (error) {
+      dispatch(setSingleChat([]))
+    }
+  }
   useEffect(()=>{
     getUser()
   },[])
+  useEffect(()=>{
+    if(user._id){
+      getSingleChat()
+    }
+  },[user])
+
 
   return (
    <>

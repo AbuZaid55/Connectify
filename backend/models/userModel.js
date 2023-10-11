@@ -36,6 +36,9 @@ const userSchema = mongoose.Schema({
         default:false,
         required:true
     },
+    bio:{
+        type:String
+    },
     blocklist:[mongoose.Schema.Types.ObjectId],
     loggedIn:[
         {

@@ -1,6 +1,6 @@
 import React from 'react'
 import {useDispatch} from 'react-redux'
-import {setSingleChat,setGroupChat} from '../Redux/slices/chatSlice.js'
+import {openSingleChat,openGroupChat} from '../Redux/slices/chatSlice.js'
 import {MdGroupAdd} from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
 
@@ -10,7 +10,7 @@ const GroupChat = () => {
   return (
     <div className='w-1/2 relative h-full overflow-hidden overflow-y-scroll no-scrollbar'>
 
-    <div className='flex items-center py-2 border-b-2 border-primary-800 cursor-pointer hover:bg-hover-200 transition ease-in-out duration-300' onClick={()=>{dispatch(setGroupChat({name:'GroupTrue'}));dispatch(setSingleChat(''))}}>
+    <div className='flex items-center py-2 border-b-2 border-primary-800 cursor-pointer hover:bg-hover-200 transition ease-in-out duration-300' onClick={()=>{dispatch(openGroupChat({name:'GroupTrue'}));dispatch(openSingleChat(''))}}>
       <img src="./profile.jpg" className=' w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' />
       <div >
         <h1 className=' text-base h-6 overflow-hidden'>Abu Zaid Group Massage</h1>

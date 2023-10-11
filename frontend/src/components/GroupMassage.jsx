@@ -5,7 +5,7 @@ import { IoIosSend } from "react-icons/io";
 import Picker from '@emoji-mart/react'
 import data from '@emoji-mart/data'
 import {useDispatch} from 'react-redux'
-import {setSingleChat,setGroupChat} from '../Redux/slices/chatSlice.js'
+import {openSingleChat,openGroupChat} from '../Redux/slices/chatSlice.js'
 
 const GroupMassage = () => {
     const [dropdown, setDropdown] = useState(false)
@@ -41,7 +41,7 @@ const GroupMassage = () => {
         <div className={`text-2xl mb-3 p-2  rounded-full cursor-pointer transition duration-300 ease-in-out ${dropdown ? "bg-primary-800 text-white" : " text-primary-800"}`} onClick={() => { setDropdown(!dropdown) }}><CiMenuKebab /></div>
         <ul className={`absolute top-full mt-3 right-0 bg-white whitespace-nowrap rounded-md z-10 ${dropdown ? "block" : "hidden"}`}>
           <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">Contact Info</li>
-          <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out" onClick={()=>{dispatch(setSingleChat(''));dispatch(setGroupChat(''))}}>Close chat</li>
+          <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out" onClick={()=>{dispatch(openSingleChat(''));dispatch(openGroupChat(''))}}>Close chat</li>
           <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">Clear all chat</li>
           <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">Block</li>
         </ul>
