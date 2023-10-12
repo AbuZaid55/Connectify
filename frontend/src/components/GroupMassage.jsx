@@ -17,17 +17,21 @@ const GroupMassage = () => {
 
 
   const getClick = (e) => {
-    if (!dropdownRef.current.contains(e.target)) {
-      setDropdown(false)
+    if(dropdownRef.current){
+      if (!dropdownRef.current.contains(e.target)) {
+        setDropdown(false)
+      }
     }
-    if (!emojiRef.current.contains(e.target)) {
-      setEmoji(false)
+    if(emojiRef.current){
+      if (!emojiRef.current.contains(e.target)) {
+        setEmoji(false)
+      }
     }
   }
   useEffect(() => {
     document.addEventListener('click', getClick, true)
     return () => removeEventListener('click', getClick)
-  })
+  },[])
   return (
     <>
 

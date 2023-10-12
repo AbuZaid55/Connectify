@@ -37,7 +37,9 @@ const userSchema = mongoose.Schema({
         required:true
     },
     bio:{
-        type:String
+        type:String,
+        default:'Hey there! I am using Connectify',
+        required:true
     },
     blocklist:[mongoose.Schema.Types.ObjectId],
     loggedIn:[

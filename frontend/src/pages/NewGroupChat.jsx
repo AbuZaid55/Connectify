@@ -1,10 +1,11 @@
 import React from 'react'
+import SearchUser from '../components/SearchUser'
 
 const NewGroupChat = () => {
   return (
     <div className='h-[100vh] overflow-hidden flex flex-col items-center '>
       <h1 className='mt-10 text-4xl text-primary-800 font-bold font-serif'>New Group</h1>
-      <input className='border-2 border-primary-800 w-full max-w-3xl p-3 text-xl rounded m-5' type="text" placeholder='Search users' />
+      <SearchUser/>
 
       <div className=' w-full max-w-3xl rounded border-2 border-primary-800 shadow-lg max-h-full overflow-hidden overflow-y-auto mx-5'>
 

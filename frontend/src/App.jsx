@@ -35,6 +35,7 @@ function App() {
     try {
       const res = await axios.post(`${BACKEND_URL}/chat/getsinglechat`,{userId:user._id})
       dispatch(setSingleChat(res.data))
+      return res.data
     } catch (error) {
       dispatch(setSingleChat([]))
     }
@@ -58,7 +59,7 @@ function App() {
      <Route path='/sendresetlink' element={<SendResetLink/>}/>
      <Route path='/changepass' element={<ChangePassword/>}/>
      <Route path='/verifyemail' element={<VerifyEmail/>}/>
-     <Route path='/newchat' element={<NewChat/>}/>
+     <Route path='/newchat' element={<NewChat getSingleChat={getSingleChat}/>}/>
      <Route path='/newgroupchat' element={<NewGroupChat/>}/>
     </Routes>
     <ToastContainer position="bottom-right"/>

@@ -2,8 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const chatSlice = createSlice({
     name:'Chat',
-    initialState:{singleChat:[],groupChat:[],openSingleChat:'',openGroupChat:''},
+    initialState:{searchUsers:[],singleChat:[],groupChat:[],openSingleChat:'',openGroupChat:''},
     reducers:{
+        setSearchUser(state,action){
+            state.searchUsers=action.payload
+            return state
+        },
         setSingleChat(state,action){
             state.singleChat=action.payload
             return state
@@ -24,4 +28,4 @@ const chatSlice = createSlice({
 })
 
 export default chatSlice;
-export const {setSingleChat,setGroupChat,openSingleChat,openGroupChat} = chatSlice.actions
+export const {setSearchUser,setSingleChat,setGroupChat,openSingleChat,openGroupChat} = chatSlice.actions

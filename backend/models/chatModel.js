@@ -18,6 +18,10 @@ const chatSchema = mongoose.Schema({
             default:'',
         }
     },
+    createdBy:{
+        type:String,
+        required:true,
+    },
     admin:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'user'

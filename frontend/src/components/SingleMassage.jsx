@@ -25,11 +25,15 @@ const SingleMassage = () => {
   }
 
   const getClick = (e) => {
-    if (!dropdownRef.current.contains(e.target)) {
-      setDropdown(false)
+    if(dropdownRef.current){
+      if (!dropdownRef.current.contains(e.target)) {
+        setDropdown(false)
+      }
     }
-    if (!emojiRef.current.contains(e.target)) {
-      setEmoji(false)
+    if(emojiRef.current){
+      if (!emojiRef.current.contains(e.target)) {
+        setEmoji(false)
+      }
     }
   }
 
@@ -39,12 +43,12 @@ const SingleMassage = () => {
   useEffect(() => {
     document.addEventListener('click', getClick, true)
     return () => removeEventListener('click', getClick)
-  })
+  },[])
   return (
     <>
 
       <div className="flex items-center py-2 bg-white">
-        <img src={`${(chat.profile)?'':'./profile.jpg'}`}  className=" w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full" />
+        <img src={`${(chat.profile)?'':'./profile.png'}`}  className=" w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full" />
         <div>
           <h1 className=" text-base h-6 overflow-hidden">{chat.chatName}</h1>
           <p className="w-full text-sm h-5 overflow-hidden">{chat && chat.joinChat[0].bio}</p>
@@ -64,8 +68,8 @@ const SingleMassage = () => {
 
         {
          chat && chat.massage.map((massage)=>{
-            return <div className={`w-[50%] ${(massage.senderId===user._id)?'myMassage':'otherMassage'} p-3 rounded-lg my-1 mx-2`}>
-            <p>hi hellow Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem sunt quos delectus harum veniam modi natus voluptatem sapiente odit labore lore asdf asdf sdf sdf sdf sdaf sadf sdf dsf df!</p>
+            return <div key={massage._id} className={`max-w-[50%] min-w-[15%] ${(massage.senderId===user._id)?'myMassage':'otherMassage'} p-3 rounded-lg my-1 mx-2`}>
+            <p>{massage.content}</p>
             <p className="text-end">{formateData(massage.createdAt)}</p>
           </div>
           })
