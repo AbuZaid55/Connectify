@@ -51,12 +51,12 @@ const getSingleChat = async (req, res) => {
         let notReadMassage = 0
         if(s_chat.massage.length==0 && s_chat.createdBy!==userId){
         }else{
-            s_chat.blockList.map((item) => {
-                if (item.userId == userId) {
-                    s_chat.updatedAt = item.time
-                }
-                return item
-            })
+            // s_chat.blockList.map((item) => {
+            //     if (item.userId == userId) {
+            //         s_chat.updatedAt = item.time
+            //     }
+            //     return item
+            // })
             s_chat.massage.map((massage) => {
                 if (!massage.readBy.includes(userId)) {
                     notReadMassage = notReadMassage + 1
@@ -79,10 +79,34 @@ const blockChat = async (req, res) => {
     await chat.save()
     res.send("single user Blocked!")
 }
+const unblock = async(req,res)=>{
+    const {userId,chatId}=req.body
+    if(!userId || !chatId){
+        return sendError(res,"Invalid credentials!")
+    }
+    try {
+        const chat = await chatModel.findById(chatId)
+        if(!chat){
+            return sendError(res,"Chat not found!")
+        }
+        const newBlockList = chat.blockList.filter((object)=>{
+            if(object.userId!=userId){
+                return object
+            }
+        })
+        console.log(newBlockList)
+        console.log("BBB")
+    } catch (error) {
+        console.log(error)
+        sendError(res,"Something went wrong!") 
+    }
+
+}
 
 module.exports = {
     createChat,
     getSingleChat,
     blockChat,
     searchUsers,
+    unblock,
 }

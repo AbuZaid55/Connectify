@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { openSingleChat, openGroupChat } from '../Redux/slices/chatSlice.js'
 import { BsFillChatRightTextFill } from 'react-icons/bs'
@@ -8,13 +8,13 @@ const SingleChat = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const chat = useSelector((state) => (state.chat))
-  
-  function formateData(date){
-    let result = new Date(date).toLocaleString().split(',')[1].split(' ')
-    result[1]=result[1].slice(0,result[1].length-3)
-    result = result.join(' ')
-    return result
-  }
+  // console.log(chat)
+  // function formateData(date){
+  //   let result = new Date(date).toLocaleString().split(',')[1].split(' ')
+  //   result[1]=result[1].slice(0,result[1].length-3)
+  //   result = result.join(' ')
+  //   return result
+  // }
 
   return (
     <div className=' w-1/2 relative  h-full overflow-hidden overflow-y-scroll no-scrollbar'>
@@ -28,7 +28,6 @@ const SingleChat = () => {
               <p className='w-full text-sm h-5 overflow-hidden'>{chat.lastMassage}</p>
             </div>
             <div className=' ml-auto w-20 text-center'>
-              <p>{formateData(chat.updatedAt)}</p>
               <span className={` bg-primary-800 ${(chat.notReadMassage)?' inline-block':'hidden'} w-6 h-6 rounded-full text-white`}>{chat.notReadMassage}</span>
             </div>
           </div>

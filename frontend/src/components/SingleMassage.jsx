@@ -4,8 +4,9 @@ import { LiaLaughSquint } from "react-icons/lia";
 import { IoIosSend } from "react-icons/io";
 import Picker from '@emoji-mart/react'
 import data from '@emoji-mart/data'
-import {useDispatch,useSelector} from 'react-redux'
-import {openSingleChat,openGroupChat} from '../Redux/slices/chatSlice.js'
+import { useDispatch, useSelector } from 'react-redux'
+import { openSingleChat, openGroupChat } from '../Redux/slices/chatSlice.js'
+import axios from 'axios'
 
 const SingleMassage = () => {
   const [dropdown, setDropdown] = useState(false)
@@ -15,51 +16,77 @@ const SingleMassage = () => {
   const emojiRef = useRef(null)
   const dispatch = useDispatch()
   const chat = useSelector((state) => (state.chat)).openSingleChat
-  const user = useSelector((state)=>(state.user))
+  const user = useSelector((state) => (state.user))
+  const [blockUser,setBlockUser]=useState(false)
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
-  function formateData(date){
+  function formateData(date) {
     let result = new Date(date).toLocaleString().split(',')[1].split(' ')
-    result[1]=result[1].slice(0,result[1].length-3)
+    result[1] = result[1].slice(0, result[1].length - 3)
     result = result.join(' ')
     return result
   }
-
   const getClick = (e) => {
-    if(dropdownRef.current){
+    if (dropdownRef.current) {
       if (!dropdownRef.current.contains(e.target)) {
         setDropdown(false)
       }
     }
-    if(emojiRef.current){
+    if (emojiRef.current) {
       if (!emojiRef.current.contains(e.target)) {
         setEmoji(false)
       }
     }
   }
-
-  const submitMassage = () => {
-    setInput('')
+  const submitMassage = async () => { 
+    if (input) {
+      try {
+        const res = await axios.post(`${BACKEND_URL}/massage/createmassage`, { senderId: user._id, content: input, chatId: chat._id })
+        console.log(res)
+      } catch (error) {
+        console.log(error)
+      }
+    }
   }
+  const block = async()=>{
+  }
+  const unblock = async()=>{
+    try {
+      const res = await axios.post(`${BACKEND_URL}/chat/unblockchat`,{userId:user._id,chatId:chat._id})
+      console.log(res)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   useEffect(() => {
     document.addEventListener('click', getClick, true)
     return () => removeEventListener('click', getClick)
-  },[])
+  }, [])
+ useEffect(()=>{
+    if(chat){
+      chat.blockList.map((object)=>{
+        if(object.userId===user._id){
+          setBlockUser(true)
+        }
+      })
+    }
+  },[chat])
   return (
     <>
-
       <div className="flex items-center py-2 bg-white">
-        <img src={`${(chat.profile)?'':'./profile.png'}`}  className=" w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full" />
+        <img src={`${(chat.profile) ? '' : './profile.png'}`} className=" w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full" />
         <div>
           <h1 className=" text-base h-6 overflow-hidden">{chat.chatName}</h1>
           <p className="w-full text-sm h-5 overflow-hidden">{chat && chat.joinChat[0].bio}</p>
         </div>
         <div ref={dropdownRef} className="ml-auto  relative mr-3">
           <div className={`text-2xl mb-3 p-2  rounded-full cursor-pointer transition duration-300 ease-in-out ${dropdown ? "bg-primary-800 text-white" : " text-primary-800"}`} onClick={() => { setDropdown(!dropdown) }}><CiMenuKebab /></div>
-          <ul className={`absolute top-full mt-3 right-0 bg-white whitespace-nowrap rounded-md z-10 ${dropdown ? "block" : "hidden"}`}>
-            <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">Contact Info</li>
-            <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out" onClick={()=>{dispatch(openSingleChat(''));dispatch(openGroupChat(''))}}>Close chat</li>
+          <ul className={`absolute top-full mt-3 right-0 bg-white shadow-2xl whitespace-nowrap rounded-md z-10 ${dropdown ? "block" : "hidden"}`}>
+            <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer  text-gray-600 transition duration-200 ease-in-out">Contact Info</li>
+            <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out" onClick={() => { dispatch(openSingleChat('')); dispatch(openGroupChat('')) }}>Close chat</li>
             <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">Clear all chat</li>
-            <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">Block</li>
+            <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">{(blockUser)?<span onClick={()=>{unblock()}}>Unblock</span>:<span onClick={()=>{block()}}>Block</span>}</li>
           </ul>
         </div>
       </div>
@@ -67,24 +94,27 @@ const SingleMassage = () => {
       <div className=" flex-grow-[1]  p-2 w-full flex flex-col overflow-y-auto no-scrollbar bg-[#f5f5f5]">
 
         {
-         chat && chat.massage.map((massage)=>{
-            return <div key={massage._id} className={`max-w-[50%] min-w-[15%] ${(massage.senderId===user._id)?'myMassage':'otherMassage'} p-3 rounded-lg my-1 mx-2`}>
-            <p>{massage.content}</p>
-            <p className="text-end">{formateData(massage.createdAt)}</p>
-          </div>
+          chat && chat.massage.map((massage) => {
+            return <div key={massage._id} className={`max-w-[50%] min-w-[15%] ${(massage.senderId === user._id) ? 'myMassage' : 'otherMassage'} p-3 rounded-lg my-1 mx-2`}>
+              <p>{massage.content}</p>
+              <p className="text-end">{formateData(massage.createdAt)}</p>
+            </div>
           })
         }
 
       </div>
 
 
-      <div className="bg-white flex items-center justify-between p-2 gap-3 relative">
+      <div className={`${(blockUser)?'hidden':'flex'} bg-white items-center justify-between p-2 gap-3 relative`}>
         <LiaLaughSquint className="text-4xl cursor-pointer text-primary-800" onClick={() => { setEmoji(!emoji) }} />
         <input className="w-full rounded-md p-2 bg-[#f5f5f5] text-xl" type="text" placeholder="Type a massage" value={input} onChange={(e) => { setInput(e.target.value) }} />
         <IoIosSend className="text-4xl cursor-pointer text-primary-800" onClick={() => { submitMassage() }} />
         <div ref={emojiRef} className={`absolute bottom-16 left-2 ${(emoji) ? 'block' : 'hidden'}`}> <Picker data={data} previewPosition="none" onEmojiSelect={(e) => { setInput(input + e.native) }} /></div>
       </div>
 
+      <div className={`${(blockUser)?'flex':'hidden'} itemc justify-center m-2`}>
+        <button onClick={(()=>{unblock()})} className=" bg-primary-800 text-white text-xl font-semibold px-4 py-3 hover:bg-hover-200 transition duration-300 ease-in-out border-2 border-primary-800 hover:text-primary-800 rounded-md">Unblock</button>
+      </div>
     </>
   )
 }
