@@ -23,9 +23,54 @@ const chatSlice = createSlice({
         openGroupChat(state,action){
             state.openGroupChat=action.payload
             return state
-        }
+        },
+        setNotReadMassage_Chat(state,action){
+            const chatId = action.payload.chatId
+            const type = (action.payload && action.payload.type )|| ''
+            state.singleChat.map((chat)=>{
+               if(chat._id===chatId){
+                if(type==='zero'){
+                    chat.notReadMassage=0
+                }else{
+                    chat.notReadMassage = chat.notReadMassage+1
+                }
+               }
+            })
+            return state
+        },
+        blockuser(state,action){
+            const userId = action.payload.userId 
+            const chatId = action.payload.chatId 
+            state.openSingleChat.blockList.push(userId)
+            state.singleChat.map((chat)=>{
+                if(chat._id===chatId){
+                    chat.blockList.push(userId)
+                }
+            })
+            return state
+        },
+        unblockUser(state,action){
+            console.log("run11")
+            const userId = action.payload.userId 
+            const chatId = action.payload.chatId 
+            state.openSingleChat.blockList.map((object)=>{
+                if(object.userId!==userId){
+                    return object
+                }
+            })
+            return state
+            // state.singleChat.map((chat)=>{
+            //     if(chat._id===chatId){
+            //         chat.blockList.map((object)=>{
+            //             if(object.userId!==userId){
+            //                 return object
+            //             }
+            //         })
+            //     }
+            // })
+        },
     }
 })
 
 export default chatSlice;
-export const {setSearchUser,setSingleChat,setGroupChat,openSingleChat,openGroupChat} = chatSlice.actions
+export const {setSearchUser,setSingleChat,setGroupChat,openSingleChat,openGroupChat,setNotReadMassage_Chat,blockuser,unblockUser} = chatSlice.actions

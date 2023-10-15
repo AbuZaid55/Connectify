@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import SearchUser from '../components/SearchUser'
 import { useDispatch,useSelector } from 'react-redux'
 import axios from 'axios'
 import {openSingleChat} from '../Redux/slices/chatSlice.js'
 import {useNavigate} from 'react-router-dom'
 import {toast} from 'react-toastify'
+import {context} from '../context/context.js'
 
-const NewChat = (props) => {
+const NewChat = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const {getSingleChat} = useContext(context)
   const searchUsers = useSelector((state)=>(state.chat)).searchUsers
   const BACKEND_URL=import.meta.env.VITE_BACKEND_URL 
   const user = useSelector((state)=>(state.user))
@@ -17,7 +19,7 @@ const NewChat = (props) => {
    try {
     const res = await axios.post(`${BACKEND_URL}/chat/createchat`,{data:[_id,user._id],createdBy:user._id,type:"Chat"})
     if(res.status===200 && res.data.massage==='Chat Created'){
-      const myChat = await props.getSingleChat()
+      const myChat = await getSingleChat()
       const newChat = myChat.filter((chat)=>{
         if(chat._id===res.data.chatId){
           return chat

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BsPersonCircle } from "react-icons/bs";
 import { useSelector } from 'react-redux';
@@ -7,22 +7,26 @@ import SingleChat from '../components/SingleChat.jsx';
 import GroupChat from '../components/GroupChat.jsx';
 import SingleMassage from '../components/SingleMassage.jsx';
 import GroupMassage from '../components/GroupMassage.jsx'
+import { context} from '../context/context.js'
 
 
-const Home = (props) => {
+const Home = () => {
   const navigate = useNavigate()
+  const{getUser} = useContext(context)
   const [slide, setSlide] = useState(0)
   const chat = useSelector((state)=>(state.chat))
 
-  async function getUser() {
-    const user = await props.getUser()
-    if (!user) {
-      navigate('/login')
-    }
-  }
+
 
   useEffect(() => {
-    getUser()
+    async function g_u(){
+      const user = await getUser()
+      if(!user){
+        navigate('/login')
+      }
+    }
+    g_u()
+
   }, [])
 
   return (

@@ -9,10 +9,6 @@ const massageSchema = mongoose.Schema({
         type:String,
         required:true
     },
-    createdAt:{
-        type:Date,
-        default:Date.now()
-    },
     readBy:[
         {
             type:mongoose.Schema.Types.ObjectId
@@ -24,6 +20,6 @@ const massageSchema = mongoose.Schema({
             ref:'user'
         }
     ]
-})
+},{timestamps:true})
 
 module.exports = mongoose.model('massage',massageSchema)

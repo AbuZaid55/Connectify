@@ -16,6 +16,8 @@ import { setUser } from './Redux/slices/userSlice.js'
 import {setSingleChat} from './Redux/slices/chatSlice.js'
 import { useSelector } from 'react-redux'
 
+import {context} from './context/context.js'
+
 function App() {
   const dispatch = useDispatch()
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
@@ -40,6 +42,7 @@ function App() {
       dispatch(setSingleChat([]))
     }
   }
+  
   useEffect(()=>{
     getUser()
   },[])
@@ -51,19 +54,19 @@ function App() {
 
 
   return (
-   <>
+   <context.Provider value={{getUser,getSingleChat}}>
      <Routes>
-     <Route path='/' element={<Home getUser={getUser}/>}/>
+     <Route path='/' element={<Home/>}/>
      <Route path='/login' element={<Login />}/>
      <Route path='/signup' element={<SignUp/>}/>
      <Route path='/sendresetlink' element={<SendResetLink/>}/>
      <Route path='/changepass' element={<ChangePassword/>}/>
      <Route path='/verifyemail' element={<VerifyEmail/>}/>
-     <Route path='/newchat' element={<NewChat getSingleChat={getSingleChat}/>}/>
+     <Route path='/newchat' element={<NewChat/>}/>
      <Route path='/newgroupchat' element={<NewGroupChat/>}/>
     </Routes>
     <ToastContainer position="bottom-right"/>
-   </>
+   </context.Provider>
   )
 }
 

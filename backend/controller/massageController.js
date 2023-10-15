@@ -9,12 +9,11 @@ const createMassage = async(req,res)=>{
         return sendError(res,"massage not created!")
     }
     try {
-        const result = await massageModel({senderId,content,chatId,readBy:senderId,isHidden:hiddenUser})
         const chat = await singleChatModel.findById(chatId)
         chat.blockList.map((item)=>{
             hiddenUser.push(item.userId)
         })
-        chat.lastMassage=content
+        const result = await massageModel({senderId,content,chatId,readBy:senderId,isHidden:hiddenUser})
         chat.massage.push(result._id)
         await chat.save()
         await result.save()

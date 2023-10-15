@@ -1,9 +1,5 @@
 const mongoose = require('mongoose')
 const chatSchema = mongoose.Schema({
-    lastMassage:{
-        type:String,
-        default:'',
-    },
     chatName:{
         type:String,
         default:''

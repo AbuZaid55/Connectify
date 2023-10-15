@@ -1,5 +1,6 @@
 const chatModel = require('../models/chatModel.js')
 const userModel = require('../models/userModel.js')
+const massageModel = require('../models/massageModel.js')
 const { sendSuccess, sendError } = require('../utils/sendResponse.js')
 
 const searchUsers = async (req, res) => {
@@ -17,7 +18,7 @@ const searchUsers = async (req, res) => {
     }
 }
 const createChat = async (req, res) => {
-    const { data,createdBy, type } = req.body
+    const { data, createdBy, type } = req.body
     try {
         if (type === 'Chat') {
             const isExits = await chatModel.findOne({
@@ -27,17 +28,17 @@ const createChat = async (req, res) => {
                 ]
             })
             if (isExits) {
-                if(isExits.massage.length==0){
-                    isExits.createdBy=createdBy
+                if (isExits.massage.length == 0) {
+                    isExits.createdBy = createdBy
                     await isExits.save()
                 }
                 return sendSuccess(res, { massage: 'Chat Created', chatId: isExits._id })
             }
         }
-        const newChat = await chatModel({ joinChat: data,createdBy:createdBy }).save()
+        const newChat = await chatModel({ joinChat: data, createdBy: createdBy }).save()
         sendSuccess(res, { massage: 'Chat Created', chatId: newChat._id })
     } catch (error) {
-        sendError(res,"Something went wrong!")
+        sendError(res, "Something went wrong!")
     }
 }
 const getSingleChat = async (req, res) => {
@@ -49,14 +50,8 @@ const getSingleChat = async (req, res) => {
 
     const chatResult = chat.filter((s_chat) => {
         let notReadMassage = 0
-        if(s_chat.massage.length==0 && s_chat.createdBy!==userId){
-        }else{
-            // s_chat.blockList.map((item) => {
-            //     if (item.userId == userId) {
-            //         s_chat.updatedAt = item.time
-            //     }
-            //     return item
-            // })
+        if (s_chat.massage.length == 0 && s_chat.createdBy !== userId) {
+        } else {
             s_chat.massage.map((massage) => {
                 if (!massage.readBy.includes(userId)) {
                     notReadMassage = notReadMassage + 1
@@ -68,39 +63,77 @@ const getSingleChat = async (req, res) => {
             s_chat.admin = undefined
             return s_chat
         }
-        
+
     })
     res.status(200).send(chatResult)
 }
 const blockChat = async (req, res) => {
     const { userId, chatId } = req.body
-    const chat = await chatModel.findById(chatId)
-    chat.blockList.push({ userId })
-    await chat.save()
-    res.send("single user Blocked!")
-}
-const unblock = async(req,res)=>{
-    const {userId,chatId}=req.body
-    if(!userId || !chatId){
-        return sendError(res,"Invalid credentials!")
+    if (!userId || !chatId) {
+        return sendError(res, "Invalid credentials ")
     }
     try {
         const chat = await chatModel.findById(chatId)
-        if(!chat){
-            return sendError(res,"Chat not found!")
+        if (!chat) {
+            return sendError(res, "Invalid chat Id")
         }
-        const newBlockList = chat.blockList.filter((object)=>{
-            if(object.userId!=userId){
+        chat.blockList.push({ userId })
+        await chat.save()
+        sendSuccess(res, { massage: "user block successfully" })
+    }
+    catch (error) {
+        sendError(res, "Something went wrong!")
+    }
+}
+const unblock = async (req, res) => {
+    const { userId, chatId } = req.body
+    if (!userId || !chatId) {
+        return sendError(res, "Invalid credentials !")
+    }
+    try {
+        const chat = await chatModel.findById(chatId)
+        if (!chat) {
+            return sendError(res, "Chat not found!")
+        }
+        const newBlockList = chat.blockList.filter((object) => {
+            if (object.userId != userId) {
                 return object
             }
         })
-        console.log(newBlockList)
-        console.log("BBB")
+        chat.blockList = newBlockList
+        await chat.save()
+        sendSuccess(res, { massage: "User unblock successfully" })
     } catch (error) {
         console.log(error)
-        sendError(res,"Something went wrong!") 
+        sendError(res, "Something went wrong!")
     }
 
+}
+const updateReadMassge = async(req,res)=>{
+    const  {userId,chatId}=req.body
+    if(!userId || !chatId){
+        return sendError(res,"Invalid credentials ")
+    }
+    try {
+        const chat = await chatModel.findById(chatId).populate({
+            path: 'massage',
+            match: { $and:[
+                {isHidden: { $nin: userId } },
+                {readBy:{$nin:userId}}
+            ]}
+        })
+        if(!chat){
+            return sendError(res,"Invalid chat id")
+        }
+        chat.massage.map(async(m)=>{
+            const result = await massageModel.findById(m._id)
+            result.readBy.push(userId)
+            await result.save()
+        })
+        sendSuccess(res,{massage:"updated readby massage"}) 
+    } catch (error) {
+        sendError(res,"Something went wrong!")
+    }
 }
 
 module.exports = {
@@ -109,4 +142,5 @@ module.exports = {
     blockChat,
     searchUsers,
     unblock,
+    updateReadMassge,
 }
