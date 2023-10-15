@@ -10,9 +10,15 @@ const createMassage = async(req,res)=>{
     }
     try {
         const chat = await singleChatModel.findById(chatId)
+        if(!chat){
+            return sendError(res,"Invalid chat id!")
+        }
         chat.blockList.map((item)=>{
             hiddenUser.push(item.userId)
         })
+        if(chat.isHidden.length!=0){
+            chat.isHidden = []
+        }
         const result = await massageModel({senderId,content,chatId,readBy:senderId,isHidden:hiddenUser})
         chat.massage.push(result._id)
         await chat.save()

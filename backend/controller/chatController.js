@@ -18,24 +18,28 @@ const searchUsers = async (req, res) => {
     }
 }
 const createChat = async (req, res) => {
-    const { data, createdBy, type } = req.body
+    const { myId, otherUserId, type } = req.body
     try {
         if (type === 'Chat') {
             const isExits = await chatModel.findOne({
                 $and: [
-                    { joinChat: { $in: data[0] } },
-                    { joinChat: { $in: data[1] } }
+                    { joinChat: { $in: myId } },
+                    { joinChat: { $in: otherUserId } }
                 ]
             })
             if (isExits) {
-                if (isExits.massage.length == 0) {
-                    isExits.createdBy = createdBy
+                if (isExits.isHidden.includes(myId)) {
+                    isExits.isHidden.map((userid,i)=>{
+                        if(userid===myId){
+                            isExits.isHidden.splice(i,1)
+                        }
+                    })
                     await isExits.save()
                 }
                 return sendSuccess(res, { massage: 'Chat Created', chatId: isExits._id })
             }
         }
-        const newChat = await chatModel({ joinChat: data, createdBy: createdBy }).save()
+        const newChat = await chatModel({ joinChat: [myId, otherUserId], createdBy: myId, isHidden: [otherUserId] }).save()
         sendSuccess(res, { massage: 'Chat Created', chatId: newChat._id })
     } catch (error) {
         sendError(res, "Something went wrong!")
@@ -50,7 +54,7 @@ const getSingleChat = async (req, res) => {
 
     const chatResult = chat.filter((s_chat) => {
         let notReadMassage = 0
-        if (s_chat.massage.length == 0 && s_chat.createdBy !== userId) {
+        if (s_chat.isHidden.includes(userId)) {
         } else {
             s_chat.massage.map((massage) => {
                 if (!massage.readBy.includes(userId)) {
@@ -109,28 +113,76 @@ const unblock = async (req, res) => {
     }
 
 }
-const updateReadMassge = async(req,res)=>{
-    const  {userId,chatId}=req.body
-    if(!userId || !chatId){
-        return sendError(res,"Invalid credentials ")
+const updateReadMassge = async (req, res) => {
+    const { userId, chatId } = req.body
+    if (!userId || !chatId) {
+        return sendError(res, "Invalid credentials ")
     }
     try {
         const chat = await chatModel.findById(chatId).populate({
             path: 'massage',
-            match: { $and:[
-                {isHidden: { $nin: userId } },
-                {readBy:{$nin:userId}}
-            ]}
+            match: {
+                $and: [
+                    { isHidden: { $nin: userId } },
+                    { readBy: { $nin: userId } }
+                ]
+            }
         })
-        if(!chat){
-            return sendError(res,"Invalid chat id")
+        if (!chat) {
+            return sendError(res, "Invalid chat id")
         }
-        chat.massage.map(async(m)=>{
+        chat.massage.map(async (m) => {
             const result = await massageModel.findById(m._id)
             result.readBy.push(userId)
             await result.save()
         })
-        sendSuccess(res,{massage:"updated readby massage"}) 
+        sendSuccess(res, { massage: "updated readby massage" })
+    } catch (error) {
+        sendError(res, "Something went wrong!")
+    }
+}
+const clearAllChats = async (req, res) => { 
+    const { userId, chatId } = req.body
+    if (!userId || !chatId) {
+        return sendError(res, "Invalid credentials!")
+    }
+    try {
+        const chat = await chatModel.findById(chatId)
+        if (!chat) {
+            return sendError(res, "Invalid chat id!")
+        }
+        chat.massage.map(async (massage) => {
+            const dbMassage = await massageModel.findById(massage._id)  
+            if (!dbMassage.isHidden.includes(userId)) {
+                dbMassage.isHidden.push(userId) 
+            }
+            await dbMassage.save()
+        })
+        sendSuccess(res,{massage:"Clear all chats successfully"})
+    } catch (error) {
+        sendError(res,"Something went wrong!")
+    }
+}
+const deleteChat = async (req,res)=>{
+    const {userId,chatId}=req.body
+    if(!userId || !chatId){
+        return sendError(res,"Invalid chat id!")
+    }
+    try {
+        const chat = await chatModel.findById(chatId)
+        if(!chat){
+            return sendError(res,"Invalid chat id!")
+        }
+        chat.massage.map(async (massage) => {
+            const dbMassage = await massageModel.findById(massage._id)  
+            if (!dbMassage.isHidden.includes(userId)) {
+                dbMassage.isHidden.push(userId) 
+            }
+            await dbMassage.save()
+        })
+        chat.isHidden.push(userId)
+        await chat.save()
+        sendSuccess(res,{massage:'Delete chat successfully'})
     } catch (error) {
         sendError(res,"Something went wrong!")
     }
@@ -143,4 +195,6 @@ module.exports = {
     searchUsers,
     unblock,
     updateReadMassge,
+    clearAllChats,
+    deleteChat,
 }

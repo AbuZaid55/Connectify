@@ -52,7 +52,8 @@ const chatSchema = mongoose.Schema({
         type:Number,
         default:0,
         required:true
-    }
+    },
+    isHidden:[]
 },{timestamps:true},{_id:false})
 
 module.exports = mongoose.model('singleChat',chatSchema)

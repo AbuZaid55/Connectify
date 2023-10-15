@@ -5,7 +5,7 @@ import { IoIosSend } from "react-icons/io";
 import Picker from '@emoji-mart/react'
 import data from '@emoji-mart/data'
 import { useDispatch, useSelector } from 'react-redux'
-import { openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser,unblockUser } from '../Redux/slices/chatSlice.js'
+import { openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser,unblockUser,clearAllChats ,deleteChat} from '../Redux/slices/chatSlice.js'
 import axios from 'axios'
 
 const SingleMassage = () => {
@@ -25,18 +25,6 @@ const SingleMassage = () => {
     result[1] = result[1].slice(0, result[1].length - 3)
     result = result.join(' ')
     return result
-  }
-  const getClick = (e) => {
-    if (dropdownRef.current) {
-      if (!dropdownRef.current.contains(e.target)) {
-        setDropdown(false)
-      }
-    }
-    if (emojiRef.current) {
-      if (!emojiRef.current.contains(e.target)) {
-        setEmoji(false)
-      }
-    }
   }
   const submitMassage = async () => { 
     if (input) {
@@ -61,10 +49,8 @@ const SingleMassage = () => {
   const unblock = async()=>{
     const selectedChatId = chat.openSingleChat._id
     try {
-      // await axios.post(`${BACKEND_URL}/chat/unblockchat`,{userId:user._id,chatId:selectedChatId})
-      console.log("Run")
+      await axios.post(`${BACKEND_URL}/chat/unblockchat`,{userId:user._id,chatId:selectedChatId})
       dispatch(unblockUser({userId:user._id,chatId:chat.openSingleChat._id}))
-      console.log(chat.openSingleChat,"AAAAAAAAAAAA")
       setDropdown(false)
     } catch (error) {
       console.log(error)
@@ -80,16 +66,40 @@ const SingleMassage = () => {
   }
   const clearAllChat = async()=>{
     try {
-      const res =await axios.post(`${BACKEND_URL}/chat/clearallchat`,{userId:user._id,chatId:chat.openSingleChat._id})
-      console.log(res)
+      const res =await axios.post(`${BACKEND_URL}/chat/clearallchats`,{userId:user._id,chatId:chat.openSingleChat._id})
+      dispatch(clearAllChats({chatId:chat.openSingleChat._id}))
+      setDropdown(false)
     } catch (error) {
       console.log(error)
     }
   }
+  const deletechat = async()=>{
+    try {
+      const res =await axios.post(`${BACKEND_URL}/chat/deletechat`,{userId:user._id,chatId:chat.openSingleChat._id})
+      dispatch(deleteChat({chatId:chat.openSingleChat._id}))
+      setDropdown(false)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const getClick = (e) => {
+    if (dropdownRef.current) {
+      if (!dropdownRef.current.contains(e.target)) {
+        setDropdown(false)
+      }
+    }
+    if (emojiRef.current) {
+      if (!emojiRef.current.contains(e.target)) {
+        setEmoji(false)
+      }
+    }
+  }
   useEffect(() => {
     document.addEventListener('click', getClick, true)
-    return () => removeEventListener('click', getClick)
-  }, [])
+    return () => {
+      removeEventListener('click', getClick)
+    }
+  },[])
   useEffect(()=>{
     if(chat.openSingleChat){
       setReadMassage()
@@ -114,7 +124,8 @@ const SingleMassage = () => {
           <ul className={`absolute top-full mt-3 right-0 bg-white shadow-2xl whitespace-nowrap rounded-md z-10 ${dropdown ? "block" : "hidden"}`}>
             <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer  text-gray-600 transition duration-200 ease-in-out">Contact Info</li>
             <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out" onClick={() => { dispatch(openSingleChat('')); dispatch(openGroupChat('')) }}>Close chat</li>
-            <li onClick={()=>{clearAllChat()}} className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">Clear all chat</li>
+            <li onClick={()=>{clearAllChat()}} className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">Clear all chats</li>
+            <li onClick={()=>{deletechat()}} className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">Delete Chat</li>
             <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">{(blockUser)?<span onClick={()=>{unblock()}}>Unblock</span>:<span onClick={()=>{block()}}>Block</span>}</li>
           </ul>
         </div>
@@ -124,7 +135,7 @@ const SingleMassage = () => {
 
         {
           chat.openSingleChat && chat.openSingleChat.massage.map((massage) => {
-            return <div key={massage._id} className={`max-w-[50%] min-w-[15%] ${(massage.senderId === user._id) ? 'myMassage' : 'otherMassage'} p-3 rounded-lg my-1 mx-2`}>
+            return <div key={massage._id} className={` max-w-[50%] min-w-[15%] ${(massage.senderId === user._id) ? 'myMassage' : 'otherMassage'} p-3 rounded-lg my-1 mx-2`}>
               <p>{massage.content}</p>
               <p className="text-end">{formateData(massage.createdAt)}</p>
             </div>
@@ -136,7 +147,7 @@ const SingleMassage = () => {
 
       <div className={`${(blockUser)?'hidden':'flex'} bg-white items-center justify-between p-2 gap-3 relative`}>
         <LiaLaughSquint className="text-4xl cursor-pointer text-primary-800" onClick={() => { setEmoji(!emoji) }} />
-        <input className="w-full rounded-md p-2 bg-[#f5f5f5] text-xl" type="text" placeholder="Type a massage" value={input} onChange={(e) => { setInput(e.target.value) }} />
+        <input className="w-full rounded-md p-2 bg-[#f5f5f5] text-xl" type="text" placeholder="Type a massage" value={input} onChange={(e) => { setInput(e.target.value) }}/>
         <IoIosSend className="text-4xl cursor-pointer text-primary-800" onClick={() => { submitMassage() }} />
         <div ref={emojiRef} className={`absolute bottom-16 left-2 ${(emoji) ? 'block' : 'hidden'}`}> <Picker data={data} previewPosition="none" onEmojiSelect={(e) => { setInput(input + e.native) }} /></div>
       </div>

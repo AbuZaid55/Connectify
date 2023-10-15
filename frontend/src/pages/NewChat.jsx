@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import SearchUser from '../components/SearchUser'
 import { useDispatch,useSelector } from 'react-redux'
 import axios from 'axios'
@@ -17,7 +17,7 @@ const NewChat = () => {
 
   const sendMassage = async(_id)=>{
    try {
-    const res = await axios.post(`${BACKEND_URL}/chat/createchat`,{data:[_id,user._id],createdBy:user._id,type:"Chat"})
+    const res = await axios.post(`${BACKEND_URL}/chat/createchat`,{myId:user._id,otherUserId:_id,type:"Chat"})
     if(res.status===200 && res.data.massage==='Chat Created'){
       const myChat = await getSingleChat()
       const newChat = myChat.filter((chat)=>{
