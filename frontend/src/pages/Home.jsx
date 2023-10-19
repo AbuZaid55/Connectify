@@ -10,7 +10,7 @@ import GroupMassage from '../components/GroupMassage.jsx'
 import { context} from '../context/context.js'
 
 
-const Home = () => {
+const Home = ({socket}) => {
   const navigate = useNavigate()
   const{getUser} = useContext(context)
   const [slide, setSlide] = useState(0)
@@ -19,13 +19,13 @@ const Home = () => {
 
 
   useEffect(() => {
-    async function g_u(){
+    async function get_user(){
       const user = await getUser()
       if(!user){
         navigate('/login')
       }
     }
-    g_u()
+    get_user()
 
   }, [])
 
@@ -59,8 +59,8 @@ const Home = () => {
 
         <section className='w-[70%] bg-[#f5f5f5]'>
           <div className={`w-full relative bg-white z-30 h-full items-center justify-center ${(chat.openSingleChat==='' && chat.openGroupChat==='')?'flex':'hidden'}`}><HomeSVG/></div>
-          <div className={`h-full relative z-30 bg-white  flex-col justify-between ${(chat.openSingleChat!=='' && chat.openGroupChat==='')?'flex':'hidden'}`}><SingleMassage/></div>
-          <div className={`h-full relative z-30 bg-white flex-col justify-between ${(chat.openSingleChat==='' && chat.openGroupChat!=='')?'flex':'hidden'}`}><GroupMassage/></div>
+          <div className={`h-full relative z-30 bg-white  flex-col justify-between ${(chat.openSingleChat!=='' && chat.openGroupChat==='')?'flex':'hidden'}`}><SingleMassage socket={socket}/></div>
+          <div className={`h-full relative z-30 bg-white flex-col justify-between ${(chat.openSingleChat==='' && chat.openGroupChat!=='')?'flex':'hidden'}`}><GroupMassage socket={socket}/></div>
         </section>
 
       </div>

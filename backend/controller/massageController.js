@@ -23,7 +23,8 @@ const createMassage = async(req,res)=>{
         chat.massage.push(result._id)
         await chat.save()
         await result.save()
-        sendSuccess(res,{massage:'Massage created'})
+        console.log(result)
+        sendSuccess(res,{massage:'Massage created',newMassage:result})
     } catch (error) {
         sendError(res,"Something went wrong!")
     }

@@ -44,7 +44,7 @@ const chatSlice = createSlice({
             state.openSingleChat.blockList.push({userId})
             state.singleChat.map((chat) => {
                 if (chat._id === chatId) {
-                    chat.blockList.push(userId)
+                    chat.blockList.push({userId})
                 }
             })
             return state
@@ -87,9 +87,26 @@ const chatSlice = createSlice({
             })
             state.openSingleChat=''
             return state
+        },
+        setMassage(state,action){
+            const userId = action.payload.userId
+            const chatId = action.payload.chatId
+            state.singleChat.map((chat)=>{
+                if(chat._id===chatId){
+                    if(!chat.blockList.includes(userId)){
+                        chat.massage.push(action.payload)
+                        if(state.openSingleChat._id===chatId){
+                            state.openSingleChat.massage.push(action.payload)
+                        }else{
+                            chat.notReadMassage +=1
+                        }
+                        return state
+                    }
+                }
+            })
         }
     }
 })
 
 export default chatSlice;
-export const { setSearchUser, setSingleChat, setGroupChat, openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser,clearAllChats ,deleteChat} = chatSlice.actions
+export const { setSearchUser, setSingleChat, setGroupChat, openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser,clearAllChats ,deleteChat,setMassage} = chatSlice.actions
