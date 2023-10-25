@@ -4,7 +4,7 @@ const db_Connect = () =>{
     mongoose.connect(URL).then(()=>{
         console.log('DB connect successfully')
     }).catch(()=>{
-        console.log('No connection')
+        console.log('No connection')  
     })
 }
 

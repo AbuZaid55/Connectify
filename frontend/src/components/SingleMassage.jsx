@@ -10,7 +10,7 @@ import { openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblo
 
 const SingleMassage = ({ socket }) => {
 
-  const [dropdown, setDropdown] = useState(false)
+  const [dropdown, setDropdown] = useState(false) 
   const [emoji, setEmoji] = useState(false)
   const [input, setInput] = useState('')
   const dropdownRef = useRef(null)
@@ -33,9 +33,10 @@ const SingleMassage = ({ socket }) => {
       try {
         const res = await axios.post(`${BACKEND_URL}/massage/createmassage`, { senderId: user._id, content: input, chatId: chat.openSingleChat._id })
         const newMassage = res.data.newMassage
-        newMassage.userId = chat.openSingleChat.joinChat[0]._id
-        newMassage.chatId = chat.openSingleChat._id
-        socket.emit('newMassage', newMassage)
+        const resChat = res.data.chat
+        // newMassage.userId = chat.openSingleChat.joinChat[0]._id
+        // newMassage.chatId = chat.openSingleChat._id
+        socket.emit('newMassage', {newMassage:newMassage,chat:resChat,user:user})
         dispatch(setMassage(newMassage))
         setInput('')
       } catch (error) {
@@ -43,6 +44,7 @@ const SingleMassage = ({ socket }) => {
       }
     }
   }
+  console.log(chat)
   const block = async () => {
     const selectedChatId = chat.openSingleChat._id
     try {
@@ -119,13 +121,13 @@ const SingleMassage = ({ socket }) => {
       })
     }
   }, [chat.openSingleChat])
-  useEffect(() => {
-    const listener = (newMassage) => {
-      dispatch(setMassage(newMassage))
-    }
-    socket.on('massageRecieved', listener)
-    return () => socket.off("massageRecieved", listener);
-  }, [socket])
+  // useEffect(() => {
+  //   const listener = (newMassage) => {
+  //     dispatch(setMassage(newMassage))
+  //   }
+  //   socket.on('massageRecieved', listener)
+  //   return () => socket.off("massageRecieved", listener);
+  // }, [socket])
 
   return (
     <>
