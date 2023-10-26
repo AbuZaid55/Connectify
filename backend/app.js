@@ -39,10 +39,10 @@ io.on('connection',(socket)=>{
         user.loggedIn = []
         chat.chatName = user.name 
         chat.profile = user.profile.secure_url 
-        chat.massage = newMassage
-        chat.joinChat.map((userId)=>{
-            if(!chat.blockList.includes(userId)){
-                socket.in(userId).emit('massageRecieved',chat) 
+        chat.massage = [newMassage] 
+        chat.joinChat.map((object)=>{
+            if(!chat.blockList.includes(object._id) && user._id!==object._id){
+                socket.in(object._id).emit('massageRecieved',chat)   
             }
         })
     })

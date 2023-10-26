@@ -8,10 +8,7 @@ const createMassage = async(req,res)=>{
         return sendError(res,"massage not created!")
     }
     try {
-        const chat = await singleChatModel.findById(chatId).populate({ path: 'joinChat', select: 'name profile bio' }).populate({
-            path: 'massage',
-            match: { isHidden: { $nin: senderId } }
-        })
+        const chat = await singleChatModel.findById(chatId).populate({ path: 'joinChat', select: 'name profile bio' })
         if(!chat){
             return sendError(res,"Invalid chat id!")
         }
@@ -24,6 +21,8 @@ const createMassage = async(req,res)=>{
         chat.massage.push(result._id)
         await chat.save()
         await result.save()
+
+        
         sendSuccess(res,{massage:'Massage created',newMassage:result,chat:chat})
     } catch (error) {
         sendError(res,"Something went wrong!")

@@ -6,7 +6,7 @@ import Picker from '@emoji-mart/react'
 import data from '@emoji-mart/data'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
-import { openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage } from '../Redux/slices/chatSlice.js'
+import { openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage ,setChatNMassageIO} from '../Redux/slices/chatSlice.js'
 
 const SingleMassage = ({ socket }) => {
 
@@ -35,14 +35,13 @@ const SingleMassage = ({ socket }) => {
         const newMassage = res.data.newMassage
         const resChat = res.data.chat
         socket.emit('newMassage', {newMassage:newMassage,chat:resChat,user:user})
-        // dispatch(setMassage(newMassage))
+        dispatch(setMassage({newMassage:newMassage,chatId:resChat._id}))
         setInput('')
       } catch (error) {
         console.log(error)
       }
     }
   }
-  console.log(chat)
   const block = async () => {
     const selectedChatId = chat.openSingleChat._id
     try {
@@ -119,13 +118,13 @@ const SingleMassage = ({ socket }) => {
       })
     }
   }, [chat.openSingleChat])
-  // useEffect(() => {
-  //   const listener = (newMassage) => {
-  //     dispatch(setMassage(newMassage))
-  //   }
-  //   socket.on('massageRecieved', listener)
-  //   return () => socket.off("massageRecieved", listener);
-  // }, [socket])
+  useEffect(() => {
+    const listener = (chat) => {
+      dispatch(setChatNMassageIO(chat))
+    }
+    socket.on('massageRecieved', listener)
+    return () => socket.off("massageRecieved", listener);
+  }, [socket])
 
   return (
     <>

@@ -108,7 +108,6 @@ const unblock = async (req, res) => {
         await chat.save()
         sendSuccess(res, { massage: "User unblock successfully" })
     } catch (error) {
-        console.log(error)
         sendError(res, "Something went wrong!")
     }
 

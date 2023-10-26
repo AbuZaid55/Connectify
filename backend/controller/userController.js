@@ -37,7 +37,6 @@ const signUp = async(req,res)=>{
         sendOtp(user.email,OTP)
         sendSuccess(res,{massage:'Otp has been send to your email id',userId:user._id})
     } catch (error) {
-        console.log(error)
         sendError(res,"Sign Up Failed")
     }
 }
