@@ -36,7 +36,14 @@ io.on('connection',(socket)=>{
         console.log("New user join ", userId)
     })
     socket.on('newMassage',({newMassage,chat,user})=>{
-        const data = {chatName:user.name,isHidden:[],blockList:chat.blockList,joinChat:[{profile:user.profile,bio:user.bio,name:user.name,_id:user._id}],massage:[],notReadMassage:0,updatedAt:chat.updatedAt,_id:chat._id}
-        // socket.in(newMassage.userId).emit('massageRecieved',newMassage) 
+        user.loggedIn = []
+        chat.chatName = user.name 
+        chat.profile = user.profile.secure_url 
+        chat.massage = newMassage
+        chat.joinChat.map((userId)=>{
+            if(!chat.blockList.includes(userId)){
+                socket.in(userId).emit('massageRecieved',chat) 
+            }
+        })
     })
 })

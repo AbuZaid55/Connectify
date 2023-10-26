@@ -1,10 +1,9 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import SearchUser from '../components/SearchUser'
 import { useDispatch,useSelector } from 'react-redux'
 import axios from 'axios'
 import {openSingleChat} from '../Redux/slices/chatSlice.js'
 import {useNavigate} from 'react-router-dom'
-import {toast} from 'react-toastify'
 import {context} from '../context/context.js'
 
 const NewChat = () => {
@@ -25,11 +24,12 @@ const NewChat = () => {
           return chat
         }
       })
+      console.log(newChat)
       dispatch(openSingleChat(newChat[0]))
       navigate('/')
     }
    } catch (error) {
-    toast.error(error.response.data.massage)
+    console.log(error)
    }
   }
   return (

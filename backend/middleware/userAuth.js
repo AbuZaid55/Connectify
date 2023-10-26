@@ -22,6 +22,10 @@ const auth=async(req,res,next)=>{
             return sendError(res,"Unauthorized user")
         }
         user.password = undefined;
+        user.loggedIn = user.loggedIn.map((object)=>{
+            object.token=undefined
+            return object
+        })
         req.rootUser = user;
          
     }catch(err){

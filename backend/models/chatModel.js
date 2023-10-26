@@ -12,36 +12,13 @@ const chatSchema = mongoose.Schema({
         secure_url:{
             type:String,
             default:'',
-        }
-    },
-    createdBy:{
-        type:String,
-        required:true,
-    },
-    admin:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'user'
+        },
     },
     joinChat: [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'user',
             required: true
-        }
-    ],
-    blockList: [
-        {
-            _id:false,
-            userId: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'user',
-                required: true
-            },
-            time: {
-                type: Date,
-                default: Date.now(),
-                required: true
-            }
         }
     ],
     massage:[{
@@ -53,6 +30,7 @@ const chatSchema = mongoose.Schema({
         default:0,
         required:true
     },
+    blockList: [],
     isHidden:[]
 },{timestamps:true},{_id:false})
 

@@ -34,10 +34,8 @@ const SingleMassage = ({ socket }) => {
         const res = await axios.post(`${BACKEND_URL}/massage/createmassage`, { senderId: user._id, content: input, chatId: chat.openSingleChat._id })
         const newMassage = res.data.newMassage
         const resChat = res.data.chat
-        // newMassage.userId = chat.openSingleChat.joinChat[0]._id
-        // newMassage.chatId = chat.openSingleChat._id
         socket.emit('newMassage', {newMassage:newMassage,chat:resChat,user:user})
-        dispatch(setMassage(newMassage))
+        // dispatch(setMassage(newMassage))
         setInput('')
       } catch (error) {
         console.log(error)
@@ -76,7 +74,7 @@ const SingleMassage = ({ socket }) => {
   const clearAllChat = async () => {
     try {
       const res = await axios.post(`${BACKEND_URL}/chat/clearallchats`, { userId: user._id, chatId: chat.openSingleChat._id })
-      dispatch(clearAllChats({ chatId: chat.openSingleChat._id }))
+      dispatch(clearAllChats({ chatId: chat.openSingleChat._id ,userId:user._id}))
       setDropdown(false)
     } catch (error) {
       console.log(error)
@@ -85,7 +83,7 @@ const SingleMassage = ({ socket }) => {
   const deletechat = async () => {
     try {
       const res = await axios.post(`${BACKEND_URL}/chat/deletechat`, { userId: user._id, chatId: chat.openSingleChat._id })
-      dispatch(deleteChat({ chatId: chat.openSingleChat._id }))
+      dispatch(deleteChat({ chatId: chat.openSingleChat._id ,userId:user._id}))
       setDropdown(false)
     } catch (error) {
       console.log(error)
@@ -114,8 +112,8 @@ const SingleMassage = ({ socket }) => {
     if (chat.openSingleChat) {
       setReadMassage()
       setBlockUser(false)
-      chat.openSingleChat.blockList.map((object) => {
-        if (object.userId === user._id) {
+      chat.openSingleChat.blockList.map((userId) => {
+        if (userId === user._id) {
           setBlockUser(true)
         }
       })
@@ -135,7 +133,11 @@ const SingleMassage = ({ socket }) => {
         <img src={`${(chat.profile) ? '' : './profile.png'}`} className=" w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full" />
         <div>
           <h1 className=" text-base h-6 overflow-hidden">{chat.openSingleChat.chatName}</h1>
-          <p className="w-full text-sm h-5 overflow-hidden">{chat.openSingleChat && chat.openSingleChat.joinChat[0].bio}</p>
+          <p className="w-full text-sm h-5 overflow-hidden">{chat.openSingleChat && chat.openSingleChat.joinChat.map((users)=>{
+            if(users._id!==user._id){
+              return users.bio
+            }
+          })}</p>
         </div>
         <div ref={dropdownRef} className="ml-auto  relative mr-3">
           <div className={`text-2xl mb-3 p-2  rounded-full cursor-pointer transition duration-300 ease-in-out ${dropdown ? "bg-primary-800 text-white" : " text-primary-800"}`} onClick={() => { setDropdown(!dropdown) }}><CiMenuKebab /></div>
@@ -153,7 +155,7 @@ const SingleMassage = ({ socket }) => {
 
         {
           chat.openSingleChat && chat.openSingleChat.massage.map((massage) => {
-            return <div key={massage._id} className={` max-w-[50%] min-w-[15%] ${(massage.senderId === user._id) ? 'myMassage' : 'otherMassage'} p-3 rounded-lg my-1 mx-2`}>
+            return <div key={massage._id} className={` ${(massage.isHidden.includes(user._id))?'hidden':''} max-w-[50%] min-w-[15%] ${(massage.senderId === user._id) ? 'myMassage' : 'otherMassage'} p-3 rounded-lg my-1 mx-2`}>
               <p>{massage.content}</p>
               <p className="text-end">{formateData(massage.createdAt)}</p>
             </div>

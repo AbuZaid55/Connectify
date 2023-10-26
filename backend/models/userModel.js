@@ -41,7 +41,6 @@ const userSchema = mongoose.Schema({
         default:'Hey there! I am using Connectify',
         required:true
     },
-    blocklist:[mongoose.Schema.Types.ObjectId],
     loggedIn:[
         {
             token:{
