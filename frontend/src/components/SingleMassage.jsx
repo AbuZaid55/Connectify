@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import { CiMenuKebab } from "react-icons/ci";
 import { LiaLaughSquint } from "react-icons/lia";
+import { AiFillDelete } from "react-icons/ai";
 import { IoIosSend } from "react-icons/io";
 import Picker from '@emoji-mart/react'
 import data from '@emoji-mart/data'
@@ -20,6 +21,8 @@ const SingleMassage = ({ socket }) => {
   const user = useSelector((state) => (state.user))
   const [blockUser, setBlockUser] = useState(false)
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+  const [checkedMassage,setCheckedMassage]=useState([])
+  const [select,setSelect]=useState(false)
 
 
   function formateData(date) {
@@ -27,6 +30,14 @@ const SingleMassage = ({ socket }) => {
     result[1] = result[1].slice(0, result[1].length - 3)
     result = result.join(' ')
     return result
+  }
+  function selectMassage(e){
+    const {value,checked} = e.target 
+    if(checked){
+      setCheckedMassage([...checkedMassage,value])
+    }else{
+      setCheckedMassage(checkedMassage.filter((val)=> val!==value))
+    }
   }
   const submitMassage = async () => {
     if (input) {
@@ -88,6 +99,14 @@ const SingleMassage = ({ socket }) => {
       console.log(error)
     }
   }
+  const deleteMassage = async()=>{
+    try {
+      const res = await axios.post(`${BACKEND_URL}/massage/deletemassage`,{chatId:chat.openSingleChat._id,massagesId:checkedMassage,userId:user})
+      console.log(res)
+    } catch (error) {
+      
+    }
+  }
   const getClick = (e) => {
     if (dropdownRef.current) {
       if (!dropdownRef.current.contains(e.target)) {
@@ -108,6 +127,7 @@ const SingleMassage = ({ socket }) => {
     }
   }, [])
   useEffect(() => {
+    setSelect(false)
     if (chat.openSingleChat) {
       setReadMassage()
       setBlockUser(false)
@@ -125,7 +145,6 @@ const SingleMassage = ({ socket }) => {
     socket.on('massageRecieved', listener)
     return () => socket.off("massageRecieved", listener);
   }, [socket])
-
   return (
     <>
       <div className="flex items-center py-2 bg-white">
@@ -143,6 +162,7 @@ const SingleMassage = ({ socket }) => {
           <ul className={`absolute top-full mt-3 right-0 bg-white shadow-2xl whitespace-nowrap rounded-md z-10 ${dropdown ? "block" : "hidden"}`}>
             <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer  text-gray-600 transition duration-200 ease-in-out">Contact Info</li>
             <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out" onClick={() => { dispatch(openSingleChat('')); dispatch(openGroupChat('')) }}>Close chat</li>
+            <li onClick={() => { setSelect(!select) ; setDropdown(false) }} className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">Delete Massages</li>
             <li onClick={() => { clearAllChat() }} className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">Clear all chats</li>
             <li onClick={() => { deletechat() }} className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">Delete Chat</li>
             <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">{(blockUser) ? <span onClick={() => { unblock() }}>Unblock</span> : <span onClick={() => { block() }}>Block</span>}</li>
@@ -150,17 +170,22 @@ const SingleMassage = ({ socket }) => {
         </div>
       </div>
 
-      <div className=" flex-grow-[1]  p-2 w-full flex flex-col overflow-y-auto no-scrollbar bg-[#f5f5f5]">
+      <div className="relative flex-grow-[1] flex flex-col p-2 w-full overflow-y-auto no-scrollbar bg-[#f5f5f5]">
 
         {
           chat.openSingleChat && chat.openSingleChat.massage.map((massage) => {
-            return <div key={massage._id} className={` ${(massage.isHidden.includes(user._id))?'hidden':''} max-w-[50%] min-w-[15%] ${(massage.senderId === user._id) ? 'myMassage' : 'otherMassage'} p-3 rounded-lg my-1 mx-2`}>
+            return <div key={massage._id} className={`flex ${(massage.isHidden.includes(user._id))?'hidden':''} `}>
+              <input className={`${(select)?'':'hidden'}`} type="checkbox" id={massage._id} onChange={(e)=>{selectMassage(e)}} value={massage._id}/>
+              <label className="w-full flex" htmlFor={(select)?massage._id:""}>
+              <div className={` max-w-[50%] min-w-[15%] ${(massage.senderId === user._id) ? 'myMassage' : 'otherMassage'} p-3 rounded-lg my-1 mx-2`}>
               <p>{massage.content}</p>
               <p className="text-end">{formateData(massage.createdAt)}</p>
             </div>
+              </label>
+            </div>
           })
         }
-
+          <div onClick={()=>{deleteMassage()}}  className={`${(select)?'':'hidden'} absolute bottom-5 right-8 text-3xl text-red-600 bg-white p-1 hover:scale-150 cursor-pointer shadow-lg rounded-full transition duration-300 ease-in-out`}><AiFillDelete/></div>
       </div>
 
 

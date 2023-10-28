@@ -47,29 +47,34 @@ const createChat = async (req, res) => {
 }
 const getSingleChat = async (req, res) => {
     const { userId } = req.body
-    const chat = await chatModel.find({ joinChat: userId }).populate({ path: 'joinChat', select: 'name profile bio' }).populate({
-        path: 'massage',
-        match: { isHidden: { $nin: userId } }
-    })
-
-    const chatResult = chat.filter((s_chat) => {
-        let notReadMassage = 0
-        s_chat.massage.map((massage) => {
-            if (!massage.readBy.includes(userId)) {
-                notReadMassage = notReadMassage + 1
-            }
+    try {
+        console.log("AAAA") 
+        const chat = await chatModel.find({ joinChat: userId }).populate({ path: 'joinChat', select: 'name profile bio' }).populate({
+            path: 'massage',
+            match: { isHidden: { $nin: userId } }
         })
-        s_chat.joinChat.map((user)=>{
-            if(user._id!=userId){
-                s_chat.profile=user.profile.secure_url
-                s_chat.chatName=user.name
-            }
+    
+        const chatResult = chat.filter((s_chat) => {
+            let notReadMassage = 0
+            s_chat.massage.map((massage) => { 
+                if (!massage.readBy.includes(userId)) {
+                    notReadMassage = notReadMassage + 1
+                }
+            })
+            s_chat.joinChat.map((user)=>{
+                if(user._id!=userId){
+                    s_chat.profile=user.profile.secure_url
+                    s_chat.chatName=user.name
+                }
+            })
+            s_chat.notReadMassage = notReadMassage
+            return s_chat
+    
         })
-        s_chat.notReadMassage = notReadMassage
-        return s_chat
-
-    })
-    res.status(200).send(chatResult)
+        res.status(200).send(chatResult)
+    } catch (error) {
+        sendError(res,"Something went wrong!")
+    }
 }
 const blockChat = async (req, res) => {
     const { userId, chatId } = req.body
