@@ -7,7 +7,7 @@ import Picker from '@emoji-mart/react'
 import data from '@emoji-mart/data'
 import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
-import { openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage ,setChatNMassageIO} from '../Redux/slices/chatSlice.js'
+import { openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage ,setChatNMassageIO,deletemassage} from '../Redux/slices/chatSlice.js'
 
 const SingleMassage = ({ socket }) => {
 
@@ -48,6 +48,7 @@ const SingleMassage = ({ socket }) => {
         socket.emit('newMassage', {newMassage:newMassage,chat:resChat,user:user})
         dispatch(setMassage({newMassage:newMassage,chatId:resChat._id}))
         setInput('')
+        setEmoji(false)
       } catch (error) {
         console.log(error)
       }
@@ -102,9 +103,10 @@ const SingleMassage = ({ socket }) => {
   const deleteMassage = async()=>{
     try {
       const res = await axios.post(`${BACKEND_URL}/massage/deletemassage`,{chatId:chat.openSingleChat._id,massagesId:checkedMassage,userId:user})
-      console.log(res)
+      dispatch(deletemassage({chatId:chat.openSingleChat._id,userId:user._id,massagesId:checkedMassage}))
+      setSelect(false)
     } catch (error) {
-      
+      console.log(error)
     }
   }
   const getClick = (e) => {
@@ -115,11 +117,19 @@ const SingleMassage = ({ socket }) => {
     }
     if (emojiRef.current) {
       if (!emojiRef.current.contains(e.target)) {
-        setEmoji(false)
+        console.log(emojiRef.current)
+        if(emoji){
+          setEmoji(false)
+        }
       }
     }
   }
-
+  const keyDown = (e)=>{
+    if(e.key==="Enter"){
+      submitMassage()
+    }
+  }
+  
   useEffect(() => {
     document.addEventListener('click', getClick, true)
     return () => {
@@ -190,8 +200,8 @@ const SingleMassage = ({ socket }) => {
 
 
       <div className={`${(blockUser) ? 'hidden' : 'flex'} bg-white items-center justify-between p-2 gap-3 relative`}>
-        <LiaLaughSquint className="text-4xl cursor-pointer text-primary-800" onClick={() => { setEmoji(!emoji) }} />
-        <input className="w-full rounded-md p-2 bg-[#f5f5f5] text-xl" type="text" placeholder="Type a massage" value={input} onChange={(e) => { setInput(e.target.value) }} />
+        <LiaLaughSquint className="text-4xl cursor-pointer text-primary-800" onClick={() => { setEmoji(!emoji)}} />
+        <input onKeyDown={keyDown} className="w-full rounded-md p-2 bg-[#f5f5f5] text-xl" type="text" placeholder="Type a massage" value={input} onChange={(e) => { setInput(e.target.value) }} />
         <IoIosSend className="text-4xl cursor-pointer text-primary-800" onClick={() => { submitMassage() }} />
         <div ref={emojiRef} className={`absolute bottom-16 left-2 ${(emoji) ? 'block' : 'hidden'}`}> <Picker data={data} previewPosition="none" onEmojiSelect={(e) => { setInput(input + e.native) }} /></div>
       </div>

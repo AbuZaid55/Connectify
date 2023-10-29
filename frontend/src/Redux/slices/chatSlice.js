@@ -136,9 +136,18 @@ const chatSlice = createSlice({
                 state.singleChat.push(chat)
             }
             return state
+        },
+        deletemassage(state,action){
+            const {chatId,userId,massagesId}=action.payload 
+            state.openSingleChat.massage.map((massage)=>{
+                if(massagesId.includes(massage._id)){
+                    massage.isHidden.push(userId)
+                }
+            })
+            return state
         }
     }
 })
 
 export default chatSlice;
-export const { setSearchUser, setSingleChat, setGroupChat, openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage ,setChatNMassageIO} = chatSlice.actions
+export const { setSearchUser, setSingleChat, setGroupChat, openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage ,setChatNMassageIO,deletemassage} = chatSlice.actions
