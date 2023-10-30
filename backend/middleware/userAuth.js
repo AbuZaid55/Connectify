@@ -11,7 +11,7 @@ const auth=async(req,res,next)=>{
         if(!verifyToken.email || !verifyToken._id){
             return sendError(res,"Unauthorized user")
         }
-        const user = await userModel.findOne({email:verifyToken.email})
+        const user = await userModel.findOne({email:verifyToken.email}).populate({path:'blockList.userId',select:'name email bio profile _id'})
         if(!user || !user.validated){
             return sendError(res,"Unauthorized user")
         }
@@ -27,8 +27,9 @@ const auth=async(req,res,next)=>{
             return object
         })
         req.rootUser = user;
-         
+        
     }catch(err){
+        console.log(err)
         return sendError(res,"Authorization Failed!")
     }
     next()

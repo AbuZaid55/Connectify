@@ -18,6 +18,7 @@ import {setSingleChat} from './Redux/slices/chatSlice.js'
 import { useSelector } from 'react-redux'
 import {context} from './context/context.js'
 import io from 'socket.io-client'
+import MyProfile from './pages/MyProfile.jsx'
 
 function App() {
   const dispatch = useDispatch()
@@ -71,6 +72,7 @@ function App() {
      <Route path='/newchat' element={<NewChat/>}/>
      <Route path='/newgroupchat' element={<NewGroupChat/>}/>
      <Route path='/profile' element={<Profile/>}/>
+     <Route path='/myprofile' element={<MyProfile/>}/>
     </Routes>
     <ToastContainer position="bottom-right"/>
    </context.Provider>

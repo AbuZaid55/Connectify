@@ -168,7 +168,7 @@ const SingleMassage = ({ socket }) => {
   return (
     <>
       <div className="flex items-center py-2 bg-white">
-        <img src={`${(chat.profile) ? '' : './profile.png'}`} className=" w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full" />
+        <img src={`${(chat.profile) ? '' : './profile.jpg'}`} className=" w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full" />
         <div>
           <h1 className=" text-base h-6 overflow-hidden">{chat.openSingleChat.chatName}</h1>
           <p className="w-full text-sm h-5 overflow-hidden">{chat.openSingleChat && chat.openSingleChat.joinChat.map((users)=>{

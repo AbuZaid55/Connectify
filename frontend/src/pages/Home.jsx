@@ -16,8 +16,6 @@ const Home = ({socket}) => {
   const [slide, setSlide] = useState(0)
   const chat = useSelector((state)=>(state.chat))
 
-
-
   useEffect(() => {
     async function get_user(){
       const user = await getUser()
@@ -36,7 +34,7 @@ const Home = ({socket}) => {
         <section className='w-[30%] h-full flex flex-col border-r-4 border-primary-800'>
           <div className='flex items-center justify-between px-3 py-2'>
             <h1 className=" text-3xl text-primary-800 font-semibold">Connectify</h1>
-            <span><BsPersonCircle className='text-3xl text-primary-800 cursor-pointer hover:text-[#883eba] transition duration-300 ease-in-out' /></span>
+            <span><BsPersonCircle onClick={()=>{navigate('/myprofile')}} className='text-3xl text-primary-800 cursor-pointer hover:text-[#883eba] transition duration-300 ease-in-out' /></span>
           </div>
           <div className='w-full px-2'>
             <input className='border-2 border-primary-800 w-full py-1 text-xl px-2 rounded-md' placeholder='Search' type="text" />
