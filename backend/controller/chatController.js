@@ -81,12 +81,24 @@ const blockChat = async (req, res) => {
         return sendError(res, "Invalid credentials ")
     }
     try {
+        const user = await userModel.findById(userId)
+        if(!user){
+            return sendError(res,"User not found!")
+        }
         const chat = await chatModel.findById(chatId)
         if (!chat) {
             return sendError(res, "Invalid chat Id")
         }
+        let blockUser = ''
+        chat.joinChat.map((_id)=>{
+            if(_id!=userId){
+                blockUser=_id
+            }
+        })
+        user.blockList.push({userId:blockUser,chatId:chat._id})
         chat.blockList.push(userId)
         await chat.save()
+        await user.save()
         sendSuccess(res, { massage: "user block successfully" })
     }
     catch (error) {
@@ -99,6 +111,10 @@ const unblock = async (req, res) => {
         return sendError(res, "Invalid credentials !")
     }
     try {
+        const user = await userModel.findById(userId)
+        if(!user){
+            return sendError(res,"User not found!")
+        }
         const chat = await chatModel.findById(chatId)
         if (!chat) {
             return sendError(res, "Chat not found!")
@@ -108,8 +124,12 @@ const unblock = async (req, res) => {
                 return userID
             }
         })
+        user.blockList = user.blockList.filter((object)=>{
+            return object.chatId!=chatId
+        })
         chat.blockList = newBlockList
         await chat.save()
+        await user.save()
         sendSuccess(res, { massage: "User unblock successfully" })
     } catch (error) {
         sendError(res, "Something went wrong!")

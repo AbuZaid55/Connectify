@@ -191,6 +191,26 @@ const changePass = async(req,res)=>{
     }
     
 }
+const getProfile = async(req,res)=>{
+    const {userId}=req.body 
+    if(!userId){
+        return sendError(res,"User Id not found!")
+    }
+    try {
+        const user = await userModel.findById(userId)
+        if(!user){
+            return sendError(res,"User not found!")
+        }
+        user.profile = user.profile.secure_url
+        user.password=undefined 
+        user.validated=undefined 
+        user.blockList=undefined 
+        user.loggedIn=undefined
+        sendSuccess(res,{massage:"User profile details found",user:user})
+    } catch (error) {
+        sendError(res,"Something went wrong!")
+    }
+}
 
 module.exports = {
     user,
@@ -200,4 +220,5 @@ module.exports = {
     resendOtp,
     sendResetLink,
     changePass,
+    getProfile
 }

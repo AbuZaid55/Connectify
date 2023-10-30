@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react"
+import {useNavigate} from 'react-router-dom'
 import { CiMenuKebab } from "react-icons/ci";
 import { LiaLaughSquint } from "react-icons/lia";
 import { AiFillDelete } from "react-icons/ai";
@@ -11,6 +12,7 @@ import { openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblo
 
 const SingleMassage = ({ socket }) => {
 
+  const navigate = useNavigate()
   const [dropdown, setDropdown] = useState(false) 
   const [emoji, setEmoji] = useState(false)
   const [input, setInput] = useState('')
@@ -23,6 +25,7 @@ const SingleMassage = ({ socket }) => {
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
   const [checkedMassage,setCheckedMassage]=useState([])
   const [select,setSelect]=useState(false)
+  const [chatUserId,setChatUserId]=useState('')
 
 
   function formateData(date) {
@@ -117,7 +120,6 @@ const SingleMassage = ({ socket }) => {
     }
     if (emojiRef.current) {
       if (!emojiRef.current.contains(e.target)) {
-        console.log(emojiRef.current)
         if(emoji){
           setEmoji(false)
         }
@@ -128,6 +130,9 @@ const SingleMassage = ({ socket }) => {
     if(e.key==="Enter"){
       submitMassage()
     }
+  }
+  const navigateToProfile=()=>{
+    navigate(`/profile?userId=${chatUserId}`)
   }
   
   useEffect(() => {
@@ -144,6 +149,11 @@ const SingleMassage = ({ socket }) => {
       chat.openSingleChat.blockList.map((userId) => {
         if (userId === user._id) {
           setBlockUser(true)
+        }
+      })
+      chat.openSingleChat.joinChat.map((User)=>{
+        if(User._id!=user._id){
+          setChatUserId(User._id)
         }
       })
     }
@@ -170,7 +180,7 @@ const SingleMassage = ({ socket }) => {
         <div ref={dropdownRef} className="ml-auto  relative mr-3">
           <div className={`text-2xl mb-3 p-2  rounded-full cursor-pointer transition duration-300 ease-in-out ${dropdown ? "bg-primary-800 text-white" : " text-primary-800"}`} onClick={() => { setDropdown(!dropdown) }}><CiMenuKebab /></div>
           <ul className={`absolute top-full mt-3 right-0 bg-white shadow-2xl whitespace-nowrap rounded-md z-10 ${dropdown ? "block" : "hidden"}`}>
-            <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer  text-gray-600 transition duration-200 ease-in-out">Contact Info</li>
+            <li onClick={()=>{navigateToProfile()}} className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer  text-gray-600 transition duration-200 ease-in-out">Contact Info</li>
             <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out" onClick={() => { dispatch(openSingleChat('')); dispatch(openGroupChat('')) }}>Close chat</li>
             <li onClick={() => { setSelect(!select) ; setDropdown(false) }} className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">Delete Massages</li>
             <li onClick={() => { clearAllChat() }} className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">Clear all chats</li>

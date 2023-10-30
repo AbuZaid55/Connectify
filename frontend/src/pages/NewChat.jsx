@@ -32,6 +32,9 @@ const NewChat = () => {
     console.log(error)
    }
   }
+  const navigateToProfile=(userId)=>{
+    navigate(`/profile?userId=${userId}`)
+  }
   return (
     <div className='h-[100vh] overflow-hidden flex flex-col items-center '>
       <h1 className='mt-10 text-4xl text-primary-800 font-bold font-serif'>New Chat</h1>
@@ -46,7 +49,7 @@ const NewChat = () => {
            searchUsers.map((user)=>{
             return <div key={user._id} className='flex items-center justify-between py-1 sm:px-2'>
             <div className='flex items-center justify-center'>
-              <img className=' w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' src={(user.profile.secure_url)?'':'./profile.jpg'} alt="" />
+              <img onClick={()=>{navigateToProfile(user._id)}} className=' cursor-pointer w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' src={(user.profile.secure_url)?'':'./profile.jpg'} alt="" />
               <div>
                 <h1 className='text-base h-6 overflow-hidden'>{user.name}</h1>
                 <p className='w-full text-sm h-5 overflow-hidden'>{user.bio}</p>
