@@ -1,4 +1,4 @@
-import {Routes,Route} from 'react-router-dom'
+import {Routes,Route,useNavigate} from 'react-router-dom'
 import Home from './pages/Home.jsx'
 import Login from './pages/Login.jsx'
 import SignUp from './pages/SignUp.jsx'
@@ -21,6 +21,8 @@ import io from 'socket.io-client'
 import MyProfile from './pages/MyProfile.jsx'
 
 function App() {
+
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
   const user = useSelector((state)=>(state.user))
@@ -33,6 +35,7 @@ function App() {
       return res.data.user
     } catch (error) {
       dispatch(setUser(''))
+      navigate('/login')
       return ''
     }
   }

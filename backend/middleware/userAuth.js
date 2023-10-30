@@ -2,6 +2,7 @@ const JWT = require("jsonwebtoken")
 const {sendError} = require('../utils/sendResponse.js')
 const userModel = require('../models/userModel.js')
 const auth=async(req,res,next)=>{ 
+    let myTokenId=''
     try{
         const token = req.cookies.ConnectifyToken 
         if(!token){
@@ -11,12 +12,15 @@ const auth=async(req,res,next)=>{
         if(!verifyToken.email || !verifyToken._id){
             return sendError(res,"Unauthorized user")
         }
-        const user = await userModel.findOne({email:verifyToken.email}).populate({path:'blockList.userId',select:'name email bio profile _id'})
+        const user = await userModel.findById(verifyToken._id).populate({path:'blockList.userId',select:'name email bio profile _id'})
         if(!user || !user.validated){
             return sendError(res,"Unauthorized user")
         }
         const isTokenExist = user.loggedIn.filter((data)=>{
-            return data.token===token
+            if(data.token===token){
+                myTokenId=data._id
+                return data
+            }
         })
         if(isTokenExist.length<=0){
             return sendError(res,"Unauthorized user")
@@ -26,10 +30,10 @@ const auth=async(req,res,next)=>{
             object.token=undefined
             return object
         })
-        req.rootUser = user;
+        const data = {...user._doc,myTokenId} 
+        req.rootUser = data;
         
     }catch(err){
-        console.log(err)
         return sendError(res,"Authorization Failed!")
     }
     next()

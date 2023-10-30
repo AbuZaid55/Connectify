@@ -1,38 +1,61 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useState,useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BsFillCameraFill } from 'react-icons/bs'
+import { useDispatch, useSelector } from 'react-redux'
+import { unblockUser} from '../Redux/slices/chatSlice.js'
+import {context} from '../context/context.js'
 
 const MyProfile = () => {
 
     const navigate = useNavigate()
+    const dispatch = useDispatch()
     const User = useSelector((state) => (state.user))
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
     const [form, setform] = useState(false)
-    const [user, setUser] = useState({ _id: '', profile: { secure_url: '' }, name: '', email: '', bio: '', blockList: [], loggedIn: [] })
     const [input, setInput] = useState({ name: '', bio: '' })
+    const {getUser} = useContext(context)
+    const [user, setUser] = useState({ _id: '',validated:'', profile: { secure_url: '' }, name: '', email: '', bio: '', blockList: [], loggedIn: [] })
 
     const getMyProfile = async () => {
-        try {
-            const res = await axios.get(`${BACKEND_URL}/auth/user`, { withCredentials: true })
-            setUser(res.data.user)
-            setInput({ name: res.data.user.name, bio: res.data.user.bio })
-        } catch (error) {
-            console.log(error)
+        const data = await getUser()
+        if(data){
+            setUser(data)
+            setInput({ name: data.name, bio: data.bio})
         }
     }
     const editProfile = async () => {
-        console.log(input)
+       if(input.name && input.bio){
+        try {
+            const res = await axios.post(`${BACKEND_URL}/editprofile`,{userId:user._id,name:input.name,bio:input.bio})
+            getMyProfile()
+            setform(false)
+        } catch (error) {
+            console.log(error)
+        }
+       }
     }
     const uploadPic = async()=>{
-
+        
     }
-    const unBlock = async()=>{
-
+    const unBlock = async(chatId)=>{
+        try {
+            await axios.post(`${BACKEND_URL}/chat/unblockchat`, { userId: user._id, chatId: chatId })
+            dispatch(unblockUser({ userId: user._id, chatId: chatId }))
+            getMyProfile()
+          } catch (error) {
+            console.log(error)
+          }
     }
-    const logOut = async()=>{
-
+    const logOut = async(_id)=>{
+        if(_id){
+            try {
+                const res = await axios.post(`${BACKEND_URL}/logout`,{userId:user._id,tokenId:_id},{withCredentials:true})
+                getMyProfile()
+            } catch (error) {
+                console.log(error)
+            }
+        }
     }
 
     useEffect(() => {
@@ -60,9 +83,9 @@ const MyProfile = () => {
                         <h1 className='text-2xl'>Logged In</h1>
                         {
                             user.loggedIn.map(({ deviceName, _id }) => {
-                                return <div className='flex items-center ml-5 my-2'>
-                                    <h1 className='w-full min-w-[500px] text-2xl'>Device Name:- {deviceName}</h1>
-                                    <button className=" bg-primary-800 text-white text-md font-semibold px-4 py-2 hover:bg-hover-200 transition duration-300 ease-in-out border-2 border-primary-800 hover:text-primary-800 rounded-md whitespace-nowrap">Log Out</button>
+                                return <div key={_id} className='flex items-center ml-5 my-2'>
+                                    <h1 className='w-full min-w-[500px] text-2xl'>Device Name:- {(_id==user.myTokenId)?'Your Device':deviceName}</h1>
+                                    <button className=" bg-primary-800 text-white text-md font-semibold px-4 py-2 hover:bg-hover-200 transition duration-300 ease-in-out border-2 border-primary-800 hover:text-primary-800 rounded-md whitespace-nowrap" onClick={()=>{logOut(_id)}}>Log Out</button>
                                 </div>
                             })
                         }
@@ -71,13 +94,13 @@ const MyProfile = () => {
                         <h1 className='text-2xl'>BlockList:-</h1>
                         {
                             user.blockList.map(({ chatId, userId }) => {
-                                return <div className='flex items-center ml-5 my-2'>
+                                return <div key={chatId} className='flex items-center ml-5 my-2'>
                                     <img onClick={() => { navigate(`/profile?userId=${userId._id}`) }} className=' cursor-pointer w-16 h-16 border-2 rounded-full border-primary-800' src={(userId.profile.secure_url) ? userId.profile.secure_url : '/profile.jpg'} alt="" />
                                     <div className='ml-3'>
                                         <h1>{userId.name}</h1>
                                         <p className='h-6 overflow-hidden w-full min-w-[500px]'>{userId.bio}</p>
                                     </div>
-                                    <button className=" bg-primary-800 text-white text-md font-semibold px-4 py-2 hover:bg-hover-200 transition duration-300 ease-in-out border-2 border-primary-800 hover:text-primary-800 rounded-md">Unblock</button>
+                                    <button onClick={()=>{unBlock(chatId)}} className=" bg-primary-800 text-white text-md font-semibold px-4 py-2 hover:bg-hover-200 transition duration-300 ease-in-out border-2 border-primary-800 hover:text-primary-800 rounded-md">Unblock</button>
                                 </div>
 
                             })

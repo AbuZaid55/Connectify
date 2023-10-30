@@ -1,3 +1,4 @@
+const JWT = require("jsonwebtoken")
 const {sendSuccess,sendError} = require('../utils/sendResponse.js')
 const emailValidator = require('email-validator')
 const userModel = require('../models/userModel.js')
@@ -5,7 +6,6 @@ const verifyEmailModel = require('../models/verifyEmailModel.js')
 const changePassModel = require('../models/changePassModel.js')
 const generateOtp = require('../utils/generateOtp.js')
 const {sendOtp,greetingMail,sendLink} = require('../utils/sendMail.js')
-const JWT = require('jsonwebtoken')
 
 const user = (req,res)=>{
     sendSuccess(res,{user:req.rootUser})
@@ -105,10 +105,7 @@ const logIn = async(req,res)=>{
             return sendError(res,"Password does not match!")
         }
         const token = await user.generateToken()
-        res.cookie('ConnectifyToken',token,{
-            expires:new Date(Date.now() + Number(process.env.EXPIRE_COOKIE_TIME)),
-            httpOnly:true
-        })
+        res.cookie('ConnectifyToken',token)
         if(!user.validated){
             const verifyEmailData = await verifyEmailModel.findOne({userId:user._id})
             if(verifyEmailData){
@@ -211,6 +208,53 @@ const getProfile = async(req,res)=>{
         sendError(res,"Something went wrong!")
     }
 }
+const editProfile = async(req,res)=>{
+    const {userId,name,bio}=req.body
+    if(!userId || !name || !bio){
+        return sendError(res,"Details not found!")
+    }
+    try {
+        const user = await userModel.findById(userId)
+        if(!user){
+            return sendError(res,"User not found!")
+        }
+        user.name=name 
+        user.bio = bio 
+        await user.save()
+        sendSuccess(res,{massage:"Data update successfully"})
+    } catch (error) {
+        sendError(res,'Something went wrong!')
+    }
+}
+const logout = async(req,res)=>{
+    const {tokenId}=req.body  
+    try {
+    const token = req.cookies.ConnectifyToken 
+    if(!tokenId || !token){
+        return sendError(res,"Token not found!")
+    }
+        const verifyToken = JWT.verify(token,process.env.JWT_KEY)
+        const user = await userModel.findById(verifyToken._id)
+        if(!user){
+            return sendError(res,"Invalid user!")
+        }
+        user.loggedIn=user.loggedIn.filter((object)=>{
+            if(object._id==tokenId){
+                if(object.token===token){
+                    res.clearCookie("ConnectifyToken")
+                }
+            }else{
+                return object
+            }
+        })
+        await user.save()
+        sendSuccess(res,{massage:"User logout successfully"})
+        console.log("yayay")
+    } catch (error) {
+        console.log(error)
+        sendError(res,"Something went wrong!")
+    }
+}
 
 module.exports = {
     user,
@@ -220,5 +264,7 @@ module.exports = {
     resendOtp,
     sendResetLink,
     changePass,
-    getProfile
+    getProfile,
+    editProfile,
+    logout,
 }
