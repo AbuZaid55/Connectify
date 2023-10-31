@@ -62,7 +62,7 @@ const getSingleChat = async (req, res) => {
             })
             s_chat.joinChat.map((user) => {
                 if (user._id != userId) {
-                    s_chat.profile = user.profile.secure_url
+                    s_chat.profile = user.profile
                     s_chat.chatName = user.name
                 }
             })

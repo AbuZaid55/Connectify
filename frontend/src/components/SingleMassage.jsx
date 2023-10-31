@@ -134,6 +134,9 @@ const SingleMassage = ({ socket }) => {
   const navigateToProfile=()=>{
     navigate(`/profile?userId=${chatUserId}`)
   }
+  const Typing = (e)=>{
+    setInput(e.target.value)
+  }
   
   useEffect(() => {
     document.addEventListener('click', getClick, true)
@@ -168,7 +171,7 @@ const SingleMassage = ({ socket }) => {
   return (
     <>
       <div className="flex items-center py-2 bg-white">
-        <img src={`${(chat.profile) ? '' : './profile.jpg'}`} className=" w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full" />
+        <img src={`${(chat.openSingleChat && chat.openSingleChat.profile.secure_url)?chat.openSingleChat.profile.secure_url : './profile.jpg'}`} className=" w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full" />
         <div>
           <h1 className=" text-base h-6 overflow-hidden">{chat.openSingleChat.chatName}</h1>
           <p className="w-full text-sm h-5 overflow-hidden">{chat.openSingleChat && chat.openSingleChat.joinChat.map((users)=>{
@@ -211,7 +214,7 @@ const SingleMassage = ({ socket }) => {
 
       <div className={`${(blockUser) ? 'hidden' : 'flex'} bg-white items-center justify-between p-2 gap-3 relative`}>
         <LiaLaughSquint className="text-4xl cursor-pointer text-primary-800" onClick={() => { setEmoji(!emoji)}} />
-        <input onKeyDown={keyDown} className="w-full rounded-md p-2 bg-[#f5f5f5] text-xl" type="text" placeholder="Type a massage" value={input} onChange={(e) => { setInput(e.target.value) }} />
+        <input onKeyDown={keyDown} className="w-full rounded-md p-2 bg-[#f5f5f5] text-xl" type="text" placeholder="Type a massage" value={input} onChange={(e) => { Typing(e)}} />
         <IoIosSend className="text-4xl cursor-pointer text-primary-800" onClick={() => { submitMassage() }} />
         <div ref={emojiRef} className={`absolute bottom-16 left-2 ${(emoji) ? 'block' : 'hidden'}`}> <Picker data={data} previewPosition="none" onEmojiSelect={(e) => { setInput(input + e.native) }} /></div>
       </div>

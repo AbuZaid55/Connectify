@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const db_Connect = require('./db/db_connection.js')
+const cloudinary = require('cloudinary')
 const cookie = require('cookie-parser')
 const cors = require('cors')
 const app = express()
@@ -19,9 +20,17 @@ app.use(require('./routes/userRouter.js'))
 app.use('/chat',require('./routes/chatRouter.js'))
 app.use('/massage',require('./routes/massageRouter.js'))
 
+cloudinary.v2.config({ 
+    cloud_name: process.env.CLOUDINARY_NAME, 
+    api_key: process.env.CLOUDINARY_KEY, 
+    api_secret: process.env.CLOUDINARY_SECRET 
+});
+
 const server = app.listen(PORT,()=>{
     console.log(`App is listening on port no ${PORT}`)
 })
+
+
 const io = require('socket.io')(server,{  
     pingTimeout:60000,
     cors:{

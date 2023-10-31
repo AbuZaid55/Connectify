@@ -5,6 +5,7 @@ import { BsFillCameraFill } from 'react-icons/bs'
 import { useDispatch, useSelector } from 'react-redux'
 import { unblockUser} from '../Redux/slices/chatSlice.js'
 import {context} from '../context/context.js'
+import { toast } from 'react-toastify'
 
 const MyProfile = () => {
 
@@ -30,13 +31,31 @@ const MyProfile = () => {
             const res = await axios.post(`${BACKEND_URL}/editprofile`,{userId:user._id,name:input.name,bio:input.bio})
             getMyProfile()
             setform(false)
+            toast.success('Profile update successfully')
         } catch (error) {
+            if(error.response.data.massage ){
+                toast.error(error.response.data.massage)
+            }
             console.log(error)
         }
        }
     }
-    const uploadPic = async()=>{
-        
+    const uploadPic = async(e)=>{
+        const file = e.target.files[0]
+        const formdata = new FormData()
+        formdata.append('_id',user._id)
+        formdata.append("file",file)
+        try {
+            const res = await axios.post(`${BACKEND_URL}/uploadpic`,formdata)
+            getMyProfile()
+            toast.success("Profile uploaded successfully")
+        } catch (error) {
+            if(error.response.data.massage ){
+                toast.error(error.response.data.massage)
+            }
+            console.log(error)
+        }
+
     }
     const unBlock = async(chatId)=>{
         try {
@@ -71,7 +90,7 @@ const MyProfile = () => {
             <div className='flex  h-full mt-10'>
                 <div className='relative'>
                     <img className='w-96 h-96 border-4 rounded-full border-primary-800' src={(user.profile.secure_url) ? user.profile.secure_url : '/profile.jpg'} alt="" />
-                    <input className='hidden' type="file" id='file' />
+                    <input onChange={(e)=>{uploadPic(e)}} className='hidden' type="file" id='file' />
                     <label className='absolute top-64 right-1 cursor-pointer bg-white text-xl p-2 rounded-full shadow-lg' htmlFor="file"><BsFillCameraFill/></label>
                 </div>
                 <div className='ml-10'>

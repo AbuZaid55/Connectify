@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { BsPersonCircle } from "react-icons/bs";
 import { useSelector } from 'react-redux';
 import HomeSVG from "../SVG/HomeSVG.jsx"
 import SingleChat from '../components/SingleChat.jsx';
@@ -15,6 +14,7 @@ const Home = ({socket}) => {
   const{getUser} = useContext(context)
   const [slide, setSlide] = useState(0)
   const chat = useSelector((state)=>(state.chat))
+  const user = useSelector((state)=>(state.user))
 
   useEffect(() => {
     async function get_user(){
@@ -33,8 +33,8 @@ const Home = ({socket}) => {
 
         <section className='w-[30%] h-full flex flex-col border-r-4 border-primary-800'>
           <div className='flex items-center justify-between px-3 py-2'>
-            <h1 className=" text-3xl text-primary-800 font-semibold">Connectify</h1>
-            <span><BsPersonCircle onClick={()=>{navigate('/myprofile')}} className='text-3xl text-primary-800 cursor-pointer hover:text-[#883eba] transition duration-300 ease-in-out' /></span>
+            <h1 className=" text-3xl text-primary-800 font-semibold font-serif">Connectify</h1>
+            <span><img className=' cursor-pointer w-12 h-12 ml-2 mr-2 border-2 border-primary-800 rounded-full' src={(user.profile && user.profile.secure_url)?user.profile.secure_url:'./profile.jpg'} alt="" onClick={()=>{navigate('/myprofile')}} /></span>
           </div>
           <div className='w-full px-2'>
             <input className='border-2 border-primary-800 w-full py-1 text-xl px-2 rounded-md' placeholder='Search' type="text" />

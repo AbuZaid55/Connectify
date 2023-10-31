@@ -28,7 +28,7 @@ const Profile = () => {
         <div className='h-[70vh] mx-20'>
             <h1 className='text-center text-6xl font-semibold text-primary-800 mt-10'>Profile</h1>
             <div className='flex items-center h-full'>
-                <img className='border-4 rounded-full w-96 h-96 border-primary-800' src={`${(user.profile)?user.profile:"../profile.jpg"}`} alt="" />
+                <img className='border-4 rounded-full w-96 h-96 border-primary-800' src={`${(user.profile.secure_url)?user.profile.secure_url:"../profile.jpg"}`} alt="" />
                 <div className='ml-10 text-3xl'>
                     <h1 className='m-4'>Name:- {user.name}</h1>
                     <h1 className='m-4'>Email:- {user.email}</h1>
