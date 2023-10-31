@@ -1,0 +1,73 @@
+.dots {
+    width: 40px;
+    height: 9.6px;
+    background: radial-gradient(circle closest-side,#b141fc 90%,#0000) 0%   50%,
+         radial-gradient(circle closest-side,#b141fc 90%,#0000) 50%  50%,
+         radial-gradient(circle closest-side,#b141fc 90%,#0000) 100% 50%;
+    background-size: calc(100%/3) 100%;
+    background-repeat: no-repeat;
+    animation: dots-zcf63l 1s infinite linear;
+ }
+ 
+ @keyframes dots-zcf63l {
+    33% {
+       background-size: calc(100%/3) 0%  ,calc(100%/3) 100%,calc(100%/3) 100%;
+    }
+ 
+    50% {
+       background-size: calc(100%/3) 100%,calc(100%/3) 0%  ,calc(100%/3) 100%;
+    }
+ 
+    66% {
+       background-size: calc(100%/3) 100%,calc(100%/3) 100%,calc(100%/3) 0%;
+    }
+ }
+
+
+ .spinner {
+   width: 56px;
+   height: 56px;
+   display: grid;
+   border: 4.5px solid #0000;
+   border-radius: 50%;
+   border-right-color: #b141fc;
+   animation: spinner-a4dj62 1s infinite linear;
+}
+
+.spinner::before,
+.spinner::after {
+   content: "";
+   grid-area: 1/1;
+   margin: 2.2px;
+   border: inherit;
+   border-radius: 50%;
+   animation: spinner-a4dj62 2s infinite;
+}
+
+.spinner::after {
+   margin: 8.9px;
+   animation-duration: 3s;
+}
+
+@keyframes spinner-a4dj62 {
+   100% {
+      transform: rotate(1turn);
+   }
+}
+
+
+.sendLoader {
+   width: 30px;
+   height: 30px;
+   border-radius: 50%;
+   background: radial-gradient(farthest-side,#b141fc 94%,#0000) top/9px 9px no-repeat,
+         conic-gradient(#0000 30%,#b141fc);
+   -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 9px),#000 0);
+   animation: spinner-c7wet2 1s infinite linear;
+}
+
+@keyframes spinner-c7wet2 {
+   100% {
+      transform: rotate(1turn);
+   }
+}

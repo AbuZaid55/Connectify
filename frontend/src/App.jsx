@@ -10,7 +10,7 @@ import NewGroupChat from './pages/NewGroupChat.jsx'
 import Profile from './pages/Profile.jsx'
 import {ToastContainer} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 import {useDispatch} from 'react-redux'
 import { setUser } from './Redux/slices/userSlice.js'
@@ -27,26 +27,33 @@ function App() {
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
   const user = useSelector((state)=>(state.user))
   const socket=io(BACKEND_URL)
+  const [loader,setLoader]=useState(false)
 
   const getUser = async()=>{
+    setLoader(true)
     try {
       const res = await axios.get(`${BACKEND_URL}/auth/user`,{withCredentials:true})
       dispatch(setUser(res.data.user))
+      setLoader(false)
       return res.data.user
     } catch (error) {
       dispatch(setUser(''))
       navigate('/login')
+      setLoader(false)
       return ''
     }
   }
   const getSingleChat  = async()=>{
+    setLoader(true)
     try {
       const res = await axios.post(`${BACKEND_URL}/chat/getsinglechat`,{userId:user._id})
       dispatch(setSingleChat(res.data))
+      setLoader(false)
       return res.data
     } catch (error) {
       dispatch(setSingleChat([]))
     }
+    setLoader(false)
   }
   
   useEffect(()=>{
@@ -64,7 +71,8 @@ function App() {
   },[user])
 
   return (
-   <context.Provider value={{getUser,getSingleChat}}>
+   <context.Provider value={{getUser,getSingleChat,setLoader}}>
+    <div className={`${(loader)?'flex':'hidden'} w-full h-[100vh] absolute top-0 left-0 items-center justify-center z-50 bg-[#00000050]`}><div className='spinner'></div></div>
      <Routes>
      <Route path='/' element={<Home socket={socket}/>}/>
      <Route path='/login' element={<Login />}/>

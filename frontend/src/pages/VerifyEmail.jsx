@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect,useContext } from "react"
 import VerifyEmailSVG from "../SVG/VerifyEmailSVG.jsx"
 import { useLocation, useNavigate } from "react-router-dom"
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import { useSelector } from 'react-redux'
+import { context} from '../context/context.js'
 
 const VerifyEmail = () => {
 
@@ -15,8 +16,10 @@ const VerifyEmail = () => {
   const [userId, setUserId] = useState('')
   const [path, setPath] = useState('')
   const [timer,setTimer]=useState(60)
+  const {setLoader}=useContext(context)
 
   const submitForm = async () => {
+    setLoader(true)
     try {
       const res = await axios.post(`${BACKEND_URL}/verifyemail`, { userId, otp })
       console.log(res.data)
@@ -26,8 +29,10 @@ const VerifyEmail = () => {
     } catch (error) {
       toast.error(error.response.data.massage)
     }
+    setLoader(false)
   }
   const resendOtp = async()=>{
+    setLoader(true)
     try {
       const res = await axios.post(`${BACKEND_URL}/resendotp`,{userId})
       toast.success(res.data.massage)
@@ -35,6 +40,7 @@ const VerifyEmail = () => {
     } catch (error) {
       toast.error(error.response.data.massage)
     }
+    setLoader(false)
   }
 
   useEffect(() => {

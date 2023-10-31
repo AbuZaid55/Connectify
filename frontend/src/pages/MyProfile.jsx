@@ -15,7 +15,7 @@ const MyProfile = () => {
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
     const [form, setform] = useState(false)
     const [input, setInput] = useState({ name: '', bio: '' })
-    const {getUser} = useContext(context)
+    const {getUser,setLoader} = useContext(context)
     const [user, setUser] = useState({ _id: '',validated:'', profile: { secure_url: '' }, name: '', email: '', bio: '', blockList: [], loggedIn: [] })
 
     const getMyProfile = async () => {
@@ -26,6 +26,7 @@ const MyProfile = () => {
         }
     }
     const editProfile = async () => {
+        setLoader(true)
        if(input.name && input.bio){
         try {
             const res = await axios.post(`${BACKEND_URL}/editprofile`,{userId:user._id,name:input.name,bio:input.bio})
@@ -39,8 +40,10 @@ const MyProfile = () => {
             console.log(error)
         }
        }
+       setLoader(false)
     }
     const uploadPic = async(e)=>{
+        setLoader(true)
         const file = e.target.files[0]
         const formdata = new FormData()
         formdata.append('_id',user._id)
@@ -55,9 +58,11 @@ const MyProfile = () => {
             }
             console.log(error)
         }
+        setLoader(false)
 
     }
     const unBlock = async(chatId)=>{
+        setLoader(true)
         try {
             await axios.post(`${BACKEND_URL}/chat/unblockchat`, { userId: user._id, chatId: chatId })
             dispatch(unblockUser({ userId: user._id, chatId: chatId }))
@@ -65,8 +70,10 @@ const MyProfile = () => {
           } catch (error) {
             console.log(error)
           }
+          setLoader(false)
     }
     const logOut = async(_id)=>{
+        setLoader(true)
         if(_id){
             try {
                 const res = await axios.post(`${BACKEND_URL}/logout`,{userId:user._id,tokenId:_id},{withCredentials:true})
@@ -75,6 +82,7 @@ const MyProfile = () => {
                 console.log(error)
             }
         }
+        setLoader(false)
     }
 
     useEffect(() => {
@@ -131,8 +139,8 @@ const MyProfile = () => {
             </div>
             <h1 onClick={() => { setform(true) }} className='text-end mt-16'><button className=" bg-primary-800 text-white text-md font-semibold px-4 py-2 hover:bg-hover-200 transition duration-300 ease-in-out border-2 border-primary-800 hover:text-primary-800 rounded-md">Edit Profile</button></h1>
 
-            <div className={`${(form) ? 'flex' : 'hidden'} fixed top-0 left-0 w-[100%] h-[100vh] bg-white overflow-hidden items-center justify-center`}>
-                <div className='flex flex-col w-96 shadow-2xl p-4'>
+            <div className={`${(form) ? 'flex' : 'hidden'} fixed top-0 left-0 w-[100%] h-[100vh] bg-[#00000050] overflow-hidden items-center justify-center`}>
+                <div className='flex flex-col w-96 shadow-2xl p-4 bg-white'>
                     <p className='text-end cursor-pointer' onClick={() => { setform(false) }}>X</p>
                     <label className='mt-2 text-xl' htmlFor="name">Change your name:- </label>
                     <input value={input.name} onChange={(e) => { setInput({ ...input, name: e.target.value }) }} className='border-2 border-primary-800  py-2' type="text" id='name' />

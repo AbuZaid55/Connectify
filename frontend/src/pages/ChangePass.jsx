@@ -1,9 +1,10 @@
-import React, { useState,useEffect } from "react"
+import React, { useState,useEffect,useContext } from "react"
 import ChangePassSVG from "../SVG/ChangePassSVG.jsx"
 import {useLocation, useNavigate} from 'react-router-dom'
 import axios from 'axios'
 import {toast} from 'react-toastify'
 import { useSelector } from 'react-redux'
+import { context} from '../context/context.js'
 
 
 const ChangePass = () => {
@@ -14,11 +15,13 @@ const ChangePass = () => {
   const userId = new URLSearchParams(useLocation().search).get("id")
   const [input,setInput]=useState({token:token,userId:userId,new_pass:'',confirm_pass:''})
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+  const {setLoader}=useContext(context)
   
   const handleInput = (e)=>{
     setInput({...input,[e.target.name]:e.target.value})
   }
   const submitForm = async(e)=>{
+    setLoader(true)
     e.preventDefault()
     try {
       const res = await axios.post(`${BACKEND_URL}/changepass`,input)
@@ -28,6 +31,7 @@ const ChangePass = () => {
     } catch (error) {
       toast.error(error.response.data.massage)
     }
+    setLoader(false)
   }
 
   useEffect(()=>{

@@ -9,12 +9,13 @@ import {context} from '../context/context.js'
 const NewChat = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const {getSingleChat} = useContext(context)
+  const {getSingleChat,setLoader} = useContext(context)
   const searchUsers = useSelector((state)=>(state.chat)).searchUsers
   const BACKEND_URL=import.meta.env.VITE_BACKEND_URL 
   const user = useSelector((state)=>(state.user))
 
   const sendMassage = async(_id)=>{
+    setLoader(true)
    try {
     const res = await axios.post(`${BACKEND_URL}/chat/createchat`,{myId:user._id,otherUserId:_id,type:"Chat"})
     if(res.status===200 && res.data.massage==='Chat Created'){
@@ -24,13 +25,13 @@ const NewChat = () => {
           return chat
         }
       })
-      console.log(newChat)
       dispatch(openSingleChat(newChat[0]))
       navigate('/')
     }
    } catch (error) {
     console.log(error)
    }
+   setLoader(false)
   }
   const navigateToProfile=(userId)=>{
     navigate(`/profile?userId=${userId}`)

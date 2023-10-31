@@ -1,6 +1,7 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState ,useContext} from 'react'
 import { useLocation ,useNavigate} from 'react-router-dom'
+import { context} from '../context/context.js'
 
 const Profile = () => {
 
@@ -8,14 +9,17 @@ const Profile = () => {
     const userId = useLocation().search.slice(8,)
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
     const [user,setUser]=useState({profile:'',name:'',email:'',bio:''})
+    const {setLoader}=useContext(context)
 
     const getUser = async()=>{
+        setLoader(true)
         try {
             const res = await axios.post(`${BACKEND_URL}/getprofile`,{userId:userId})
             setUser(res.data.user)
         } catch (error) {
             console.log(error)
         }
+        setLoader(false)
     }
     useEffect(()=>{
         if(!userId){

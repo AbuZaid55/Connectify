@@ -1,20 +1,24 @@
-import React, { useState,useEffect } from "react"
+import React, { useState,useEffect,useContext } from "react"
 import { useNavigate } from "react-router-dom"
 import SignupSVG from "../SVG/SignupSVG.jsx"
 import {Link} from 'react-router-dom'
 import {toast} from 'react-toastify'
 import axios from 'axios'
 import { useSelector } from 'react-redux'
+import { context} from '../context/context.js'
 
 const SignUp = () => {
   const navigate = useNavigate()
   const user = useSelector((state)=>(state.user))
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
   const [input,setInput]=useState({name:'', email:'',password:'', confirm_pass:''})
+  const {setLoader}=useContext(context)
+
   const handleInput = (e)=>{
     setInput({...input,[e.target.name]:e.target.value})
   }
   const submitForm = async(e)=>{
+    setLoader(true)
     e.preventDefault()
     try {
       const res = await axios.post(`${BACKEND_URL}/signup`,input)
@@ -24,6 +28,7 @@ const SignUp = () => {
     } catch (error) {
       toast.error(error.response.data.massage)
     }
+    setLoader(false)
   }
 
   useEffect(()=>{

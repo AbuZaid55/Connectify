@@ -50,8 +50,23 @@ io.on('connection',(socket)=>{
         chat.profile = user.profile.secure_url 
         chat.massage = [newMassage] 
         chat.joinChat.map((object)=>{
-            if(!chat.blockList.includes(object._id) && user._id!==object._id){
+            if(!chat.blockList.includes(object._id) && user._id!==object._id){ 
                 socket.in(object._id).emit('massageRecieved',chat)   
+            }
+        })
+    })
+
+    socket.on('typing',({chat,userId})=>{
+        chat.joinChat.map((object)=>{
+            if(!chat.blockList.includes(object._id) && userId!==object._id){
+                socket.in(object._id).emit('typing',chat._id)   
+            }
+        })
+    })
+    socket.on('stopTyping',({chat,userId})=>{
+        chat.joinChat.map((object)=>{
+            if(!chat.blockList.includes(object._id) && userId!==object._id){
+                socket.in(object._id).emit('stopTyping',chat._id)   
             }
         })
     })

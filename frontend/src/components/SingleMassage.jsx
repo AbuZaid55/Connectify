@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState,useContext } from "react"
 import {useNavigate} from 'react-router-dom'
 import { CiMenuKebab } from "react-icons/ci";
 import { LiaLaughSquint } from "react-icons/lia";
@@ -6,8 +6,9 @@ import { AiFillDelete } from "react-icons/ai";
 import { IoIosSend } from "react-icons/io";
 import Picker from '@emoji-mart/react'
 import data from '@emoji-mart/data'
-import { useDispatch, useSelector } from 'react-redux'
 import axios from 'axios'
+import { context} from '../context/context.js'
+import { useDispatch, useSelector } from 'react-redux'
 import { openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage ,setChatNMassageIO,deletemassage} from '../Redux/slices/chatSlice.js'
 
 const SingleMassage = ({ socket }) => {
@@ -26,6 +27,10 @@ const SingleMassage = ({ socket }) => {
   const [checkedMassage,setCheckedMassage]=useState([])
   const [select,setSelect]=useState(false)
   const [chatUserId,setChatUserId]=useState('')
+  const [timeId,setTimeId]=useState('')
+  const [typing,setTyping]=useState(false)
+  const {setLoader}=useContext(context)
+  const [sendMLoader,setSendMLoader]=useState(false)
 
 
   function formateData(date) {
@@ -43,6 +48,7 @@ const SingleMassage = ({ socket }) => {
     }
   }
   const submitMassage = async () => {
+    setSendMLoader(true)
     if (input) {
       try {
         const res = await axios.post(`${BACKEND_URL}/massage/createmassage`, { senderId: user._id, content: input, chatId: chat.openSingleChat._id })
@@ -56,8 +62,10 @@ const SingleMassage = ({ socket }) => {
         console.log(error)
       }
     }
+    setSendMLoader(false)
   }
   const block = async () => {
+    setLoader(true)
     const selectedChatId = chat.openSingleChat._id
     try {
       await axios.post(`${BACKEND_URL}/chat/blockchat`, { userId: user._id, chatId: selectedChatId })
@@ -66,8 +74,10 @@ const SingleMassage = ({ socket }) => {
     } catch (error) {
       console.log(error)
     }
+    setLoader(false)
   }
   const unblock = async () => {
+    setLoader(true)
     const selectedChatId = chat.openSingleChat._id
     try {
       await axios.post(`${BACKEND_URL}/chat/unblockchat`, { userId: user._id, chatId: selectedChatId })
@@ -76,6 +86,7 @@ const SingleMassage = ({ socket }) => {
     } catch (error) {
       console.log(error)
     }
+    setLoader(false)
   }
   const setReadMassage = async () => {
     try {
@@ -86,6 +97,7 @@ const SingleMassage = ({ socket }) => {
     }
   }
   const clearAllChat = async () => {
+    setLoader(true)
     try {
       const res = await axios.post(`${BACKEND_URL}/chat/clearallchats`, { userId: user._id, chatId: chat.openSingleChat._id })
       dispatch(clearAllChats({ chatId: chat.openSingleChat._id ,userId:user._id}))
@@ -93,8 +105,10 @@ const SingleMassage = ({ socket }) => {
     } catch (error) {
       console.log(error)
     }
+    setLoader(false)
   }
   const deletechat = async () => {
+    setLoader(true)
     try {
       const res = await axios.post(`${BACKEND_URL}/chat/deletechat`, { userId: user._id, chatId: chat.openSingleChat._id })
       dispatch(deleteChat({ chatId: chat.openSingleChat._id ,userId:user._id}))
@@ -102,8 +116,10 @@ const SingleMassage = ({ socket }) => {
     } catch (error) {
       console.log(error)
     }
+    setLoader(false)
   }
   const deleteMassage = async()=>{
+    setLoader(true)
     try {
       const res = await axios.post(`${BACKEND_URL}/massage/deletemassage`,{chatId:chat.openSingleChat._id,massagesId:checkedMassage,userId:user})
       dispatch(deletemassage({chatId:chat.openSingleChat._id,userId:user._id,massagesId:checkedMassage}))
@@ -111,6 +127,7 @@ const SingleMassage = ({ socket }) => {
     } catch (error) {
       console.log(error)
     }
+    setLoader(false)
   }
   const getClick = (e) => {
     if (dropdownRef.current) {
@@ -136,8 +153,17 @@ const SingleMassage = ({ socket }) => {
   }
   const Typing = (e)=>{
     setInput(e.target.value)
+    if(socket){
+      socket.emit('typing',{chat:chat.openSingleChat,userId:user._id})
+      clearTimeout(timeId)
+      let timeout = setTimeout(()=>{
+        socket.emit('stopTyping',{chat:chat.openSingleChat,userId:user._id})
+      },2000)
+      setTimeId(timeout)
+
+    }
   }
-  
+  console.log(typing)
   useEffect(() => {
     document.addEventListener('click', getClick, true)
     return () => {
@@ -165,8 +191,24 @@ const SingleMassage = ({ socket }) => {
     const listener = (chat) => {
       dispatch(setChatNMassageIO(chat))
     }
+    const isTyping = (chatId)=>{
+      if(chatId===chat.openSingleChat._id){
+        setTyping(true)
+      }
+    }
+    const stopTyping = (chatId)=>{
+      if(chatId===chat.openSingleChat._id){
+        setTyping(false)
+      }
+    }
     socket.on('massageRecieved', listener)
-    return () => socket.off("massageRecieved", listener);
+    socket.on('typing', isTyping)
+    socket.on('stopTyping', stopTyping)
+    return () => {
+      socket.off("massageRecieved", listener)
+      socket.off('typing',isTyping)
+      socket.off('stopTyping',stopTyping)
+    };
   }, [socket])
   return (
     <>
@@ -201,7 +243,7 @@ const SingleMassage = ({ socket }) => {
               <input className={`${(select)?'':'hidden'}`} type="checkbox" id={massage._id} onChange={(e)=>{selectMassage(e)}} value={massage._id}/>
               <label className="w-full flex" htmlFor={(select)?massage._id:""}>
               <div className={` max-w-[50%] min-w-[15%] ${(massage.senderId === user._id) ? 'myMassage' : 'otherMassage'} p-3 rounded-lg my-1 mx-2`}>
-              <p>{massage.content}</p>
+              <p className=" break-words" >{massage.content}</p>
               <p className="text-end">{formateData(massage.createdAt)}</p>
             </div>
               </label>
@@ -211,11 +253,12 @@ const SingleMassage = ({ socket }) => {
           <div onClick={()=>{deleteMassage()}}  className={`${(select)?'':'hidden'} absolute bottom-5 right-8 text-3xl text-red-600 bg-white p-1 hover:scale-150 cursor-pointer shadow-lg rounded-full transition duration-300 ease-in-out`}><AiFillDelete/></div>
       </div>
 
-
       <div className={`${(blockUser) ? 'hidden' : 'flex'} bg-white items-center justify-between p-2 gap-3 relative`}>
+        <div className={`${(typing)?'':'hidden'} absolute -top-8 bg-white p-2 rounded-full rounded-bl-none`}><div className="dots"></div></div> 
         <LiaLaughSquint className="text-4xl cursor-pointer text-primary-800" onClick={() => { setEmoji(!emoji)}} />
         <input onKeyDown={keyDown} className="w-full rounded-md p-2 bg-[#f5f5f5] text-xl" type="text" placeholder="Type a massage" value={input} onChange={(e) => { Typing(e)}} />
-        <IoIosSend className="text-4xl cursor-pointer text-primary-800" onClick={() => { submitMassage() }} />
+        <IoIosSend className={`${(sendMLoader)?'hidden':''} text-4xl cursor-pointer text-primary-800`} onClick={() => { submitMassage() }} />
+        <div className={`${(sendMLoader)?'':'hidden'}`}><div className="sendLoader"></div></div>
         <div ref={emojiRef} className={`absolute bottom-16 left-2 ${(emoji) ? 'block' : 'hidden'}`}> <Picker data={data} previewPosition="none" onEmojiSelect={(e) => { setInput(input + e.native) }} /></div>
       </div>
 

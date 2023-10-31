@@ -1,9 +1,10 @@
-import React, { useState ,useEffect} from "react"
+import React, { useState ,useEffect,useContext} from "react"
 import SendLinkSVG from "../SVG/SendLinkSVG.jsx"
 import {Link, useNavigate} from 'react-router-dom'
 import axios from 'axios'
 import {toast} from 'react-toastify'
 import { useSelector } from 'react-redux'
+import { context} from '../context/context.js'
 
 const SendResetLink = () => {
 
@@ -11,8 +12,10 @@ const SendResetLink = () => {
   const [email,setEmail]=useState('zaid70979a@gmail.com')
   const navigate = useNavigate()
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+  const {setLoader} = useContext(context)
 
   const submitForm = async(e)=>{
+    setLoader(true)
     e.preventDefault()
     try {
       const res =await axios.post(`${BACKEND_URL}/sendresetlink`,{email})
@@ -22,6 +25,7 @@ const SendResetLink = () => {
     } catch (error) {
       toast.error(error.response.data.massage)
     }
+    setLoader(false)
   }
 
   useEffect(()=>{
