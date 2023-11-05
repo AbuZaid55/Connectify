@@ -80,7 +80,7 @@ const SingleMassage = ({ socket }) => {
     const selectedChatId = chat.openSingleChat._id
     try {
       await axios.post(`${BACKEND_URL}/chat/unblockchat`, { userId: user._id, chatId: selectedChatId })
-      // dispatch(unblockUser({ userId: user._id, chatId: chat.openSingleChat._id }))
+      dispatch(unblockUser({ userId: user._id, chatId: chat.openSingleChat._id }))
       setDropdown(false)
     } catch (error) {
       console.log(error)
