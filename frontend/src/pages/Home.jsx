@@ -6,24 +6,18 @@ import SingleChat from '../components/SingleChat.jsx';
 import GroupChat from '../components/GroupChat.jsx';
 import SingleMassage from '../components/SingleMassage.jsx';
 import GroupMassage from '../components/GroupMassage.jsx'
-import { context} from '../context/context.js'
 
 
 const Home = ({socket}) => {
   const navigate = useNavigate()
-  const{getUser} = useContext(context)
   const [slide, setSlide] = useState(0)
   const chat = useSelector((state)=>(state.chat))
   const user = useSelector((state)=>(state.user))
 
   useEffect(() => {
-    async function get_user(){
-      const user = await getUser()
-      if(!user){
-        navigate('/login')
-      }
-    }
-    get_user()
+   if(user && !user._id){
+    navigate('/login')
+   }
 
   }, [])
 

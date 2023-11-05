@@ -52,11 +52,13 @@ const chatSlice = createSlice({
         unblockUser(state, action) {
             const userId = action.payload.userId
             const chatId = action.payload.chatId
-            state.openSingleChat.blockList.map((userID, i) => {
-                if (userID == userId) {
-                    state.openSingleChat.blockList.splice(i, 1)
-                }
-            })
+            if(state.openSingleChat._id===chatId){
+                state.openSingleChat.blockList.map((userID, i) => {
+                    if (userID == userId) {
+                        state.openSingleChat.blockList.splice(i, 1)
+                    }
+                })
+            }
             state.singleChat.map((chat) => {
                 if (chat._id === chatId) {
                     chat.blockList.map((userID, i) => {

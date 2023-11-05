@@ -86,12 +86,13 @@ const MyProfile = () => {
     }
 
     useEffect(() => {
-        if (!User || !User._id) {
-            navigate('/')
-        } else {
-            getMyProfile()
-        }
+        getMyProfile()
     }, [])
+    useEffect(()=>{
+        if (User && !User._id) {
+            navigate('/')
+        }
+    },[User])
     return (
         <div className='min-h-[70vh] mx-20 '>
             <h1 className='text-center text-5xl font-semibold text-primary-800 mt-10'>My Profile</h1>

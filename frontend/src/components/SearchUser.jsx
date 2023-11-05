@@ -28,7 +28,7 @@ const SearchUser = () => {
     const useDebouceCallback = useDebouce((e) => { fetchUsers(e.target.value) })
 
     useEffect(()=>{
-        if(user._id){
+        if(user && user._id){
             fetchUsers('')
         }
     },[user])

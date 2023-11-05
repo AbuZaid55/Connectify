@@ -19,15 +19,18 @@ import { useSelector } from 'react-redux'
 import {context} from './context/context.js'
 import io from 'socket.io-client'
 import MyProfile from './pages/MyProfile.jsx'
+import {setChatNMassageIO} from './Redux/slices/chatSlice.js'
 
 function App() {
-
+  const [socket,setSocket]=useState('')
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
   const user = useSelector((state)=>(state.user))
-  const socket=io(BACKEND_URL)
+  const chat = useSelector((state) => (state.chat))
   const [loader,setLoader]=useState(false)
+  const [typing,setTyping]=useState(false)
+  const [currentTyping,setCurrentTyping]=useState('')
 
   const getUser = async()=>{
     setLoader(true)
@@ -37,7 +40,7 @@ function App() {
       setLoader(false)
       return res.data.user
     } catch (error) {
-      dispatch(setUser(''))
+      dispatch(setUser('Unauthorized'))
       navigate('/login')
       setLoader(false)
       return ''
@@ -59,19 +62,41 @@ function App() {
   useEffect(()=>{
     getUser()
   },[])
-  useEffect(()=>{
-    if(user._id){
-      getSingleChat()
-    }
-  },[user])
   useEffect(() => {
     if(user && user._id){
+      getSingleChat()
+      let socket=io(BACKEND_URL)
       socket.emit('setup',user._id)
+      setSocket(socket)
+
+      const listener = (chat) => {
+        dispatch(setChatNMassageIO(chat))
+      }
+      const isTyping = (chatId)=>{
+        setCurrentTyping(chatId)
+      }
+      const stopTyping = (chatId)=>{
+        setCurrentTyping('')
+      }
+      socket.on('massageRecieved', listener)
+      socket.on('typing',isTyping)
+      socket.on('stopTyping', stopTyping)
+      return () => {
+        socket.off("massageRecieved", listener)
+        socket.off('typing',isTyping)
+        socket.off('stopTyping',stopTyping)
+      };
     }
   },[user])
-
+  useEffect(()=>{
+    if(currentTyping===chat.openSingleChat._id){
+      setTyping(true)
+    }else{
+      setTyping(false)
+    }
+  },[currentTyping])
   return (
-   <context.Provider value={{getUser,getSingleChat,setLoader}}>
+   <context.Provider value={{getUser,getSingleChat,setLoader,typing}}>
     <div className={`${(loader)?'flex':'hidden'} w-full h-[100vh] absolute top-0 left-0 items-center justify-center z-50 bg-[#00000050]`}><div className='spinner'></div></div>
      <Routes>
      <Route path='/' element={<Home socket={socket}/>}/>

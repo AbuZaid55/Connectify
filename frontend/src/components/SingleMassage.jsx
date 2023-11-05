@@ -9,7 +9,7 @@ import data from '@emoji-mart/data'
 import axios from 'axios'
 import { context} from '../context/context.js'
 import { useDispatch, useSelector } from 'react-redux'
-import { openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage ,setChatNMassageIO,deletemassage} from '../Redux/slices/chatSlice.js'
+import { openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage ,deletemassage} from '../Redux/slices/chatSlice.js'
 
 const SingleMassage = ({ socket }) => {
 
@@ -28,8 +28,7 @@ const SingleMassage = ({ socket }) => {
   const [select,setSelect]=useState(false)
   const [chatUserId,setChatUserId]=useState('')
   const [timeId,setTimeId]=useState('')
-  const [typing,setTyping]=useState(false)
-  const {setLoader}=useContext(context)
+  const {setLoader,typing}=useContext(context)
   const [sendMLoader,setSendMLoader]=useState(false)
 
 
@@ -81,7 +80,7 @@ const SingleMassage = ({ socket }) => {
     const selectedChatId = chat.openSingleChat._id
     try {
       await axios.post(`${BACKEND_URL}/chat/unblockchat`, { userId: user._id, chatId: selectedChatId })
-      dispatch(unblockUser({ userId: user._id, chatId: chat.openSingleChat._id }))
+      // dispatch(unblockUser({ userId: user._id, chatId: chat.openSingleChat._id }))
       setDropdown(false)
     } catch (error) {
       console.log(error)
@@ -163,7 +162,7 @@ const SingleMassage = ({ socket }) => {
 
     }
   }
-  console.log(typing)
+
   useEffect(() => {
     document.addEventListener('click', getClick, true)
     return () => {
@@ -187,29 +186,6 @@ const SingleMassage = ({ socket }) => {
       })
     }
   }, [chat.openSingleChat])
-  useEffect(() => {
-    const listener = (chat) => {
-      dispatch(setChatNMassageIO(chat))
-    }
-    const isTyping = (chatId)=>{
-      if(chatId===chat.openSingleChat._id){
-        setTyping(true)
-      }
-    }
-    const stopTyping = (chatId)=>{
-      if(chatId===chat.openSingleChat._id){
-        setTyping(false)
-      }
-    }
-    socket.on('massageRecieved', listener)
-    socket.on('typing', isTyping)
-    socket.on('stopTyping', stopTyping)
-    return () => {
-      socket.off("massageRecieved", listener)
-      socket.off('typing',isTyping)
-      socket.off('stopTyping',stopTyping)
-    };
-  }, [socket])
   return (
     <>
       <div className="flex items-center py-2 bg-white">
