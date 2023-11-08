@@ -8,9 +8,8 @@ import SingleMassage from '../components/SingleMassage.jsx';
 import GroupMassage from '../components/GroupMassage.jsx'
 
 
-const Home = ({socket}) => {
+const Home = ({socket,slide,setSlide}) => {
   const navigate = useNavigate()
-  const [slide, setSlide] = useState(0)
   const chat = useSelector((state)=>(state.chat))
   const user = useSelector((state)=>(state.user))
 

@@ -12,16 +12,8 @@ const chatSlice = createSlice({
             state.singleChat = action.payload
             return state
         },
-        setGroupChat(state, action) {
-            state.groupChat = action.payload
-            return state
-        },
         openSingleChat(state, action) {
             state.openSingleChat = action.payload
-            return state
-        },
-        openGroupChat(state, action) {
-            state.openGroupChat = action.payload
             return state
         },
         setNotReadMassage_Chat(state, action) {
@@ -147,9 +139,24 @@ const chatSlice = createSlice({
                 }
             })
             return state
-        }
+        },
+
+
+        //Group
+        setGroupChat(state, action) {
+            state.groupChat = action.payload
+            return state
+        },
+        setNewGroup(state,action){
+            state.groupChat.push(action.payload)
+            return state
+        },
+        openGroupChat(state, action) {
+            state.openGroupChat = action.payload
+            return state
+        },
     }
 })
 
 export default chatSlice;
-export const { setSearchUser, setSingleChat, setGroupChat, openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage ,setChatNMassageIO,deletemassage} = chatSlice.actions
+export const { setSearchUser, setSingleChat, setGroupChat, openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage ,setChatNMassageIO,deletemassage,setNewGroup} = chatSlice.actions

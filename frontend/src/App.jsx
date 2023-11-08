@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import {useDispatch} from 'react-redux'
 import { setUser } from './Redux/slices/userSlice.js'
-import {setSingleChat} from './Redux/slices/chatSlice.js'
+import {setSingleChat,setGroupChat} from './Redux/slices/chatSlice.js'
 import { useSelector } from 'react-redux'
 import {context} from './context/context.js'
 import io from 'socket.io-client'
@@ -31,6 +31,7 @@ function App() {
   const [loader,setLoader]=useState(false)
   const [typing,setTyping]=useState(false)
   const [currentTyping,setCurrentTyping]=useState('')
+  const [slide, setSlide] = useState(0)
 
   const getUser = async()=>{
     setLoader(true)
@@ -58,6 +59,18 @@ function App() {
     }
     setLoader(false)
   }
+  const getGroupChat = async()=>{
+    setLoader(true)
+    try {
+      const res = await axios.post(`${BACKEND_URL}/group/getgroupchat`,{userId:user._id})
+      dispatch(setGroupChat(res.data))
+      setLoader(false)
+      return res.data
+    } catch (error) {
+      dispatch(setGroupChat([]))
+    }
+    setLoader(false)
+  }
   
   useEffect(()=>{
     getUser()
@@ -65,6 +78,7 @@ function App() {
   useEffect(() => {
     if(user && user._id){
       getSingleChat()
+      getGroupChat()
       let socket=io(BACKEND_URL)
       socket.emit('setup',user._id)
       setSocket(socket)
@@ -96,10 +110,10 @@ function App() {
     }
   },[currentTyping])
   return (
-   <context.Provider value={{getUser,getSingleChat,setLoader,typing}}>
+   <context.Provider value={{getUser,getSingleChat,getGroupChat,setLoader,typing}}>
     <div className={`${(loader)?'flex':'hidden'} w-full h-[100vh] absolute top-0 left-0 items-center justify-center z-50 bg-[#00000050]`}><div className='spinner'></div></div>
      <Routes>
-     <Route path='/' element={<Home socket={socket}/>}/>
+     <Route path='/' element={<Home socket={socket} slide={slide} setSlide={setSlide}/>}/>
      <Route path='/login' element={<Login />}/>
      <Route path='/signup' element={<SignUp/>}/>
      <Route path='/sendresetlink' element={<SendResetLink/>}/>

@@ -18,7 +18,9 @@ app.use(cors({
 }))
 app.use(require('./routes/userRouter.js'))
 app.use('/chat',require('./routes/chatRouter.js'))
+app.use('/group',require('./routes/groupRouter.js'))
 app.use('/massage',require('./routes/massageRouter.js'))
+app.use('/groupmassage',require('./routes/groupMassageRouter.js'))
 
 cloudinary.v2.config({ 
     cloud_name: process.env.CLOUDINARY_NAME, 
