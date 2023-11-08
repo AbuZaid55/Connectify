@@ -257,7 +257,6 @@ const logout = async (req, res) => {
         })
         await user.save()
         sendSuccess(res, { massage: "User logout successfully" })
-        console.log("yayay")
     } catch (error) {
         console.log(error)
         sendError(res, "Something went wrong!")

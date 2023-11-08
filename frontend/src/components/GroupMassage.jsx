@@ -9,9 +9,9 @@ import data from '@emoji-mart/data'
 import axios from 'axios'
 import { context} from '../context/context.js'
 import { useDispatch, useSelector } from 'react-redux'
-import { openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage ,deletemassage} from '../Redux/slices/chatSlice.js'
+import { openGroupChat, setNotReadMassage_Chat, setGroupMassage } from '../Redux/slices/chatSlice.js'
 
-const GroupMassage = () => {
+const GroupMassage = ({socket}) => {
 
   const navigate = useNavigate()
   const [dropdown, setDropdown] = useState(false) 
@@ -50,9 +50,8 @@ function formateData(date) {
       try {
         const res = await axios.post(`${BACKEND_URL}/groupmassage/createmassage`, { senderId: user._id, content: input, chatId: chat.openGroupChat._id })
         const newMassage = res.data.newMassage
-        const resChat = res.data.chat
-        // socket.emit('newMassage', {newMassage:newMassage,chat:resChat,user:user})
-        dispatch(setMassage({newMassage:newMassage,chatId:resChat._id}))
+        socket.emit('newGroupMassage', {newMassage:newMassage,chat:chat.openGroupChat,userId:user._id})
+        dispatch(setGroupMassage({newMassage:newMassage,chatId:res.data.chatId}))
         setInput('')
         setEmoji(false)
       } catch (error) {
@@ -114,16 +113,16 @@ function formateData(date) {
     // navigate(`/profile?userId=${chatUserId}`)
   }
   const Typing = (e)=>{
-    // setInput(e.target.value)
-    // if(socket){
-    //   socket.emit('typing',{chat:chat.openGroupChat,userId:user._id})
-    //   clearTimeout(timeId)
-    //   let timeout = setTimeout(()=>{
-    //     socket.emit('stopTyping',{chat:chat.openGroupChat,userId:user._id})
-    //   },2000)
-    //   setTimeId(timeout)
+    setInput(e.target.value)
+    if(socket){
+      socket.emit('typing',{chat:chat.openGroupChat,userId:user._id})
+      clearTimeout(timeId)
+      let timeout = setTimeout(()=>{
+        socket.emit('stopTyping',{chat:chat.openGroupChat,userId:user._id})
+      },2000)
+      setTimeId(timeout)
 
-    // }
+    }
   }
 
   useEffect(() => {

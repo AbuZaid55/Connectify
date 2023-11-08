@@ -19,7 +19,7 @@ import { useSelector } from 'react-redux'
 import {context} from './context/context.js'
 import io from 'socket.io-client'
 import MyProfile from './pages/MyProfile.jsx'
-import {setChatNMassageIO} from './Redux/slices/chatSlice.js'
+import {setChatNMassageIO,setgroupChatNMassageIO} from './Redux/slices/chatSlice.js'
 
 function App() {
   const [socket,setSocket]=useState('')
@@ -86,6 +86,9 @@ function App() {
       const listener = (chat) => {
         dispatch(setChatNMassageIO(chat))
       }
+      const listener2 = ({chatId,newMassage}) => {
+        dispatch(setgroupChatNMassageIO({chatId,newMassage}))
+      }
       const isTyping = (chatId)=>{
         setCurrentTyping(chatId)
       }
@@ -93,6 +96,7 @@ function App() {
         setCurrentTyping('')
       }
       socket.on('massageRecieved', listener)
+      socket.on('groupMassageRecieved', listener2)
       socket.on('typing',isTyping)
       socket.on('stopTyping', stopTyping)
       return () => {
@@ -103,7 +107,7 @@ function App() {
     }
   },[user])
   useEffect(()=>{
-    if(currentTyping===chat.openSingleChat._id){
+    if(currentTyping===chat.openSingleChat._id || currentTyping===chat.openGroupChat._id){
       setTyping(true)
     }else{
       setTyping(false)

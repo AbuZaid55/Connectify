@@ -112,10 +112,8 @@ const chatSlice = createSlice({
         },
         setChatNMassageIO(state,action){
             const chat = action.payload 
-            let chatFind = false
             state.singleChat.map((s_chat)=>{
                 if(s_chat._id===chat._id){
-                    chatFind = true
                     s_chat.isHidden=[]
                     s_chat.massage.push(chat.massage[0])
                     if(state.openSingleChat._id===chat._id){
@@ -125,10 +123,6 @@ const chatSlice = createSlice({
                     }
                 }
             })
-            if(!chatFind){
-                chat.notReadMassage +=1
-                state.singleChat.push(chat)
-            }
             return state
         },
         deletemassage(state,action){
@@ -155,8 +149,38 @@ const chatSlice = createSlice({
             state.openGroupChat = action.payload
             return state
         },
+        setGroupMassage(state, action) {
+            const chatId = action.payload.chatId
+            const newMassage = action.payload.newMassage
+            state.groupChat.map((chat) => {
+                if (chat._id === chatId) {
+                    chat.massage.push(newMassage)
+                    if (state.openGroupChat._id === chatId) {
+                        state.openGroupChat.massage.push(newMassage)
+                    } else {
+                        chat.notReadMassage += 1
+                    }
+                    return state
+                }
+            })
+        },
+        setgroupChatNMassageIO(state,action){
+            const {chatId,newMassage}=action.payload
+            console.log(chatId,newMassage)
+            state.groupChat.map((chat)=>{
+                if(chat._id===chatId){
+                    chat.massage.push(newMassage)
+                    if(state.openGroupChat._id===chatId){
+                        state.openGroupChat.massage.push(newMassage)
+                    }else{
+                        chat.notReadMassage += 1
+                    }
+                }
+            })
+            return state
+        },
     }
 })
 
 export default chatSlice;
-export const { setSearchUser, setSingleChat, setGroupChat, openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage ,setChatNMassageIO,deletemassage,setNewGroup} = chatSlice.actions
+export const { setSearchUser, setSingleChat, setGroupChat, openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage ,setChatNMassageIO,deletemassage,setNewGroup,setGroupMassage,setgroupChatNMassageIO} = chatSlice.actions

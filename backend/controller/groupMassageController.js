@@ -5,7 +5,6 @@ const groupMassageModel = require('../models/groupMassageModel.js')
 const { sendError, sendSuccess } = require('../utils/sendResponse.js') 
 
 const createMassage = async (req, res) => {
-    console.log("Run1")
     const { senderId, content, chatId } = req.body
     if (!senderId || !content || !chatId) {
         return sendError(res, "massage not created!")
@@ -19,8 +18,7 @@ const createMassage = async (req, res) => {
         chat.massage.push(result._id)
         await chat.save()
         await result.save()
-        console.log("run")
-        sendSuccess(res, { massage: 'Massage created', newMassage: result, chat: chat })
+        sendSuccess(res, { massage: 'Massage created', newMassage: result, chatId: chat._id })
     } catch (error) {
         console.log(error)
         sendError(res, "Something went wrong!")

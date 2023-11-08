@@ -13,7 +13,7 @@ const Login = () => {
   const BACKEND_URL=import.meta.env.VITE_BACKEND_URL  
   const navigate = useNavigate()
   const [input,setInput]=useState({email:'',password:''})
-  const {setLoader} = useContext(context)
+  const {setLoader,getUser} = useContext(context)
 
   const handleInput = (e)=>{
     setInput({...input,[e.target.name]:e.target.value})
@@ -25,6 +25,7 @@ const Login = () => {
       const res = await axios.post(`${BACKEND_URL}/login`,input,{withCredentials:true})
       setInput({email:'',password:''})
       if(res.status===200){
+        await getUser()
         navigate('/')
       }
       if(res.status===202){
@@ -38,7 +39,7 @@ const Login = () => {
   }
 
   useEffect(()=>{
-    if(user && user.validated){
+    if(user && user._id){
       navigate('/')
     }
   },[user])

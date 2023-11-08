@@ -71,4 +71,12 @@ io.on('connection',(socket)=>{
             }
         })
     })
+
+    socket.on('newGroupMassage',({newMassage,chat,userId})=>{
+        chat.joinChat.map((object)=>{
+            if(!chat.blockList.includes(object._id) && userId!==object._id){ 
+                socket.in(object._id).emit('groupMassageRecieved',{chatId:chat._id,newMassage:newMassage})   
+            }
+        })
+    })
 })
