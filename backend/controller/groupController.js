@@ -1,5 +1,6 @@
 const { sendError, sendSuccess } = require('../utils/sendResponse.js')
 const groupModel = require('../models/groupModel.js')
+const groupMassageModel = require('../models/groupMassageModel.js')
 
 const createGroup = async (req, res) => {
     const { chatName, description, users, admin } = req.body
@@ -23,7 +24,6 @@ const createGroup = async (req, res) => {
         sendError(res, "Something went wrong!")
     }
 }
-
 const getGroupChat = async (req, res) => {
     const { userId } = req.body
     if (!userId) {
@@ -52,8 +52,36 @@ const getGroupChat = async (req, res) => {
         sendError(res, "Something went wrong!")
     }
 }
-
+const updateReadMassge = async (req, res) => {
+    const { userId, chatId } = req.body
+    if (!userId || !chatId) {
+        return sendError(res, "Invalid credentials ")
+    }
+    try {
+        const chat = await groupModel.findById(chatId).populate({
+            path: 'massage',
+            match: {
+                $and: [
+                    { isHidden: { $nin: userId } },
+                    { readBy: { $nin: userId } }
+                ]
+            }
+        })
+        if (!chat) {
+            return sendError(res, "Invalid chat id")
+        }
+        chat.massage.map(async (m) => {
+            const result = await groupMassageModel.findById(m._id)
+            result.readBy.push(userId)
+            await result.save()
+        })
+        sendSuccess(res, { massage: "updated readby massage" })
+    } catch (error) {
+        sendError(res, "Something went wrong!")
+    }
+}
 module.exports = {
     createGroup,
     getGroupChat,
+    updateReadMassge,
 }
