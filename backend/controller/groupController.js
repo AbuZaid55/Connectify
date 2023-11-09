@@ -80,8 +80,31 @@ const updateReadMassge = async (req, res) => {
         sendError(res, "Something went wrong!")
     }
 }
+const clearAllChats = async (req, res) => {
+    const { userId, chatId } = req.body
+    if (!userId || !chatId) {
+        return sendError(res, "Invalid credentials!")
+    }
+    try {
+        const chat = await groupModel.findById(chatId)
+        if (!chat) {
+            return sendError(res, "Invalid chat id!")
+        }
+        chat.massage.map(async (massage) => {
+            const dbMassage = await groupMassageModel.findById(massage._id)
+            if (!dbMassage.isHidden.includes(userId)) {
+                dbMassage.isHidden.push(userId)
+            }
+            await dbMassage.save()
+        })
+        sendSuccess(res, { massage: "Clear all chats successfully" })
+    } catch (error) {
+        sendError(res, "Something went wrong!")
+    }
+}
 module.exports = {
     createGroup,
     getGroupChat,
     updateReadMassge,
+    clearAllChats,
 }

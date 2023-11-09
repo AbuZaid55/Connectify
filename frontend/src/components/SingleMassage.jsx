@@ -170,6 +170,7 @@ const SingleMassage = ({ socket }) => {
     }
   }, [])
   useEffect(() => {
+    setCheckedMassage([])
     setSelect(false)
     if (chat.openSingleChat) {
       setReadMassage()
@@ -216,7 +217,7 @@ const SingleMassage = ({ socket }) => {
         {
           chat.openSingleChat && chat.openSingleChat.massage.map((massage) => {
             return <div key={massage._id} className={`flex ${(massage.isHidden.includes(user._id))?'hidden':''} `}>
-              <input className={`${(select)?'':'hidden'}`} type="checkbox" id={massage._id} onChange={(e)=>{selectMassage(e)}} value={massage._id}/>
+              <input className={`${(select)?'':'hidden'}`} type="checkbox" id={massage._id} onChange={(e)=>{selectMassage(e)}} value={massage._id} checked={checkedMassage.includes(massage._id)}/>
               <label className="w-full flex" htmlFor={(select)?massage._id:""}>
               <div className={` max-w-[50%] min-w-[15%] ${(massage.senderId === user._id) ? 'myMassage' : 'otherMassage'} p-3 rounded-lg my-1 mx-2`}>
               <p className=" break-words" >{massage.content}</p>
@@ -226,7 +227,7 @@ const SingleMassage = ({ socket }) => {
             </div>
           })
         }
-          <div onClick={()=>{deleteMassage()}}  className={`${(select)?'':'hidden'} absolute bottom-5 right-8 text-3xl text-red-600 bg-white p-1 hover:scale-150 cursor-pointer shadow-lg rounded-full transition duration-300 ease-in-out`}><AiFillDelete/></div>
+          <div onClick={()=>{deleteMassage()}}  className={`${(select)?'':'hidden'} fixed bottom-24 right-8 text-3xl text-red-600 bg-white p-1 hover:scale-150 cursor-pointer shadow-lg rounded-full transition duration-300 ease-in-out`}><AiFillDelete/></div>
       </div>
 
       <div className={`${(blockUser) ? 'hidden' : 'flex'} bg-white items-center justify-between p-2 gap-3 relative`}>

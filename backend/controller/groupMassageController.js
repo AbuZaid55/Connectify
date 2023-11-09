@@ -1,5 +1,3 @@
-const massageModel = require('../models/massageModel.js')
-const chatModel = require('../models/chatModel.js')
 const groupModel = require('../models/groupModel.js')
 const groupMassageModel = require('../models/groupMassageModel.js')
 const { sendError, sendSuccess } = require('../utils/sendResponse.js') 
@@ -36,7 +34,7 @@ const deleteMassage = async (req, res) => {
         return sendError(res, "Massages id not found!")
     }
     try {
-        const chat = await chatModel.findById(chatId).populate({
+        const chat = await groupModel.findById(chatId).populate({
             path: 'massage',
             match: { _id: { $in: massagesId } }
         })
@@ -44,7 +42,7 @@ const deleteMassage = async (req, res) => {
             return sendError(res, "Invalid chat id")
         }
         chat.massage.map(async (massage) => {
-            const dbMassage = await massageModel.findById(massage._id)
+            const dbMassage = await groupMassageModel.findById(massage._id)
             if (!dbMassage.isHidden.includes(userId)) {
                 dbMassage.isHidden.push(userId)
                 await dbMassage.save()
@@ -56,7 +54,9 @@ const deleteMassage = async (req, res) => {
     }
 }
 
+
+
 module.exports = {
     createMassage,
-    deleteMassage
+    deleteMassage,
 }
