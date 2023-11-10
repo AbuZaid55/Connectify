@@ -19,6 +19,7 @@ import { useSelector } from 'react-redux'
 import {context} from './context/context.js'
 import io from 'socket.io-client'
 import MyProfile from './pages/MyProfile.jsx'
+import GroupProfile from './pages/GroupProfile.jsx'
 import {setChatNMassageIO,setgroupChatNMassageIO} from './Redux/slices/chatSlice.js'
 
 function App() {
@@ -127,6 +128,7 @@ function App() {
      <Route path='/newgroupchat' element={<NewGroupChat/>}/>
      <Route path='/profile' element={<Profile/>}/>
      <Route path='/myprofile' element={<MyProfile/>}/>
+     <Route path='/groupInfo' element={<GroupProfile/>}/>
     </Routes>
     <ToastContainer position="bottom-right"/>
    </context.Provider>

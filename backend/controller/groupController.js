@@ -27,7 +27,7 @@ const createGroup = async (req, res) => {
 const getGroupChat = async (req, res) => {
     const { userId } = req.body
     if (!userId) {
-        return sendError(res, "Invalid User") 
+        return sendError(res, "Invalid User")
     }
 
     try {
@@ -102,9 +102,136 @@ const clearAllChats = async (req, res) => {
         sendError(res, "Something went wrong!")
     }
 }
+const getSingleGroup = async (req, res) => {
+    const { groupId, userId } = req.body
+    if (!groupId || !userId) {
+        return sendError(res, "Invalid details!")
+    }
+    try {
+        const chat = await groupModel.findOne({ _id: groupId, joinChat: userId }).populate({ path: 'joinChat', select: 'name profile.secure_url bio' }).populate({ path: 'admin', select: ' name profile.secure_url bio' })
+        if (!chat) {
+            return sendError(res, "Chat not found!")
+        }
+        chat.profile.public_id = undefined
+        sendSuccess(res, { data: chat })
+    } catch (error) {
+        sendError(res, "Something went wrong!")
+    }
+}
+const addUser = async (req, res) => {
+    const { chatId, users } = req.body
+    if (!chatId || users.length == 0) {
+        return sendError(res, 'Please select user!')
+    }
+    try {
+        const chat = await groupModel.findById(chatId)
+        if (!chat) {
+            return sendError(res, "Chat not found!")
+        }
+        users.map((_id)=>{
+            if(!chat.joinChat.includes(_id)){
+                chat.joinChat.push(_id)
+            }
+        })
+        chat.blockList = chat.blockList.filter((_id)=>!users.includes(_id))
+        await chat.save()
+        sendSuccess(res,{massage:"Users added successfully"})
+    } catch (error) {
+        sendError(res, "Something went wrong!")
+    }
+}
+const addAdmin = async (req, res) => {
+    const { chatId, users } = req.body
+    if (!chatId || users.length == 0) {
+        return sendError(res, 'Please select user!')
+    }
+    try {
+        const chat = await groupModel.findById(chatId)
+        if (!chat) {
+            return sendError(res, "Chat not found!")
+        }
+        chat.admin = chat.admin.concat(users)
+        await chat.save()
+        sendSuccess(res,{massage:"Users added successfully"})
+    } catch (error) {
+        sendError(res, "Something went wrong!")
+    }
+}
+const removeAdmin = async(req,res)=>{
+    const {chatId,myId,adminId}=req.body
+    if(!chatId || !myId || !adminId){
+        return sendError(res,"Invalid details")
+    }
+    try {
+        const chat =  await groupModel.findById(chatId)
+        if(!chat){
+            return sendError(res,"Chat not found!")
+        }
+        if(!chat.admin.includes(myId)){
+            return sendError(res,"You have no permission")
+        }
+        if(chat.admin.length<=1){
+            return res.status(202).send({massage:'Please make admin to another'})
+        }
+        chat.admin = chat.admin.filter((_id)=>_id!=adminId)
+        await chat.save()
+        sendSuccess(res,{massage:"Admin removed successfully"})
+    } catch (error) {
+        sendError(res,"Something went wrong!")
+    }
+}
+const removeUser = async(req,res)=>{
+    const {chatId,userId}=req.body
+    if(!chatId || !userId){
+        return sendError(res,"Invalid details")
+    }
+    try {
+        const chat = await groupModel.findById(chatId)
+        if(!chat){
+            return sendError(res,"Chat not found!")
+        }
+        chat.blockList.push(userId)
+        await chat.save()
+        sendSuccess(res,{massage:'User removed successfully'})
+    } catch (error) {
+        console.log(error)
+        sendError(res,"Something went wrong!")
+    }
+}
+const deleteGroup = async(req,res)=>{
+    const {chatId,userId}=req.body 
+    if(!chatId || !userId){
+        return sendError(res,"Invlalid details!")
+    }
+    try {
+      const chat = await groupModel.findById(chatId)  
+      if(!chat){
+        return sendError(res,"Chat not found!")
+      }
+      chat.blockList = chat.blockList.filter((_id)=>_id!=userId)
+      chat.joinChat = chat.joinChat.filter((_id)=>_id!=userId)
+      if(chat.joinChat.length==0){
+        chat.massage.map(async(massageId)=>{
+            await groupMassageModel.findByIdAndDelete(massageId)
+        })
+        await groupModel.findByIdAndDelete(chatId)
+      }else{
+        await chat.save()
+      }
+      sendSuccess(res,{massage:"Group delete successfully"})
+    } catch (error) {
+        sendError(res,"Something went wrong!")
+    }
+}
 module.exports = {
     createGroup,
     getGroupChat,
     updateReadMassge,
     clearAllChats,
+    getSingleGroup,
+    addUser,
+    addAdmin,
+    removeAdmin,
+    removeUser,
+    deleteGroup,
 }

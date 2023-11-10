@@ -14,10 +14,13 @@ const groupSchema = mongoose.Schema({
             default:'',
         },
     },
-    admin:[{
-        type:Array,
-        required:true,
-    }],
+    admin:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'user',
+            required: true
+        }
+    ],
     description:{
         type:String,
     },

@@ -8,7 +8,7 @@ const SearchUser = () => {
     const dispatch = useDispatch()
     const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 
-    const useDebouce = (cb, delay = 1000) => {
+    const useDebouce = (cb, delay = 500) => {
         let timeId;
         return (...arg) => {
             clearTimeout(timeId);

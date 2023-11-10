@@ -110,7 +110,7 @@ const GroupMassage = ({ socket }) => {
     }
   }
   const navigateToProfile = () => {
-    // navigate(`/profile?userId=${chatUserId}`)
+    navigate(`/groupInfo?groupId=${chat.openGroupChat._id}`)
   }
   const Typing = (e) => {
     setInput(e.target.value)
