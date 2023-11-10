@@ -283,9 +283,21 @@ const chatSlice = createSlice({
                 }
             })
             return state
+        },
+        uploadPic(state,action){
+            const {chatId,secure_url}=action.payload
+            if(state.openGroupChat._id===chatId){
+                state.openGroupChat.profile.secure=secure_url
+            }
+            state.groupChat.map((group)=>{
+                if(group._id===chatId){
+                    group.profile.secure_url=secure_url
+                }
+            })
+            return state
         }
     }
 })
 
 export default chatSlice;
-export const { setSearchUser, setSingleChat, setGroupChat, openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage, setChatNMassageIO, deletemassage, setNewGroup, setGroupMassage, setgroupChatNMassageIO, setNotReadMassage_Group, deleteGroupMassage, clearAllChats_Group, deleteGroup, leftUser, addInGroup ,editgroup} = chatSlice.actions
+export const { setSearchUser, setSingleChat, setGroupChat, openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage, setChatNMassageIO, deletemassage, setNewGroup, setGroupMassage, setgroupChatNMassageIO, setNotReadMassage_Group, deleteGroupMassage, clearAllChats_Group, deleteGroup, leftUser, addInGroup ,editgroup,uploadPic} = chatSlice.actions

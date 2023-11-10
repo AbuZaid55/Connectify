@@ -35,15 +35,16 @@ const Profile = () => {
         }
     },[User])
     return (
-        <div className='h-[70vh] mx-20'>
-            <h1 className='text-center text-6xl font-semibold text-primary-800 mt-10'>Profile</h1>
-            <div className='flex items-center h-full'>
-                <img className='border-4 rounded-full w-96 h-96 border-primary-800' src={`${(user.profile.secure_url)?user.profile.secure_url:"../profile.jpg"}`} alt="" />
-                <div className='ml-10 text-3xl'>
-                    <h1 className='m-4'>Name:- {user.name}</h1>
-                    <h1 className='m-4'>Email:- {user.email}</h1>
-                    <h1 className='m-4'>Bio:- {user.bio}</h1>
-                </div>
+        <div className='flex items-center justify-center h-[100vh]'>
+            <div className='w-[90%] md:w-[50%] shadow-2xl bg-white rounded-lg overflow-hidden border-2 border-primary-800'>
+            <div className='flex flex-col items-center justify-center'>
+                <div className=' bg-primary-800 h-52 w-full'></div>
+                <img className='absolute w-64 h-64 md:h-72 md:w-72  shadow-2xl hover:scale-110 transition ease-in-out duration-300 cursor-pointer rounded-lg border-2 border-primary-800' src={`${(user.profile.secure_url)?user.profile.secure_url:"../profile.jpg"}`} alt="" />
+                <div className=' bg-white h-52 w-full'></div>
+            </div>
+            <h1 className='text-center -mt-4 text-4xl font-semibold text-primary-800'>{user.name}</h1>
+            <h1 className='text-center text-md mt-1'>{user.email}</h1>
+            <h1 className='text-center mb-10 text-md'>{user.bio}</h1>
             </div>
         </div>
     )

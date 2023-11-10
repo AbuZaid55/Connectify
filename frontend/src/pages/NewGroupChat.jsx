@@ -57,7 +57,7 @@ const NewGroupChat = ({socket}) => {
     }
   }, [user])
   return (
-    <div className='h-[100vh] overflow-hidden flex flex-col items-center '>
+    <div className='h-[100vh] overflow-hidden flex flex-col items-center px-2'>
       <h1 className='mt-10 text-4xl text-primary-800 font-bold font-serif'>New Group</h1>
       <SearchUser />
 
@@ -68,7 +68,7 @@ const NewGroupChat = ({socket}) => {
         {
           searchUsers.map((user) => {
             return <div key={user._id} className='flex items-center py-1 sm:px-2'>
-              <input className='ml-3' type="checkbox" id={user._id} onChange={(e) => { selectUser(e, user._id) }} />
+              <input className='ml-3' type="checkbox" id={user._id} onChange={(e) => { selectUser(e, user._id) }} checked={selectedUser.includes(user._id)} />
               <label htmlFor={user._id} className='flex cursor-pointer'>
                 <img onClick={() => { navigateToProfile(user._id) }} className=' w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' src={(user.profile.secure_url) ? user.profile.secure_url : './profile.jpg'} alt="" />
                 <div>
@@ -88,7 +88,7 @@ const NewGroupChat = ({socket}) => {
 
 
       <div className={`${(form) ? 'flex' : 'hidden'} fixed top-0 left-0 w-[100%] h-[100vh] bg-[#00000050] overflow-hidden items-center justify-center`}>
-        <div className='flex flex-col w-96 shadow-2xl p-4 bg-white'>
+        <div className='flex flex-col w-96 shadow-2xl p-4 bg-white rounded-md'>
           <p className='text-end cursor-pointer' onClick={() => { setform(false) }}>X</p>
           <label className='mt-2 text-xl' htmlFor="name">Enter Chat Name:- </label>
           <input value={input.chatName} onChange={(e) => { setInput({ ...input, chatName: e.target.value }) }} className='border-2 border-primary-800  py-2' type="text" id='name' />

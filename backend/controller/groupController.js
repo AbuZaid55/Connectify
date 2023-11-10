@@ -1,6 +1,8 @@
 const { sendError, sendSuccess } = require('../utils/sendResponse.js')
 const groupModel = require('../models/groupModel.js')
 const groupMassageModel = require('../models/groupMassageModel.js')
+const cloudinary = require('cloudinary')
+const fs = require('fs/promises')
 
 const createGroup = async (req, res) => {
     const { chatName, description, users, admin } = req.body
@@ -242,6 +244,39 @@ const editGroup = async(req,res)=>{
      sendError(res,"Something went wrong!")   
     }
 }
+const uploadprofile = async(req,res)=>{
+    if (req.fileError) {
+        return sendError(res, req.fileError)
+    }
+    const chatId = (req.body && req.body.chatId) ? req.body.chatId : ''
+    const profile = (req.file && req.file.filename) ? req.file.filename : ''
+    if (profile === '') {
+        return sendError(res, "Please select profile pic!")
+    }
+    if (chatId === '') {
+        return sendError(res, "Invalid User!")
+    }
+    try {
+        const chat = await groupModel.findById(chatId)
+        if (!chat) {
+            return sendError(res, "Invalid Chat!")
+        }
+        if (chat.profile.public_id !== '') {
+            await cloudinary.uploader.destroy(chat.profile.public_id)
+        }
+        const result = await cloudinary.v2.uploader.upload(req.file.path, { folder: 'Connectify_Profile' })
+
+        if (result) {
+            chat.profile.public_id = result.public_id
+            chat.profile.secure_url = result.secure_url
+        }
+        await chat.save()
+        fs.rm(req.file.path)
+        sendSuccess(res, {massage:"Profile upload successfully", secure_url:result.secure_url , chatId:chatId})
+    } catch (error) {
+        sendError(res, "Something went wrong!")
+    }
+}
 module.exports = {
     createGroup,
     getGroupChat,
@@ -254,4 +289,5 @@ module.exports = {
     removeUser,
     deleteGroup,
     editGroup,
+    uploadprofile
 }

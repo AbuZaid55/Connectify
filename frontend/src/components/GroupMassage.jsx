@@ -4,14 +4,15 @@ import { CiMenuKebab } from "react-icons/ci";
 import { LiaLaughSquint } from "react-icons/lia";
 import { AiFillDelete } from "react-icons/ai";
 import { IoIosSend } from "react-icons/io";
+import { HiArrowLeft } from "react-icons/hi";
 import Picker from '@emoji-mart/react'
 import data from '@emoji-mart/data'
 import axios from 'axios'
 import { context } from '../context/context.js'
 import { useDispatch, useSelector } from 'react-redux'
-import { openGroupChat, setNotReadMassage_Group,deleteGroupMassage,clearAllChats_Group, setGroupMassage } from '../Redux/slices/chatSlice.js'
+import { openGroupChat, setNotReadMassage_Group, deleteGroupMassage, clearAllChats_Group, setGroupMassage } from '../Redux/slices/chatSlice.js'
 
-const GroupMassage = ({ socket }) => {
+const GroupMassage = ({ socket, setShowMcomponent }) => {
 
   const navigate = useNavigate()
   const [dropdown, setDropdown] = useState(false)
@@ -72,7 +73,7 @@ const GroupMassage = ({ socket }) => {
     setLoader(true)
     try {
       await axios.post(`${BACKEND_URL}/group/clearallchats`, { userId: user._id, chatId: chat.openGroupChat._id })
-      dispatch(clearAllChats_Group({ chatId: chat.openGroupChat._id ,userId:user._id}))
+      dispatch(clearAllChats_Group({ chatId: chat.openGroupChat._id, userId: user._id }))
       setDropdown(false)
     } catch (error) {
       console.log(error)
@@ -82,8 +83,8 @@ const GroupMassage = ({ socket }) => {
   const deleteMassage = async () => {
     setLoader(true)
     try {
-      const res = await axios.post(`${BACKEND_URL}/groupmassage/deletemassage`,{chatId:chat.openGroupChat._id,massagesId:checkedMassage,userId:user})
-      dispatch(deleteGroupMassage({chatId:chat.openGroupChat._id,userId:user._id,massagesId:checkedMassage}))
+      const res = await axios.post(`${BACKEND_URL}/groupmassage/deletemassage`, { chatId: chat.openGroupChat._id, massagesId: checkedMassage, userId: user })
+      dispatch(deleteGroupMassage({ chatId: chat.openGroupChat._id, userId: user._id, massagesId: checkedMassage }))
       setSelect(false)
     } catch (error) {
       console.log(error)
@@ -147,6 +148,7 @@ const GroupMassage = ({ socket }) => {
   return (
     <>
       <div className="flex items-center py-2 bg-white">
+        <span onClick={() => { setShowMcomponent(false) }} className="md:hidden mx-2 text-xl cursor-pointer"><HiArrowLeft /></span>
         <img src={`${(chat.openGroupChat && chat.openGroupChat.profile.secure_url) ? chat.openGroupChat.profile.secure_url : './profile.jpg'}`} className=" w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full" />
         <div>
           <h1 className=" text-base h-6 overflow-hidden">{chat.openGroupChat.chatName}</h1>
@@ -160,7 +162,7 @@ const GroupMassage = ({ socket }) => {
           <div className={`text-2xl mb-3 p-2  rounded-full cursor-pointer transition duration-300 ease-in-out ${dropdown ? "bg-primary-800 text-white" : " text-primary-800"}`} onClick={() => { setDropdown(!dropdown) }}><CiMenuKebab /></div>
           <ul className={`absolute top-full mt-3 right-0 bg-white shadow-2xl whitespace-nowrap rounded-md z-10 ${dropdown ? "block" : "hidden"}`}>
             <li onClick={() => { navigateToProfile() }} className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer  text-gray-600 transition duration-200 ease-in-out">Contact Info</li>
-            <li className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out" onClick={() => { dispatch(openGroupChat('')); dispatch(openGroupChat('')) }}>Close chat</li>
+            <li className="hidden md:block px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out" onClick={() => { dispatch(openGroupChat('')); dispatch(openGroupChat('')) }}>Close chat</li>
             <li onClick={() => { setSelect(!select); setDropdown(false) }} className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">Delete Massages</li>
             <li onClick={() => { clearAllChat() }} className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">Clear all chats</li>
           </ul>

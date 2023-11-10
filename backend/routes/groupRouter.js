@@ -1,5 +1,6 @@
 const router = require('express').Router()
-const { createGroup,getGroupChat,updateReadMassge ,clearAllChats,getSingleGroup,addUser,addAdmin,removeAdmin,removeUser,deleteGroup, editGroup} = require('../controller/groupController.js')
+const upload = require('../utils/uploadFile.js')
+const { createGroup,getGroupChat,updateReadMassge ,clearAllChats,getSingleGroup,addUser,addAdmin,removeAdmin,removeUser,deleteGroup, editGroup, uploadprofile} = require('../controller/groupController.js')
 
 router.post('/creategroup',createGroup)
 router.post('/getgroupchat',getGroupChat)
@@ -12,5 +13,6 @@ router.post('/removeadmin',removeAdmin)
 router.post('/removeuser',removeUser)
 router.post('/deletegroup',deleteGroup)
 router.post('/editgroup',editGroup)
+router.post('/uploadprofile',upload.single('file'),uploadprofile)
 
 module.exports=router

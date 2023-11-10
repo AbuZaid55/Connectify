@@ -4,7 +4,7 @@ import { openSingleChat, openGroupChat } from '../Redux/slices/chatSlice.js'
 import { MdGroupAdd } from 'react-icons/md'
 import { useNavigate } from 'react-router-dom'
 
-const GroupChat = () => {
+const GroupChat = ({search,setShowMcomponent}) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const chat = useSelector((state) => (state.chat))
@@ -15,7 +15,19 @@ const GroupChat = () => {
 
       {
         chat.groupChat.map((chat) => {
-          return <div key={chat._id} className='flex items-center py-2 border-b-2 border-primary-800 cursor-pointer hover:bg-hover-200 transition ease-in-out duration-300' onClick={() => { dispatch(openGroupChat(chat)); dispatch(openSingleChat('')) }}>
+          return <div onClick={()=>{setShowMcomponent(true)}} key={chat._id}>{
+            (search)?<>{
+              (chat.chatName.toLowerCase().includes(search)) && <div  className='flex items-center py-2 border-b-2 border-primary-800 cursor-pointer hover:bg-hover-200 transition ease-in-out duration-300' onClick={() => { dispatch(openGroupChat(chat)); dispatch(openSingleChat('')) }}>
+              <img src={`${(chat.profile.secure_url)?chat.profile.secure_url:'./profile.jpg'}`} className=' w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' />
+              <div >
+                <h1 className=' text-base h-6 overflow-hidden'>{chat.chatName}</h1>
+                <p className='w-full text-sm h-5 overflow-hidden'>{chat.massage[chat.massage.length-1] && chat.massage[chat.massage.length-1].content}</p>
+              </div>
+              <div className={` ml-auto w-20 text-center  ${(chat.notReadMassage)?' inline-block':'hidden'}`}><span className=' bg-primary-800 inline-block w-6 h-6 rounded-full text-white'>{chat.notReadMassage}</span></div>
+            </div>
+            }</>
+          :
+          <div className='flex items-center py-2 border-b-2 border-primary-800 cursor-pointer hover:bg-hover-200 transition ease-in-out duration-300' onClick={() => { dispatch(openGroupChat(chat)); dispatch(openSingleChat('')) }}>
             <img src={`${(chat.profile.secure_url)?chat.profile.secure_url:'./profile.jpg'}`} className=' w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' />
             <div >
               <h1 className=' text-base h-6 overflow-hidden'>{chat.chatName}</h1>
@@ -23,6 +35,7 @@ const GroupChat = () => {
             </div>
             <div className={` ml-auto w-20 text-center  ${(chat.notReadMassage)?' inline-block':'hidden'}`}><span className=' bg-primary-800 inline-block w-6 h-6 rounded-full text-white'>{chat.notReadMassage}</span></div>
           </div>
+          }</div>
         })
       }
 

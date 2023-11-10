@@ -11,7 +11,7 @@ import { RxExit } from 'react-icons/rx'
 import axios from 'axios'
 import SearchUser from '../components/SearchUser.jsx'
 import { toast } from 'react-toastify'
-import { deleteGroup, leftUser,editgroup } from '../Redux/slices/chatSlice.js'
+import { deleteGroup, leftUser,editgroup, uploadPic } from '../Redux/slices/chatSlice.js'
 
 const GroupProfile = ({ socket }) => {
 
@@ -34,6 +34,7 @@ const GroupProfile = ({ socket }) => {
     const [input,setInput]=useState({chatName:'',desc:''})
 
     const getGroupDetails = async () => {
+        setLoader(true)
         setAdmin([])
         setGroupMember([])
         try {
@@ -51,8 +52,9 @@ const GroupProfile = ({ socket }) => {
         } catch (error) {
             console.log(error)
         }
+        setLoader(false)
     }
-    const selectMember = async (e, _id) => {
+    const selectMember =  (e, _id) => {
         const checked = e.target.checked
         if (checked === true) {
             setSelectedMem((pre) => [...pre, _id])
@@ -62,7 +64,7 @@ const GroupProfile = ({ socket }) => {
             setSelectedMem(newList)
         }
     }
-    const selectAdmin = async (e, _id) => {
+    const selectAdmin = (e, _id) => {
         const checked = e.target.checked
         if (checked === true) {
             setSelectedAdmin((pre) => [...pre, _id])
@@ -73,6 +75,7 @@ const GroupProfile = ({ socket }) => {
         }
     }
     const addUser = async () => {
+        setLoader(true)
         if (selectedMem.length == 0) {
             toast.error('Please Select User!')
         } else {
@@ -86,8 +89,10 @@ const GroupProfile = ({ socket }) => {
                 console.log(error)
             }
         }
+        setLoader(false)
     }
     const addAdmin = async () => {
+        setLoader(true)
         if (selectedAdmin.length == 0) {
             toast.error('Please Select User!')
         } else {
@@ -100,8 +105,10 @@ const GroupProfile = ({ socket }) => {
                 console.log(error)
             }
         }
+        setLoader(false)
     }
     const removeAdmin = async (adminId) => {
+        setLoader(true)
         try {
             const res = await axios.post(`${BACKEND_URL}/group/removeadmin`, { chatId: group._id, myId: user._id, adminId: adminId })
             if (res.status === 202) {
@@ -112,8 +119,10 @@ const GroupProfile = ({ socket }) => {
         } catch (error) {
             console.log(error)
         }
+        setLoader(false)
     }
     const removeUser = async (_id) => {
+        setLoader(true)
         try {
             const res = await axios.post(`${BACKEND_URL}/group/removeuser`, { chatId: group._id, userId: _id })
             getGroupDetails()
@@ -124,8 +133,10 @@ const GroupProfile = ({ socket }) => {
         } catch (error) {
             console.log(error)
         }
+        setLoader(false)
     }
     const deleteChat = async () => {
+        setLoader(true)
         try {
             const res = await axios.post(`${BACKEND_URL}/group/deletegroup`, { chatId: group._id, userId: user._id })
             dispatch(deleteGroup({ chatId: group._id }))
@@ -133,8 +144,10 @@ const GroupProfile = ({ socket }) => {
         } catch (error) {
             console.log(error)
         }
+        setLoader(false)
     }
     const editGroup = async()=>{
+        setLoader(true)
         if(!input.chatName){
             toast.error("Enter Group Name")
         }
@@ -146,6 +159,25 @@ const GroupProfile = ({ socket }) => {
         } catch (error) {
            console.log(error) 
         }
+        setLoader(false)
+    }
+    const uploadProfile = async(e)=>{
+        setLoader(true)
+        const file = e.target.files[0]
+        const formdata = new FormData()
+        formdata.append('chatId',group._id)
+        formdata.append("file",file)
+        try {
+            const res = await axios.post(`${BACKEND_URL}/group/uploadprofile`,formdata)
+            getGroupDetails()
+            dispatch(uploadPic({chatId:res.data.chatId,secure_url:res.data.secure_url}))
+            toast.success("Profile uploaded successfully")
+        } catch (error) {
+            if(error.response.data.massage ){
+                toast.error(error.response.data.massage)
+            }
+        }
+        setLoader(false)
     }
     
     useEffect(() => {
@@ -163,13 +195,14 @@ const GroupProfile = ({ socket }) => {
         <div>
             <div className='flex flex-col items-center justify-center'>
                 <div className=' bg-primary-800 h-52 w-full'></div>
-                <img className='absolute h-[40%] shadow-xl rounded-md border-2 border-primary-800' src={(group.profile.secure_url)?group.profile.secure_url:'../profile.jpg'} alt="" />
+                <img className='absolute h-[40%] shadow-xl rounded-md border-2 border-primary-800' src={(group && group.profile.secure_url)?group.profile.secure_url:'../profile.jpg'} alt="" />
                 <div className='bg-white h-52 w-full'></div>
             </div>
             <div><h1 className='text-center text-4xl font-semibold text-primary-800 -mt-8'>{group.chatName}</h1></div>
             <div className=' text-center w-[80%] md:w-[50%] mx-auto mt-4'><p>{group.description}</p></div>
             <div className=' flex items-center justify-center'>
-                <button className={` ${(admin.includes(user._id) ? '' : 'hidden')} bg-[#e3e3e3] text-4xl px-10 mx-5 py-2 border-2 border-primary-800 my-5 rounded-md cursor-pointer hover:scale-110 transition ease-in-out duration-300`}><BsFillCameraFill /></button>
+                <input type="file" className='hidden' id='file' onChange={(e)=>{uploadProfile(e)}}/>
+                <label htmlFor='file' className={` ${(admin.includes(user._id) ? '' : 'hidden')} bg-[#e3e3e3] text-4xl px-10 mx-5 py-2 border-2 border-primary-800 my-5 rounded-md cursor-pointer hover:scale-110 transition ease-in-out duration-300`}><BsFillCameraFill /></label>
                 <button onClick={()=>{setShowEditForm(true)}} className={`${(admin.includes(user._id) ? '' : 'hidden')} bg-[#e3e3e3] text-4xl px-10 mx-5 py-2 border-2 border-primary-800 my-5 rounded-md cursor-pointer hover:scale-110 transition ease-in-out duration-300`}><MdOutlineEditNote /></button>
                 <button onClick={() => { removeUser(user._id) }} className={` ${(groupMember.includes(user._id) && !admin.includes(user._id) ? '' : 'hidden')} bg-[#e3e3e3] text-3xl px-10 mx-5 py-2 border-2 border-primary-800 my-5 rounded-md cursor-pointer hover:scale-110 transition ease-in-out duration-300`}><RxExit /></button>
                 <button onClick={() => { deleteChat() }} className={`${(group && group.blockList.includes(user._id) ? '' : 'hidden')} bg-[#e3e3e3] text-3xl px-10 mx-5 py-2 border-2 border-primary-800 my-5 rounded-md cursor-pointer hover:scale-110 transition ease-in-out duration-300`}><RiDeleteBin5Line /></button>
@@ -180,10 +213,10 @@ const GroupProfile = ({ socket }) => {
                     group && group.admin.map((Admin) => {
                         return <div key={Admin._id} className='flex items-center justify-between' >
                             <div className='flex items-center ml-5 my-2 py-2'>
-                                <img className=' cursor-pointer w-16 h-16 border-2 rounded-full border-primary-800' src={(Admin.profile.secure_url) ? Admin.profile.secure_url : '../profile.jpg'} alt="Img" />
+                                <img onClick={() => { navigate(`/profile?userId=${Admin._id}`) }} className=' cursor-pointer w-16 h-16 border-2 rounded-full border-primary-800' src={(Admin.profile.secure_url) ? Admin.profile.secure_url : '../profile.jpg'} alt="Img" />
                                 <div className='ml-3'>
                                     <h1>{(Admin._id === user._id) ? 'You' : Admin.name}</h1>
-                                    <p className='h-6 overflow-hidden w-full min-w-[500px]'>{Admin.bio}</p>
+                                    <p className='h-6 overflow-hidden w-full'>{Admin.bio}</p>
                                 </div>
                             </div>
                             <button onClick={() => { removeAdmin(Admin._id) }} className={`${(admin.includes(user._id) ? '' : 'hidden')}  mr-5 my-4 bg-primary-800 text-white text-md font-semibold py-2 px-10 rounded hover:bg-[#e3e3e3] transition duration-300 ease-in-out border-2 border-primary-800 hover:text-primary-800`}><RiDeleteBin5Line /></button>
@@ -198,10 +231,10 @@ const GroupProfile = ({ socket }) => {
                         return <div key={data._id}>
                             {!admin.includes(data._id) && !group.blockList.includes(data._id) && <div className='flex items-center justify-between'>
                                 <div className='flex items-center ml-5 my-2 py-2'>
-                                    <img className=' cursor-pointer w-16 h-16 border-2 rounded-full border-primary-800' src={(data.profile.secure_url) ? data.profile.secure_url : '../profile.jpg'} alt="Img" />
+                                    <img onClick={() => { navigate(`/profile?userId=${data._id}`) }} className=' cursor-pointer w-16 h-16 border-2 rounded-full border-primary-800' src={(data.profile.secure_url) ? data.profile.secure_url : '../profile.jpg'} alt="Img" />
                                     <div className='ml-3'>
                                         <h1>{(data._id === user._id) ? 'You' : data.name}</h1>
-                                        <p className='h-6 overflow-hidden w-full min-w-[500px]'>{data.bio}</p>
+                                        <p className='h-6 overflow-hidden w-full'>{data.bio}</p>
                                     </div>
                                 </div>
                                 <button onClick={() => { removeUser(data._id) }} className={` ${(admin.includes(user._id) ? '' : 'hidden')} mr-5 my-4 bg-primary-800 text-white text-md font-semibold py-2 px-10 rounded hover:bg-[#e3e3e3] transition duration-300 ease-in-out border-2 border-primary-800 hover:text-primary-800`}><RiDeleteBin5Line /></button>
@@ -228,7 +261,7 @@ const GroupProfile = ({ socket }) => {
                                                 <img className=' cursor-pointer w-16 h-16 border-2 rounded-full border-primary-800' onClick={() => { navigate(`/profile?userId=${data._id}`) }} src={(data.profile.secure_url) ? data.profile.secure_url : '../profile.jpg'} alt="Img" />
                                                 <div className='ml-3'>
                                                     <h1>{data.name}</h1>
-                                                    <p className='h-6 overflow-hidden w-full min-w-[500px]'>{data.bio}</p>
+                                                    <p className='h-6 overflow-hidden w-full'>{data.bio}</p>
                                                 </div>
                                             </div>
                                         </label>
@@ -265,7 +298,7 @@ const GroupProfile = ({ socket }) => {
                                                         <img className=' cursor-pointer w-16 h-16 border-2 rounded-full border-primary-800' onClick={() => { navigate(`/profile?userId=${data._id}`) }} src={(data.profile.secure_url) ? data.profile.secure_url : '../profile.jpg'} alt="Img" />
                                                         <div className='ml-3'>
                                                             <h1>{data.name}</h1>
-                                                            <p className='h-6 overflow-hidden w-full min-w-[500px]'>{data.bio}</p>
+                                                            <p className='h-6 overflow-hidden w-full'>{data.bio}</p>
                                                         </div>
                                                     </div>
                                                 </label>
@@ -277,7 +310,7 @@ const GroupProfile = ({ socket }) => {
                                                             <img className=' cursor-pointer w-16 h-16 border-2 rounded-full border-primary-800' onClick={() => { navigate(`/profile?userId=${data._id}`) }} src={(data.profile.secure_url) ? data.profile.secure_url : '../profile.jpg'} alt="Img" />
                                                             <div className='ml-3'>
                                                                 <h1>{data.name}</h1>
-                                                                <p className='h-6 overflow-hidden w-full min-w-[500px]'>{data.bio}</p>
+                                                                <p className='h-6 overflow-hidden w-full'>{data.bio}</p>
                                                             </div>
                                                         </div>
                                                     </label>
@@ -297,7 +330,7 @@ const GroupProfile = ({ socket }) => {
                 </div>
             </div>
             <div className={`${(showEditForm) ? 'flex' : 'hidden'} fixed top-0 left-0 w-[100%] h-[100vh] bg-[#00000050] overflow-hidden items-center justify-center`}>
-                <div className='flex flex-col w-96 shadow-2xl p-4 bg-white'>
+                <div className='flex flex-col w-96 shadow-2xl p-4 bg-white rounded-md'>
                     <p className='text-end cursor-pointer' onClick={() => { setShowEditForm(false) }}>X</p>
                     <label className='mt-2 text-xl' htmlFor="name">Enter Group Name:- </label>
                     <input value={input.chatName} onChange={(e) => { setInput({ ...input, chatName: e.target.value }) }} className='border-2 border-primary-800  py-2' type="text" id='name' />

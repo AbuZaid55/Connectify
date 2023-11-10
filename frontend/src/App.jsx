@@ -126,7 +126,7 @@ function App() {
   },[currentTyping])
   return (
    <context.Provider value={{getUser,getSingleChat,getGroupChat,setLoader,typing}}>
-    <div className={`${(loader)?'flex':'hidden'} w-full h-[100vh] absolute top-0 left-0 items-center justify-center z-50 bg-[#00000050]`}><div className='spinner'></div></div>
+    <div className={`${(loader)?'flex':'hidden'} w-full h-[100vh] fixed top-0 left-0 items-center justify-center z-50 bg-[#00000050]`}><div className='spinner'></div></div>
      <Routes>
      <Route path='/' element={<Home socket={socket} slide={slide} setSlide={setSlide}/>}/>
      <Route path='/login' element={<Login />}/>
