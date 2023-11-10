@@ -79,4 +79,13 @@ io.on('connection',(socket)=>{
             }
         })
     })
+
+    socket.on('removeGroupUser' ,({chatId,userId})=>{
+        socket.in(userId).emit('removeMeGroup',chatId)
+    })
+    socket.on('addInGroup',({chat,usersId})=>{
+        usersId.map((_id)=>{
+            socket.in(_id).emit('addinGroup',chat)
+        })
+    })
 })

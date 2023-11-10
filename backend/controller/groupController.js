@@ -4,7 +4,6 @@ const groupMassageModel = require('../models/groupMassageModel.js')
 
 const createGroup = async (req, res) => {
     const { chatName, description, users, admin } = req.body
-    console.log(chatName, description, users, admin)
     if (!admin) {
         return sendError(res, "Invalid User!")
     }
@@ -15,9 +14,8 @@ const createGroup = async (req, res) => {
         return sendError(res, "Please Enter Chat Name")
     }
     try {
-        const chat = await groupModel({ chatName, description, joinChat: users, admin: [admin] })
+        const chat = await groupModel({ chatName, description, joinChat: users, admin: [admin] }).populate({path:'joinChat',select:'name profile.seucre_url bio'})
         await chat.save()
-        console.log(chat)
         sendSuccess(res, { massage: 'group Created', group: chat })
     } catch (error) {
         console.log(error)

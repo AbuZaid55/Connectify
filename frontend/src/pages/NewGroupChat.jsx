@@ -7,7 +7,7 @@ import {setNewGroup,openGroupChat} from '../Redux/slices/chatSlice.js'
 import { context } from '../context/context.js'
 import {toast} from 'react-toastify'
 
-const NewGroupChat = () => {
+const NewGroupChat = ({socket}) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { setLoader } = useContext(context)
@@ -36,10 +36,14 @@ const NewGroupChat = () => {
       const res = await axios.post(`${BACKEND_URL}/group/creategroup`,{chatName:input.chatName,description:input.description,users:selectedUser,admin:user._id})
       dispatch(setNewGroup(res.data.group))
       dispatch(openGroupChat(res.data.group))
+      const users = selectedUser.filter((_id)=>_id!=user._id)
+      socket.emit('addInGroup',{chat:res.data.group,usersId:users})
       setform(false)
       navigate('/')
     } catch (error) {
-      toast.error(error.response.data.massage)
+      if(error.response && error.response.data){
+        toast.error(error.response.data.massage)
+      }
     }
     setLoader(false)
   }

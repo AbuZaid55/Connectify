@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import {useDispatch} from 'react-redux'
 import { setUser } from './Redux/slices/userSlice.js'
-import {setSingleChat,setGroupChat} from './Redux/slices/chatSlice.js'
+import {setSingleChat,setGroupChat, leftUser,addInGroup} from './Redux/slices/chatSlice.js'
 import { useSelector } from 'react-redux'
 import {context} from './context/context.js'
 import io from 'socket.io-client'
@@ -96,14 +96,24 @@ function App() {
       const stopTyping = (chatId)=>{
         setCurrentTyping('')
       }
+      const removeFromGroup=(chatId)=>{
+        dispatch(leftUser({chatId:chatId,userId:user._id}))
+      }
+      const addinGroup = (chat)=>{
+        dispatch(addInGroup({chat:chat,userId:user._id}))
+      }
       socket.on('massageRecieved', listener)
       socket.on('groupMassageRecieved', listener2)
       socket.on('typing',isTyping)
       socket.on('stopTyping', stopTyping)
+      socket.on('removeMeGroup',removeFromGroup)
+      socket.on('addinGroup',addinGroup)
       return () => {
         socket.off("massageRecieved", listener)
         socket.off('typing',isTyping)
         socket.off('stopTyping',stopTyping)
+        socket.off('removeMeGroup',removeFromGroup)
+        socket.off('addinGroup',addinGroup)
       };
     }
   },[user])
@@ -125,10 +135,10 @@ function App() {
      <Route path='/changepass' element={<ChangePassword/>}/>
      <Route path='/verifyemail' element={<VerifyEmail/>}/>
      <Route path='/newchat' element={<NewChat/>}/>
-     <Route path='/newgroupchat' element={<NewGroupChat/>}/>
+     <Route path='/newgroupchat' element={<NewGroupChat socket={socket}/>}/>
      <Route path='/profile' element={<Profile/>}/>
      <Route path='/myprofile' element={<MyProfile/>}/>
-     <Route path='/groupInfo' element={<GroupProfile/>}/>
+     <Route path='/groupInfo' element={<GroupProfile socket={socket}/>}/>
     </Routes>
     <ToastContainer position="bottom-right"/>
    </context.Provider>

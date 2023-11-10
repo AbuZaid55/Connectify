@@ -231,9 +231,47 @@ const chatSlice = createSlice({
                 }
             })
             return state
+        },
+        deleteGroup(state,action){
+            const {chatId}=action.payload
+            if(state.openGroupChat._id===chatId){
+                state.openGroupChat=''
+            }
+            state.groupChat = state.groupChat.filter((group)=>group._id!==chatId)
+            return state
+        },
+        leftUser(state,action){
+            const {chatId,userId}=action.payload
+            if(state.openGroupChat._id===chatId){
+                state.openGroupChat.blockList.push(userId)
+            }
+            state.groupChat.map((group)=>{
+                if(group._id===chatId){
+                    group.blockList.push(userId)
+                }
+            })
+            return state
+        },
+        addInGroup(state,action){
+            const {chat,userId} = action.payload
+            let find =false 
+            state.groupChat.map((group)=>{
+                if(group._id===chat._id){
+                    find=true
+                    group.blockList = group.blockList.filter((_id)=>_id!=userId)
+                }
+                if(state.openGroupChat._id===chat._id){
+                    state.openGroupChat.blockList = state.openGroupChat.blockList.filter((_id)=>_id!=userId)
+                }
+            })
+            if(find===false){
+                chat.massage = []
+                state.groupChat.push(chat)
+            }
+            return state
         }
     }
 })
 
 export default chatSlice;
-export const { setSearchUser, setSingleChat, setGroupChat, openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage ,setChatNMassageIO,deletemassage,setNewGroup,setGroupMassage,setgroupChatNMassageIO,setNotReadMassage_Group,deleteGroupMassage,clearAllChats_Group} = chatSlice.actions
+export const { setSearchUser, setSingleChat, setGroupChat, openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage ,setChatNMassageIO,deletemassage,setNewGroup,setGroupMassage,setgroupChatNMassageIO,setNotReadMassage_Group,deleteGroupMassage,clearAllChats_Group,deleteGroup,leftUser,addInGroup} = chatSlice.actions
