@@ -11,7 +11,7 @@ import { RxExit } from 'react-icons/rx'
 import axios from 'axios'
 import SearchUser from '../components/SearchUser.jsx'
 import { toast } from 'react-toastify'
-import { deleteGroup, leftUser } from '../Redux/slices/chatSlice.js'
+import { deleteGroup, leftUser,editgroup } from '../Redux/slices/chatSlice.js'
 
 const GroupProfile = ({ socket }) => {
 
@@ -30,7 +30,8 @@ const GroupProfile = ({ socket }) => {
     const [selectedMem, setSelectedMem] = useState([])
     const [selectedAdmin, setSelectedAdmin] = useState([])
     const [searchInput, setSearchInput] = useState('')
-    const [showEditForm,setShowEditForm]=useState(false)
+    const [showEditForm, setShowEditForm] = useState(false)
+    const [input,setInput]=useState({chatName:'',desc:''})
 
     const getGroupDetails = async () => {
         setAdmin([])
@@ -46,6 +47,7 @@ const GroupProfile = ({ socket }) => {
                     setGroupMember((pre) => [...pre, object._id])
                 }
             })
+            setInput({chatName:res.data.data.chatName,desc:res.data.data.description})
         } catch (error) {
             console.log(error)
         }
@@ -132,7 +134,20 @@ const GroupProfile = ({ socket }) => {
             console.log(error)
         }
     }
-
+    const editGroup = async()=>{
+        if(!input.chatName){
+            toast.error("Enter Group Name")
+        }
+        try {
+            const res = await axios.post(`${BACKEND_URL}/group/editgroup`,{chatId:group._id,chatName:input.chatName,description:input.desc})
+            getGroupDetails()
+            dispatch(editgroup({chatId:group._id,chatName:input.chatName,description:input.desc}))
+            setShowEditForm(false)
+        } catch (error) {
+           console.log(error) 
+        }
+    }
+    
     useEffect(() => {
         if (!groupId) {
             navigate('/')
@@ -148,14 +163,14 @@ const GroupProfile = ({ socket }) => {
         <div>
             <div className='flex flex-col items-center justify-center'>
                 <div className=' bg-primary-800 h-52 w-full'></div>
-                <img className='absolute h-[40%] shadow-xl rounded-md border-2 border-primary-800' src="../profile.jpg" alt="" />
+                <img className='absolute h-[40%] shadow-xl rounded-md border-2 border-primary-800' src={(group.profile.secure_url)?group.profile.secure_url:'../profile.jpg'} alt="" />
                 <div className='bg-white h-52 w-full'></div>
             </div>
-            <div><h1 className='text-center text-4xl font-semibold text-primary-800 -mt-8'>My Group</h1></div>
-            <div className=' text-center w-[80%] md:w-[50%] mx-auto mt-4'><p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quo, odio dolores. Earum!</p></div>
+            <div><h1 className='text-center text-4xl font-semibold text-primary-800 -mt-8'>{group.chatName}</h1></div>
+            <div className=' text-center w-[80%] md:w-[50%] mx-auto mt-4'><p>{group.description}</p></div>
             <div className=' flex items-center justify-center'>
                 <button className={` ${(admin.includes(user._id) ? '' : 'hidden')} bg-[#e3e3e3] text-4xl px-10 mx-5 py-2 border-2 border-primary-800 my-5 rounded-md cursor-pointer hover:scale-110 transition ease-in-out duration-300`}><BsFillCameraFill /></button>
-                <button className={`${(admin.includes(user._id) ? '' : 'hidden')} bg-[#e3e3e3] text-4xl px-10 mx-5 py-2 border-2 border-primary-800 my-5 rounded-md cursor-pointer hover:scale-110 transition ease-in-out duration-300`}><MdOutlineEditNote /></button>
+                <button onClick={()=>{setShowEditForm(true)}} className={`${(admin.includes(user._id) ? '' : 'hidden')} bg-[#e3e3e3] text-4xl px-10 mx-5 py-2 border-2 border-primary-800 my-5 rounded-md cursor-pointer hover:scale-110 transition ease-in-out duration-300`}><MdOutlineEditNote /></button>
                 <button onClick={() => { removeUser(user._id) }} className={` ${(groupMember.includes(user._id) && !admin.includes(user._id) ? '' : 'hidden')} bg-[#e3e3e3] text-3xl px-10 mx-5 py-2 border-2 border-primary-800 my-5 rounded-md cursor-pointer hover:scale-110 transition ease-in-out duration-300`}><RxExit /></button>
                 <button onClick={() => { deleteChat() }} className={`${(group && group.blockList.includes(user._id) ? '' : 'hidden')} bg-[#e3e3e3] text-3xl px-10 mx-5 py-2 border-2 border-primary-800 my-5 rounded-md cursor-pointer hover:scale-110 transition ease-in-out duration-300`}><RiDeleteBin5Line /></button>
             </div>
@@ -281,9 +296,15 @@ const GroupProfile = ({ socket }) => {
                     </div>
                 </div>
             </div>
-
-            <div className={` ${(addAdminForm) ? 'flex' : 'hidden'} fixed top-0 left-0 w-full items-center justify-center h-full bg-[#00000050]`}>
-
+            <div className={`${(showEditForm) ? 'flex' : 'hidden'} fixed top-0 left-0 w-[100%] h-[100vh] bg-[#00000050] overflow-hidden items-center justify-center`}>
+                <div className='flex flex-col w-96 shadow-2xl p-4 bg-white'>
+                    <p className='text-end cursor-pointer' onClick={() => { setShowEditForm(false) }}>X</p>
+                    <label className='mt-2 text-xl' htmlFor="name">Enter Group Name:- </label>
+                    <input value={input.chatName} onChange={(e) => { setInput({ ...input, chatName: e.target.value }) }} className='border-2 border-primary-800  py-2' type="text" id='name' />
+                    <label className='mt-4 text-xl' htmlFor="bio">Change description:- </label>
+                    <input value={input.desc} onChange={(e) => { setInput({ ...input, desc: e.target.value }) }} type="text" className='border-2 border-primary-800 py-2' id='bio' />
+                    <button onClick={() => { editGroup() }} className=" mt-4 bg-primary-800 text-white text-md font-semibold py-2 hover:bg-hover-200 transition duration-300 ease-in-out border-2 border-primary-800 hover:text-primary-800">Submit</button>
+                </div>
             </div>
         </div>
     )

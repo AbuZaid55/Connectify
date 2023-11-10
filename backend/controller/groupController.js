@@ -221,6 +221,27 @@ const deleteGroup = async(req,res)=>{
         sendError(res,"Something went wrong!")
     }
 }
+const editGroup = async(req,res)=>{
+    const {chatId,chatName,description}=req.body
+    if(!chatId){
+        return sendError(res,"Chat id not found!")
+    }
+    if(!chatName){
+        return sendError(res,"Enter Group Name")
+    }
+    try {
+        const chat = await groupModel.findById(chatId)
+        if(!chat){
+            return sendError(res,"Invalid chat id")
+        }
+        chat.chatName =chatName
+        chat.description=description
+        await chat.save()
+        sendSuccess(res,{massage:"Group edit successfully"})
+    } catch (error) {
+     sendError(res,"Something went wrong!")   
+    }
+}
 module.exports = {
     createGroup,
     getGroupChat,
@@ -232,4 +253,5 @@ module.exports = {
     removeAdmin,
     removeUser,
     deleteGroup,
+    editGroup,
 }

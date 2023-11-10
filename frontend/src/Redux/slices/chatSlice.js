@@ -44,7 +44,7 @@ const chatSlice = createSlice({
         unblockUser(state, action) {
             const userId = action.payload.userId
             const chatId = action.payload.chatId
-            if(state.openSingleChat._id===chatId){
+            if (state.openSingleChat._id === chatId) {
                 state.openSingleChat.blockList.map((userID, i) => {
                     if (userID == userId) {
                         state.openSingleChat.blockList.splice(i, 1)
@@ -110,32 +110,32 @@ const chatSlice = createSlice({
                 }
             })
         },
-        setChatNMassageIO(state,action){
-            const chat = action.payload 
-            state.singleChat.map((s_chat)=>{
-                if(s_chat._id===chat._id){
-                    s_chat.isHidden=[]
+        setChatNMassageIO(state, action) {
+            const chat = action.payload
+            state.singleChat.map((s_chat) => {
+                if (s_chat._id === chat._id) {
+                    s_chat.isHidden = []
                     s_chat.massage.push(chat.massage[0])
-                    if(state.openSingleChat._id===chat._id){
+                    if (state.openSingleChat._id === chat._id) {
                         state.openSingleChat.massage.push(chat.massage[0])
-                    }else{
+                    } else {
                         s_chat.notReadMassage += 1
                     }
                 }
             })
             return state
         },
-        deletemassage(state,action){
-            const {chatId,userId,massagesId}=action.payload 
-            state.openSingleChat.massage.map((massage)=>{
-                if(massagesId.includes(massage._id)){
+        deletemassage(state, action) {
+            const { chatId, userId, massagesId } = action.payload
+            state.openSingleChat.massage.map((massage) => {
+                if (massagesId.includes(massage._id)) {
                     massage.isHidden.push(userId)
                 }
             })
-            state.singleChat.map((chat)=>{
-                if(chat._id===chatId){
-                    chat.massage.map((massage)=>{
-                        if(massagesId.includes(massage._id)){
+            state.singleChat.map((chat) => {
+                if (chat._id === chatId) {
+                    chat.massage.map((massage) => {
+                        if (massagesId.includes(massage._id)) {
                             massage.isHidden.push(userId)
                         }
                     })
@@ -150,7 +150,7 @@ const chatSlice = createSlice({
             state.groupChat = action.payload
             return state
         },
-        setNewGroup(state,action){
+        setNewGroup(state, action) {
             state.groupChat.push(action.payload)
             return state
         },
@@ -173,14 +173,14 @@ const chatSlice = createSlice({
                 }
             })
         },
-        setgroupChatNMassageIO(state,action){
-            const {chatId,newMassage}=action.payload
-            state.groupChat.map((chat)=>{
-                if(chat._id===chatId){
+        setgroupChatNMassageIO(state, action) {
+            const { chatId, newMassage } = action.payload
+            state.groupChat.map((chat) => {
+                if (chat._id === chatId) {
                     chat.massage.push(newMassage)
-                    if(state.openGroupChat._id===chatId){
+                    if (state.openGroupChat._id === chatId) {
                         state.openGroupChat.massage.push(newMassage)
-                    }else{
+                    } else {
                         chat.notReadMassage += 1
                     }
                 }
@@ -191,22 +191,22 @@ const chatSlice = createSlice({
             const chatId = action.payload.chatId
             state.groupChat.map((chat) => {
                 if (chat._id === chatId) {
-                    chat.notReadMassage=0
+                    chat.notReadMassage = 0
                 }
             })
             return state
         },
-        deleteGroupMassage(state,action){
-            const {chatId,userId,massagesId}=action.payload 
-            state.openGroupChat.massage.map((massage)=>{
-                if(massagesId.includes(massage._id)){
+        deleteGroupMassage(state, action) {
+            const { chatId, userId, massagesId } = action.payload
+            state.openGroupChat.massage.map((massage) => {
+                if (massagesId.includes(massage._id)) {
                     massage.isHidden.push(userId)
                 }
             })
-            state.groupChat.map((group)=>{
-                if(group._id===chatId){
-                    group.massage.map((massage)=>{
-                        if(massagesId.includes(massage._id)){
+            state.groupChat.map((group) => {
+                if (group._id === chatId) {
+                    group.massage.map((massage) => {
+                        if (massagesId.includes(massage._id)) {
                             massage.isHidden.push(userId)
                         }
                     })
@@ -232,46 +232,60 @@ const chatSlice = createSlice({
             })
             return state
         },
-        deleteGroup(state,action){
-            const {chatId}=action.payload
-            if(state.openGroupChat._id===chatId){
-                state.openGroupChat=''
+        deleteGroup(state, action) {
+            const { chatId } = action.payload
+            if (state.openGroupChat._id === chatId) {
+                state.openGroupChat = ''
             }
-            state.groupChat = state.groupChat.filter((group)=>group._id!==chatId)
+            state.groupChat = state.groupChat.filter((group) => group._id !== chatId)
             return state
         },
-        leftUser(state,action){
-            const {chatId,userId}=action.payload
-            if(state.openGroupChat._id===chatId){
+        leftUser(state, action) {
+            const { chatId, userId } = action.payload
+            if (state.openGroupChat._id === chatId) {
                 state.openGroupChat.blockList.push(userId)
             }
-            state.groupChat.map((group)=>{
-                if(group._id===chatId){
+            state.groupChat.map((group) => {
+                if (group._id === chatId) {
                     group.blockList.push(userId)
                 }
             })
             return state
         },
-        addInGroup(state,action){
-            const {chat,userId} = action.payload
-            let find =false 
-            state.groupChat.map((group)=>{
-                if(group._id===chat._id){
-                    find=true
-                    group.blockList = group.blockList.filter((_id)=>_id!=userId)
+        addInGroup(state, action) {
+            const { chat, userId } = action.payload
+            let find = false
+            state.groupChat.map((group) => {
+                if (group._id === chat._id) {
+                    find = true
+                    group.blockList = group.blockList.filter((_id) => _id != userId)
                 }
-                if(state.openGroupChat._id===chat._id){
-                    state.openGroupChat.blockList = state.openGroupChat.blockList.filter((_id)=>_id!=userId)
+                if (state.openGroupChat._id === chat._id) {
+                    state.openGroupChat.blockList = state.openGroupChat.blockList.filter((_id) => _id != userId)
                 }
             })
-            if(find===false){
+            if (find === false) {
                 chat.massage = []
                 state.groupChat.push(chat)
             }
+            return state
+        },
+        editgroup(state, action) {
+            const { chatId, chatName, description } = action.payload
+            if (state.openGroupChat._id === chatId) {
+                state.openGroupChat.chatName = chatName
+                state.openGroupChat.description = description
+            }
+            state.groupChat.map((group) => {
+                if (group._id === chatId) {
+                    group.chatName = chatName
+                    group.description = description
+                }
+            })
             return state
         }
     }
 })
 
 export default chatSlice;
-export const { setSearchUser, setSingleChat, setGroupChat, openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage ,setChatNMassageIO,deletemassage,setNewGroup,setGroupMassage,setgroupChatNMassageIO,setNotReadMassage_Group,deleteGroupMassage,clearAllChats_Group,deleteGroup,leftUser,addInGroup} = chatSlice.actions
+export const { setSearchUser, setSingleChat, setGroupChat, openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblockUser, clearAllChats, deleteChat, setMassage, setChatNMassageIO, deletemassage, setNewGroup, setGroupMassage, setgroupChatNMassageIO, setNotReadMassage_Group, deleteGroupMassage, clearAllChats_Group, deleteGroup, leftUser, addInGroup ,editgroup} = chatSlice.actions
