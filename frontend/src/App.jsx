@@ -21,6 +21,8 @@ import io from 'socket.io-client'
 import MyProfile from './pages/MyProfile.jsx'
 import GroupProfile from './pages/GroupProfile.jsx'
 import {setChatNMassageIO,setgroupChatNMassageIO} from './Redux/slices/chatSlice.js'
+import Page404 from './pages/Page404.jsx'
+import MassageInfo from './pages/MassageInfo.jsx'
 
 function App() {
   const [socket,setSocket]=useState('')
@@ -139,6 +141,8 @@ function App() {
      <Route path='/profile' element={<Profile/>}/>
      <Route path='/myprofile' element={<MyProfile/>}/>
      <Route path='/groupInfo' element={<GroupProfile socket={socket}/>}/>
+     <Route path='/massageInfo' element={<MassageInfo/>}/>
+     <Route path="*" element={<Page404/>}/>
     </Routes>
     <ToastContainer position="bottom-right"/>
    </context.Provider>

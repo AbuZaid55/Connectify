@@ -333,9 +333,9 @@ const GroupProfile = ({ socket }) => {
                 <div className='flex flex-col w-96 shadow-2xl p-4 bg-white rounded-md'>
                     <p className='text-end cursor-pointer' onClick={() => { setShowEditForm(false) }}>X</p>
                     <label className='mt-2 text-xl' htmlFor="name">Enter Group Name:- </label>
-                    <input value={input.chatName} onChange={(e) => { setInput({ ...input, chatName: e.target.value }) }} className='border-2 border-primary-800  py-2' type="text" id='name' />
+                    <input value={input.chatName} onChange={(e) => { setInput({ ...input, chatName: e.target.value }) }} className='pl-1 border-2 border-primary-800  py-2' type="text" id='name' />
                     <label className='mt-4 text-xl' htmlFor="bio">Change description:- </label>
-                    <input value={input.desc} onChange={(e) => { setInput({ ...input, desc: e.target.value }) }} type="text" className='border-2 border-primary-800 py-2' id='bio' />
+                    <input value={input.desc} onChange={(e) => { setInput({ ...input, desc: e.target.value }) }} type="text" className=' pl-1 border-2 border-primary-800 py-2' id='bio' />
                     <button onClick={() => { editGroup() }} className=" mt-4 bg-primary-800 text-white text-md font-semibold py-2 hover:bg-hover-200 transition duration-300 ease-in-out border-2 border-primary-800 hover:text-primary-800">Submit</button>
                 </div>
             </div>

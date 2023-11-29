@@ -161,7 +161,7 @@ const GroupMassage = ({ socket, setShowMcomponent }) => {
         <div ref={dropdownRef} className="ml-auto  relative mr-3">
           <div className={`text-2xl mb-3 p-2  rounded-full cursor-pointer transition duration-300 ease-in-out ${dropdown ? "bg-primary-800 text-white" : " text-primary-800"}`} onClick={() => { setDropdown(!dropdown) }}><CiMenuKebab /></div>
           <ul className={`absolute top-full mt-3 right-0 bg-white shadow-2xl whitespace-nowrap rounded-md z-10 ${dropdown ? "block" : "hidden"}`}>
-            <li onClick={() => { navigateToProfile() }} className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer  text-gray-600 transition duration-200 ease-in-out">Contact Info</li>
+            <li onClick={() => { navigateToProfile() }} className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer  text-gray-600 transition duration-200 ease-in-out">Group Info</li>
             <li className="hidden md:block px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out" onClick={() => { dispatch(openGroupChat('')); dispatch(openGroupChat('')) }}>Close chat</li>
             <li onClick={() => { setSelect(!select); setDropdown(false) }} className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">Delete Massages</li>
             <li onClick={() => { clearAllChat() }} className="px-4 py-2 text-lg hover:bg-hover-200 cursor-pointer text-gray-600 transition duration-200 ease-in-out">Clear all chats</li>
@@ -178,7 +178,7 @@ const GroupMassage = ({ socket, setShowMcomponent }) => {
               <label className="w-full flex" htmlFor={(select) ? massage._id : ""}>
                 <div className={` max-w-[50%] min-w-[15%] ${(massage.senderId === user._id) ? 'myMassage' : 'otherMassage'} p-3 rounded-lg my-1 mx-2`}>
                   <p className=" break-words" >{massage.content}</p>
-                  <p className="text-end">{formateData(massage.createdAt)}</p>
+                  <p onClick={()=>{navigate(`massageInfo?id=${massage._id}`)}} className=" cursor-pointer hover:text-[#585858] text-end">{formateData(massage.createdAt)}</p>
                 </div>
               </label>
             </div>
