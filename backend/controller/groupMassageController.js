@@ -55,8 +55,31 @@ const deleteMassage = async (req, res) => {
 }
 
 
+const massageInfo = async(req,res)=>{
+    const {_id}=req.body
+    if(!_id){
+        return sendError(res,"Massage id not found")
+    }
+    try {
+        const result = await groupMassageModel.findById(_id).populate({
+            path:"senderId",
+            select:'name profile.secure_url bio'
+        }).populate({
+            path:"readBy",
+            select:'name profile.secure_url bio',
+        })
+        if(!result){
+            return sendError(res,"Massage not found")
+        }
+        sendSuccess(res,{data:result})
+    } catch (error) {
+        sendError(res,"Something went wrong")
+    }
+}
+
 
 module.exports = {
     createMassage,
     deleteMassage,
+    massageInfo,
 }

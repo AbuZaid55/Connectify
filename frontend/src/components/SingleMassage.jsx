@@ -223,7 +223,7 @@ const SingleMassage = ({ socket, setShowMcomponent }) => {
               <label className="w-full flex" htmlFor={(select) ? massage._id : ""}>
                 <div className={` max-w-[50%] min-w-[15%] ${(massage.senderId === user._id) ? 'myMassage' : 'otherMassage'} p-3 rounded-lg my-1 mx-2`}>
                   <p className=" break-words" >{massage.content}</p>
-                  <p onClick={()=>{navigate(`massageInfo?id=${massage._id}`)}} className="cursor-pointer hover:text-[#585858]  text-end">{formateData(massage.createdAt)}</p>
+                  <p onClick={()=>{navigate(`massageInfo?id=${massage._id}&type=massage`)}} className="cursor-pointer hover:text-[#585858]  text-end">{formateData(massage.createdAt)}</p>
                 </div>
               </label>
             </div>
