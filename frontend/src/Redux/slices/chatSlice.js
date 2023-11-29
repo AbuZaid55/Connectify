@@ -98,22 +98,31 @@ const chatSlice = createSlice({
         setMassage(state, action) {
             const chatId = action.payload.chatId
             const newMassage = action.payload.newMassage
-            state.singleChat.map((chat) => {
+            let chatIndex=0
+            state.singleChat.map((chat,i) => {
                 if (chat._id === chatId) {
+                    chatIndex=i
                     chat.massage.push(newMassage)
                     if (state.openSingleChat._id === chatId) {
                         state.openSingleChat.massage.push(newMassage)
                     } else {
                         chat.notReadMassage += 1
                     }
-                    return state
                 }
             })
+            const currentChat = state.singleChat[chatIndex]
+            for(let i=chatIndex;i>0;i--){
+                state.singleChat[i]=state.singleChat[i-1]
+            }
+            state.singleChat[0]=currentChat
+            return state
         },
         setChatNMassageIO(state, action) {
             const chat = action.payload
-            state.singleChat.map((s_chat) => {
+            let chatIndex=0
+            state.singleChat.map((s_chat,i) => {
                 if (s_chat._id === chat._id) {
+                    chatIndex=i
                     s_chat.isHidden = []
                     s_chat.massage.push(chat.massage[0])
                     if (state.openSingleChat._id === chat._id) {
@@ -123,6 +132,11 @@ const chatSlice = createSlice({
                     }
                 }
             })
+            const currentChat = state.singleChat[chatIndex]
+            for(let i=chatIndex;i>0;i--){
+                state.singleChat[i]=state.singleChat[i-1]
+            }
+            state.singleChat[0]=currentChat
             return state
         },
         deletemassage(state, action) {
@@ -161,22 +175,31 @@ const chatSlice = createSlice({
         setGroupMassage(state, action) {
             const chatId = action.payload.chatId
             const newMassage = action.payload.newMassage
-            state.groupChat.map((chat) => {
+            let chatIndex=0;
+            state.groupChat.map((chat,i) => {
                 if (chat._id === chatId) {
+                    chatIndex=i
                     chat.massage.push(newMassage)
                     if (state.openGroupChat._id === chatId) {
                         state.openGroupChat.massage.push(newMassage)
                     } else {
                         chat.notReadMassage += 1
                     }
-                    return state
                 }
             })
+            const currentChat = state.groupChat[chatIndex]
+            for(let i=chatIndex;i>0;i--){
+                state.groupChat[i]=state.groupChat[i-1]
+            }
+            state.groupChat[0]=currentChat
+            return state
         },
         setgroupChatNMassageIO(state, action) {
             const { chatId, newMassage } = action.payload
-            state.groupChat.map((chat) => {
+            let chatIndex=0
+            state.groupChat.map((chat,i) => {
                 if (chat._id === chatId) {
+                    chatIndex=i
                     chat.massage.push(newMassage)
                     if (state.openGroupChat._id === chatId) {
                         state.openGroupChat.massage.push(newMassage)
@@ -185,6 +208,11 @@ const chatSlice = createSlice({
                     }
                 }
             })
+            const currentChat = state.groupChat[chatIndex]
+            for(let i=chatIndex;i>0;i--){
+                state.groupChat[i]=state.groupChat[i-1]
+            }
+            state.groupChat[0]=currentChat
             return state
         },
         setNotReadMassage_Group(state, action) {

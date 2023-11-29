@@ -1,3 +1,4 @@
+import React from 'react'
 import {Routes,Route,useNavigate} from 'react-router-dom'
 import Home from './pages/Home.jsx'
 import Login from './pages/Login.jsx'
@@ -25,9 +26,12 @@ import Page404 from './pages/Page404.jsx'
 import MassageInfo from './pages/MassageInfo.jsx'
 
 function App() {
+
   const [socket,setSocket]=useState('')
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const recivAudioRef = React.createRef();
+  const sendAudioRef = React.createRef();
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
   const user = useSelector((state)=>(state.user))
   const chat = useSelector((state) => (state.chat))
@@ -35,6 +39,7 @@ function App() {
   const [typing,setTyping]=useState(false)
   const [currentTyping,setCurrentTyping]=useState('')
   const [slide, setSlide] = useState(0)
+  const [audio,setAudio]=useState(false)
 
   const getUser = async()=>{
     setLoader(true)
@@ -87,9 +92,11 @@ function App() {
       setSocket(socket)
 
       const listener = (chat) => {
+        setAudio(true)
         dispatch(setChatNMassageIO(chat))
       }
       const listener2 = ({chatId,newMassage}) => {
+        setAudio(true)
         dispatch(setgroupChatNMassageIO({chatId,newMassage}))
       }
       const isTyping = (chatId)=>{
@@ -126,9 +133,17 @@ function App() {
       setTyping(false)
     }
   },[currentTyping])
+  useEffect(()=>{
+    if(audio===true){
+      recivAudioRef.current.play()
+      setAudio(false)
+    }
+  },[audio])
   return (
-   <context.Provider value={{getUser,getSingleChat,getGroupChat,setLoader,typing}}>
+   <context.Provider value={{getUser,getSingleChat,getGroupChat,setLoader,typing,sendAudioRef}}>
     <div className={`${(loader)?'flex':'hidden'} w-full h-[100vh] fixed top-0 left-0 items-center justify-center z-50 bg-[#00000050]`}><div className='spinner'></div></div>
+    <audio className='hidden' ref={recivAudioRef} src="massReciv.mp3" />
+    <audio className='hidden' ref={sendAudioRef} src="massSent.mp3" />
      <Routes>
      <Route path='/' element={<Home socket={socket} slide={slide} setSlide={setSlide}/>}/>
      <Route path='/login' element={<Login />}/>

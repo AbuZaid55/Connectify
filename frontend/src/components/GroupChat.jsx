@@ -8,7 +8,6 @@ const GroupChat = ({search,setShowMcomponent}) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const chat = useSelector((state) => (state.chat))
-  const user = useSelector((state) => (state.user))
 
   return (
     <div className='w-1/2 relative h-full overflow-hidden overflow-y-scroll no-scrollbar'>

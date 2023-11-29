@@ -15,6 +15,7 @@ import { openGroupChat, setNotReadMassage_Group, deleteGroupMassage, clearAllCha
 const GroupMassage = ({ socket, setShowMcomponent }) => {
 
   const navigate = useNavigate()
+  const containerRef = useRef(null);
   const [dropdown, setDropdown] = useState(false)
   const [emoji, setEmoji] = useState(false)
   const [input, setInput] = useState('')
@@ -28,9 +29,9 @@ const GroupMassage = ({ socket, setShowMcomponent }) => {
   const [checkedMassage, setCheckedMassage] = useState([])
   const [select, setSelect] = useState(false)
   const [timeId, setTimeId] = useState('')
-  const { setLoader, typing } = useContext(context)
+  const { setLoader, typing, sendAudioRef } = useContext(context)
   const [sendMLoader, setSendMLoader] = useState(false)
-
+  
   function formateData(date) {
     let result = new Date(date).toLocaleString().split(',')[1].split(' ')
     result[1] = result[1].slice(0, result[1].length - 3)
@@ -52,6 +53,7 @@ const GroupMassage = ({ socket, setShowMcomponent }) => {
         const res = await axios.post(`${BACKEND_URL}/groupmassage/createmassage`, { senderId: user._id, content: input, chatId: chat.openGroupChat._id })
         const newMassage = res.data.newMassage
         socket.emit('newGroupMassage', { newMassage: newMassage, chat: chat.openGroupChat, userId: user._id })
+        sendAudioRef.current.play()
         dispatch(setGroupMassage({ newMassage: newMassage, chatId: res.data.chatId }))
         setInput('')
         setEmoji(false)
@@ -145,6 +147,9 @@ const GroupMassage = ({ socket, setShowMcomponent }) => {
       })
     }
   }, [chat.openGroupChat])
+  useEffect(()=>{
+    containerRef.current.scrollTop = containerRef.current.scrollHeight;
+  },[chat.openGroupChat.massage])
   return (
     <>
       <div className="flex items-center py-2 bg-white">
@@ -169,7 +174,7 @@ const GroupMassage = ({ socket, setShowMcomponent }) => {
         </div>
       </div>
 
-      <div className="relative flex-grow-[1] flex flex-col p-2 w-full overflow-y-auto no-scrollbar bg-[#f5f5f5]">
+      <div ref={containerRef} className="relative flex-grow-[1] flex flex-col p-2 w-full overflow-y-auto no-scrollbar bg-[#f5f5f5]">
 
         {
           chat.openGroupChat && chat.openGroupChat.massage.map((massage) => {

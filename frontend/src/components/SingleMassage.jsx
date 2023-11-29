@@ -15,6 +15,7 @@ import { openSingleChat, openGroupChat, setNotReadMassage_Chat, blockuser, unblo
 const SingleMassage = ({ socket, setShowMcomponent }) => {
 
   const navigate = useNavigate()
+  const containerRef = useRef(null);
   const [dropdown, setDropdown] = useState(false)
   const [emoji, setEmoji] = useState(false)
   const [input, setInput] = useState('')
@@ -29,7 +30,7 @@ const SingleMassage = ({ socket, setShowMcomponent }) => {
   const [select, setSelect] = useState(false)
   const [chatUserId, setChatUserId] = useState('')
   const [timeId, setTimeId] = useState('')
-  const { setLoader, typing } = useContext(context)
+  const { setLoader, typing,sendAudioRef } = useContext(context)
   const [sendMLoader, setSendMLoader] = useState(false)
 
 
@@ -55,6 +56,7 @@ const SingleMassage = ({ socket, setShowMcomponent }) => {
         const newMassage = res.data.newMassage
         const resChat = res.data.chat
         socket.emit('newMassage', { newMassage: newMassage, chat: resChat, user: user })
+        sendAudioRef.current.play()
         dispatch(setMassage({ newMassage: newMassage, chatId: resChat._id }))
         setInput('')
         setEmoji(false)
@@ -188,6 +190,9 @@ const SingleMassage = ({ socket, setShowMcomponent }) => {
       })
     }
   }, [chat.openSingleChat])
+  useEffect(()=>{
+    containerRef.current.scrollTop = containerRef.current.scrollHeight;
+  },[chat.openSingleChat.massage])
   return (
     <>
       <div className="flex items-center py-2 bg-white">
@@ -214,7 +219,7 @@ const SingleMassage = ({ socket, setShowMcomponent }) => {
         </div>
       </div>
 
-      <div className="relative flex-grow-[1] flex flex-col p-2 w-full overflow-y-auto no-scrollbar bg-[#f5f5f5]">
+      <div  ref={containerRef} className="relative flex-grow-[1] flex flex-col p-2 w-full overflow-y-auto no-scrollbar bg-[#f5f5f5]">
 
         {
           chat.openSingleChat && chat.openSingleChat.massage.map((massage) => {

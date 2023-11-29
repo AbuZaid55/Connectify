@@ -49,7 +49,7 @@ const getSingleChat = async (req, res) => {
         const chat = await chatModel.find({ joinChat: userId }).populate({ path: 'joinChat', select: 'name profile.secure_url bio' }).populate({
             path: 'massage',
             match: { isHidden: { $nin: userId } }
-        })
+        }).sort({ updatedAt: 'desc' })
 
         const chatResult = chat.filter((s_chat) => {
             let notReadMassage = 0
