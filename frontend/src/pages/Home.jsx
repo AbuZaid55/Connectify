@@ -42,8 +42,8 @@ const Home = ({socket,slide,setSlide}) => {
           </div>
           <div className='w-full flex-grow-[1] overflow-hidden'>
             <div className='w-[200%] h-full flex relative' style={{ left: `-${slide}%`, transition: '0.5s' }}>
-              <SingleChat search={search} setShowMcomponent={setShowMcomponent}/>
-              <GroupChat search={search} setShowMcomponent={setShowMcomponent}/>
+              <SingleChat search={search.toLowerCase()} setShowMcomponent={setShowMcomponent}/>
+              <GroupChat search={search.toLowerCase()} setShowMcomponent={setShowMcomponent}/>
             </div>
           </div>
         </section>

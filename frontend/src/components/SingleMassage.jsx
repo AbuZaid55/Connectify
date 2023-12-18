@@ -115,6 +115,7 @@ const SingleMassage = ({ socket, setShowMcomponent }) => {
       const res = await axios.post(`${BACKEND_URL}/chat/deletechat`, { userId: user._id, chatId: chat.openSingleChat._id })
       dispatch(deleteChat({ chatId: chat.openSingleChat._id, userId: user._id }))
       setDropdown(false)
+      setShowMcomponent(false)
     } catch (error) {
       console.log(error)
     }
