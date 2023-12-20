@@ -38,10 +38,10 @@ const NewChat = () => {
     navigate(`/profile?userId=${userId}`)
   }
   useEffect(() => {
-    if (user && !user._id) {
-      navigate('/login')
+    if(!user.validated){
+     navigate('/login')
     }
-  }, [user])
+   }, [user])
   return (
     <div className='h-[100vh] overflow-hidden flex flex-col items-center px-2'>
       <h1 className='mt-10 text-4xl text-primary-800 font-bold font-serif'>New Chat</h1>

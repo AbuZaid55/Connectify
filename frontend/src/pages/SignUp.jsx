@@ -31,11 +31,11 @@ const SignUp = () => {
     setLoader(false)
   }
 
-  useEffect(()=>{
-    if(user && user.validated){
-      navigate('/')
+  useEffect(() => {
+    if(user.validated){
+     navigate('/')
     }
-  },[user])
+   }, [user])
 
   return (
     <div className="flex items-center justify-center h-screen bg-primary-800">

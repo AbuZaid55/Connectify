@@ -1,26 +1,29 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch} from 'react-redux';
 import HomeSVG from "../SVG/HomeSVG.jsx"
 import SingleChat from '../components/SingleChat.jsx';
 import GroupChat from '../components/GroupChat.jsx';
 import SingleMassage from '../components/SingleMassage.jsx';
 import GroupMassage from '../components/GroupMassage.jsx'
+import { openSingleChat, openGroupChat} from '../Redux/slices/chatSlice.js'
 
 
 const Home = ({socket,slide,setSlide}) => {
   const navigate = useNavigate()
+  const dispatch = useDispatch()
   const chat = useSelector((state)=>(state.chat))
   const user = useSelector((state)=>(state.user))
   const [search,setSearch]=useState('')
   const [showMcomponent,setShowMcomponent]=useState(false)
 
   useEffect(() => {
-   if(user && !user._id){
+   if(!user.validated){
     navigate('/login')
+   }else{
+    dispatch(openSingleChat('')); dispatch(openGroupChat('')); setShowMcomponent(false)
    }
-
-  }, [])
+  }, [user])
   return (
     <div className='w-full bg-primary-800 h-[100vh] p-3 md:p-4 flex items-center justify-center'>
       <div className='bg-white w-full h-full rounded-md flex '>

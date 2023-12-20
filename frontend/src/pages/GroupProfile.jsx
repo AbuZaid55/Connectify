@@ -181,13 +181,13 @@ const GroupProfile = ({ socket }) => {
     }
     
     useEffect(() => {
-        if (!groupId) {
-            navigate('/')
-        }
-        if (user && !user._id) {
+        if(!user.validated){
             navigate('/login')
         }
-        if (user && user._id) {
+        else if (!groupId) {
+            navigate('/')
+        }
+        else{
             getGroupDetails()
         }
     }, [user])

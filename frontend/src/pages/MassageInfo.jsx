@@ -35,12 +35,15 @@ const MassageInfo = () => {
         navigate(`/profile?userId=${userId}`)
       }
     useEffect(()=>{
-        if(!id || !type){
-            navigate('/')
-        }else{
-            massageInfo()
-        }
-    },[id])
+      if(!user.validated){
+        navigate('/login')
+      }
+      else if(!id || !type){
+          navigate('/')
+      }else{
+          massageInfo()
+      }
+    },[id,user])
   return (
     <div className='w-full'>
         <h1 className=' text-center mt-10 text-4xl text-primary-800 font-bold font-serif'>Massage Info</h1>

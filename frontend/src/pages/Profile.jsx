@@ -25,13 +25,13 @@ const Profile = () => {
         setLoader(false)
     }
     useEffect(()=>{
-        if(!userId){
+        if(!User.validated){
+            navigate('/login')
+        }
+        else if(!userId){
             navigate('/')
         }else{
             getUser()
-        }
-        if(User && !User._id){
-            navigate('/login')
         }
     },[User])
     return (

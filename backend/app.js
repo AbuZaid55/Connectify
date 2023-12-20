@@ -7,6 +7,7 @@ const cors = require('cors')
 const app = express()
 
 const PORT = process.env.PORT
+const HOSTNAME = process.env.HOSTNAME
 
 db_Connect()
 
@@ -28,7 +29,7 @@ cloudinary.v2.config({
     api_secret: process.env.CLOUDINARY_SECRET 
 });
 
-const server = app.listen(PORT,()=>{
+const server = app.listen(PORT,HOSTNAME,()=>{
     console.log(`App is listening on port no ${PORT}`)
 })
 

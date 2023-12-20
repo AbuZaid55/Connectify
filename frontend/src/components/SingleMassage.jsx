@@ -197,7 +197,7 @@ const SingleMassage = ({ socket, setShowMcomponent }) => {
   return (
     <>
       <div className="flex items-center py-2 bg-white">
-        <span onClick={() => { setShowMcomponent(false) }} className="md:hidden mx-2 text-xl cursor-pointer"><HiArrowLeft /></span>
+        <span onClick={() => {dispatch(openSingleChat('')); dispatch(openGroupChat('')), setShowMcomponent(false) }} className="md:hidden mx-2 text-xl cursor-pointer"><HiArrowLeft /></span>
         <img src={`${(chat.openSingleChat && chat.openSingleChat.profile.secure_url) ? chat.openSingleChat.profile.secure_url : './profile.jpg'}`} className=" w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full" />
         <div>
           <h1 className=" text-base h-6 overflow-hidden">{chat.openSingleChat.chatName}</h1>

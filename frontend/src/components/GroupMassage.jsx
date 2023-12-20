@@ -10,7 +10,7 @@ import data from '@emoji-mart/data'
 import axios from 'axios'
 import { context } from '../context/context.js'
 import { useDispatch, useSelector } from 'react-redux'
-import { openGroupChat, setNotReadMassage_Group, deleteGroupMassage, clearAllChats_Group, setGroupMassage } from '../Redux/slices/chatSlice.js'
+import { openGroupChat,openSingleChat, setNotReadMassage_Group, deleteGroupMassage, clearAllChats_Group, setGroupMassage } from '../Redux/slices/chatSlice.js'
 
 const GroupMassage = ({ socket, setShowMcomponent }) => {
 
@@ -153,7 +153,7 @@ const GroupMassage = ({ socket, setShowMcomponent }) => {
   return (
     <>
       <div className="flex items-center py-2 bg-white">
-        <span onClick={() => { setShowMcomponent(false) }} className="md:hidden mx-2 text-xl cursor-pointer"><HiArrowLeft /></span>
+        <span onClick={() => {dispatch(openSingleChat('')); dispatch(openGroupChat('')), setShowMcomponent(false) }} className="md:hidden mx-2 text-xl cursor-pointer"><HiArrowLeft /></span>
         <img src={`${(chat.openGroupChat && chat.openGroupChat.profile.secure_url) ? chat.openGroupChat.profile.secure_url : './profile.jpg'}`} className=" w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full" />
         <div>
           <h1 className=" text-base h-6 overflow-hidden">{chat.openGroupChat.chatName}</h1>

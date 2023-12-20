@@ -9,7 +9,7 @@ import { context} from '../context/context.js'
 const SendResetLink = () => {
 
   const user = useSelector((state)=>(state.user))
-  const [email,setEmail]=useState('zaid70979a@gmail.com')
+  const [email,setEmail]=useState('')
   const navigate = useNavigate()
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
   const {setLoader} = useContext(context)
@@ -28,11 +28,11 @@ const SendResetLink = () => {
     setLoader(false)
   }
 
-  useEffect(()=>{
-    if(user && user.validated){
-      navigate('/')
+  useEffect(() => {
+    if(user.validated){
+     navigate('/')
     }
-  },[user])
+   }, [user])
   return (
     <div className="flex items-center justify-center h-screen bg-primary-800">
     <div className="flex md:w-[90%] px-10 sm:px-16 md:px-0 bg-white rounded-xl m-4">
@@ -45,7 +45,7 @@ const SendResetLink = () => {
       <div className="w-full">
         <label className="block text-2xl text-primary-800 font-semibold" htmlFor="email">Email</label>
         <input className="text-xl py-2 px-5 mb-5 mt-2 border-2 border-primary-800 rounded-md w-full" type="text" id="email" autoComplete="new-off" placeholder="Enter Your Email" name="email" value={email} onChange={(e)=>{setEmail(e.target.value)}} />
-        <p> Send link to your email id. This link is valid for 15 minutes.</p>
+        <p> Send link to your email id. This link is valid for 2 minutes.</p>
       </div>
       <div>
         <button className=" bg-primary-800 text-white px-10 py-2 text-2xl border-2 border-primary-800 hover:bg-[#b141fc24] mt-5 hover:text-primary-800 rounded-md transition duration-300 ease-in-out" type="submit">Send Link</button>

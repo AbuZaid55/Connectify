@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const JWT = require('jsonwebtoken')
-const os = require('os')
 
 const userSchema = mongoose.Schema({
     name: {
@@ -82,8 +81,6 @@ userSchema.methods = {
     },
     async generateToken() {
         const token = JWT.sign({ _id: this._id, email: this.email }, process.env.JWT_KEY)
-        this.loggedIn = this.loggedIn.concat({ token: token, deviceName: os.hostname() })
-        await this.save()
         return token
     },
     verifyToken(token) {

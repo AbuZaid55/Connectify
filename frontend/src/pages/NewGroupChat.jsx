@@ -49,10 +49,9 @@ const NewGroupChat = ({socket}) => {
   }
   useEffect(() => {
     setSelectedUser([])
-    if (user && !user._id) {
+    if(!user.validated){
       navigate('/login')
-    }
-    if(user && user._id){
+     }else{
       setSelectedUser([user._id])
     }
   }, [user])

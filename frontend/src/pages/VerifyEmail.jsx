@@ -63,11 +63,11 @@ const VerifyEmail = () => {
     }
   }, [location,timer])
 
-  useEffect(()=>{
-    if(user && user.validated){
-      navigate('/')
+  useEffect(() => {
+    if(user.validated){
+     navigate('/')
     }
-  },[user])
+   }, [user])
   return (
     <div className="flex items-center justify-center h-screen bg-primary-800">
       <div className="flex md:w-[90%] px-10 sm:px-16 md:px-0 bg-white rounded-xl m-4">
@@ -78,7 +78,7 @@ const VerifyEmail = () => {
           <h1 className="text-center text-4xl text-primary-800 font-semibold my-5">Connectify</h1>
           <div className="w-full px-5 py-3 text-center">
             <p>Please enter the 4-digit verification code that was sent to your email id</p>
-            <p>The code is valid for 15 minutes.</p>
+            <p>The code is valid for 2 minutes.</p>
           </div>
           <div className="flex items-center justify-center flex-col md:w-[90%]">
             <div className="w-full">

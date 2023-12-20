@@ -10,17 +10,13 @@ const verifyEmailSchema = mongoose.Schema({
         type:String,
         required:true,
     },
-    createdAt:{
-        type:Date,
-        default:Date.now(),
-    }
-})
+},{timestamps:true})
 
-verifyEmailSchema.index({ createdAt: 1 }, { expires: Number(process.env.EXPIRE_TOKEN_TIME ) })
+verifyEmailSchema.index({createdAt:1}, { expireAfterSeconds: Number(process.env.EXPIRE_TOKEN_TIME ) }) 
 
 verifyEmailSchema.pre('save',async function(next){
     if(this.isModified("otp")){
-        const hashOtp = await bcrypt.hash(this.otp,8)
+        const hashOtp = await bcrypt.hash(this.otp,8)  
         this.otp = hashOtp
     }
     next()
@@ -28,7 +24,7 @@ verifyEmailSchema.pre('save',async function(next){
 
 verifyEmailSchema.methods ={
     async compareOtp(otp){
-        return bcrypt.compare(otp,this.otp)
+        return bcrypt.compare(otp,this.otp)   
     }
 }
 

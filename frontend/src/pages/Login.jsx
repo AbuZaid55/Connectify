@@ -6,13 +6,14 @@ import axios from 'axios'
 import {toast} from 'react-toastify'
 import { useSelector } from 'react-redux'
 import { context} from '../context/context.js'
+import {browserName,browserVersion} from 'react-device-detect'
 
 const Login = () => {
   
   const user = useSelector((state)=>(state.user))
   const BACKEND_URL=import.meta.env.VITE_BACKEND_URL  
   const navigate = useNavigate()
-  const [input,setInput]=useState({email:'',password:''})
+  const [input,setInput]=useState({email:'',password:'',hostname:browserName+' '+browserVersion})
   const {setLoader,getUser} = useContext(context)
 
   const handleInput = (e)=>{
@@ -38,11 +39,11 @@ const Login = () => {
     setLoader(false)
   }
 
-  useEffect(()=>{
-    if(user && user._id){
-      navigate('/')
+  useEffect(() => {
+    if(user.validated){
+     navigate('/')
     }
-  },[user])
+   }, [user])
   
   return (
     <div className="flex items-center justify-center h-screen bg-primary-800">

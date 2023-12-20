@@ -89,13 +89,15 @@ const MyProfile = () => {
     }
 
     useEffect(() => {
-        getMyProfile()
-    }, [])
-    useEffect(() => {
-        if (User && !User._id) {
-            navigate('/')
+        if(User.validated){
+            getMyProfile()
         }
-    }, [User])
+    }, [])
+    useEffect(()=>{
+        if (!User.validated) {
+            navigate('/login')
+        }
+    },[User])
     return (
         <div>
             <div className=' relative flex items-center justify-center h-[100vh] w-full border-b-2 border-primary-800'>

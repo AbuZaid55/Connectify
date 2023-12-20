@@ -50,7 +50,6 @@ function App() {
       return res.data.user
     } catch (error) {
       dispatch(setUser('Unauthorized'))
-      navigate('/login')
       setLoader(false)
       return ''
     }

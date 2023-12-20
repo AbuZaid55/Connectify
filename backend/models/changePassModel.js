@@ -10,13 +10,9 @@ const changePassSchema = mongoose.Schema({
         type:String,
         required:true,
     },
-    createdAt:{
-        type:Date,
-        default:Date.now(),
-    }
-})
+},{timestamps:true})
 
-changePassSchema.index({ createdAt: 1 }, { expires: Number(process.env.EXPIRE_TOKEN_TIME ) })
+changePassSchema.index({createdAt:1}, { expireAfterSeconds: Number(process.env.EXPIRE_TOKEN_TIME ) }) 
 
 
-module.exports = mongoose.model("changePass",changePassSchema)
+module.exports = mongoose.model("changePass",changePassSchema) 

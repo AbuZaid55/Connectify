@@ -90,7 +90,10 @@ const resendOtp = async (req, res) => {
     }
 }
 const logIn = async (req, res) => {
-    const { email, password } = req.body
+    const { email, password, hostname } = req.body
+    if(!hostname){
+        return sendError("Your device is not supported!")
+    }
     if (!email || !password) {
         return sendError(res, 'All field are required!')
     }
@@ -106,11 +109,6 @@ const logIn = async (req, res) => {
         if (!matchPass) {
             return sendError(res, "Password does not match!")
         }
-        const token = await user.generateToken()
-        res.cookie('ConnectifyToken', token, {
-            expires: new Date(Date.now() + Number(process.env.EXPIRE_COOKIE_TIME)),
-            onlyhttp: true
-        })
         if (!user.validated) {
             const verifyEmailData = await verifyEmailModel.findOne({ userId: user._id })
             if (verifyEmailData) {
@@ -121,6 +119,13 @@ const logIn = async (req, res) => {
             sendOtp(user.email, OTP)
             return sendSuccess(res, { massage: "Otp has been send to your email id", userId: user._id }, 202)
         }
+        const token = await user.generateToken()
+        res.cookie('ConnectifyToken', token, {
+            expires: new Date(Date.now() + Number(process.env.EXPIRE_COOKIE_TIME)),
+            onlyhttp: true
+        })
+        user.loggedIn=user.loggedIn.concat({ token: token, deviceName: hostname })
+        await user.save()
         sendSuccess(res, { massage: "Login successfull" })
     } catch (error) {
         sendError(res, "Login Failed!")
