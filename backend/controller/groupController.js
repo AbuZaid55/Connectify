@@ -82,6 +82,8 @@ const updateReadMassge = async (req, res) => {
 }
 const clearAllChats = async (req, res) => {
     const { userId, chatId } = req.body
+    const newMassList = []
+    let count = 0
     if (!userId || !chatId) {
         return sendError(res, "Invalid credentials!")
     }
@@ -92,10 +94,19 @@ const clearAllChats = async (req, res) => {
         }
         chat.massage.map(async (massage) => {
             const dbMassage = await groupMassageModel.findById(massage._id)
-            if (!dbMassage.isHidden.includes(userId)) {
-                dbMassage.isHidden.push(userId)
+            if(chat.joinChat.length-1<=dbMassage.isHidden.length){
+                await groupMassageModel.findByIdAndDelete(massage._id)
             }
-            await dbMassage.save()
+            else if (!dbMassage.isHidden.includes(userId)) {
+                dbMassage.isHidden.push(userId)
+                newMassList.push(massage)
+                await dbMassage.save()
+            }
+            count++
+            if(count==chat.massage.length){
+                chat.massage = newMassList
+                await chat.save()
+            }
         })
         sendSuccess(res, { massage: "Clear all chats successfully" })
     } catch (error) {

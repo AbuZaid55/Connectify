@@ -64,18 +64,10 @@ const chatSlice = createSlice({
         },
         clearAllChats(state, action) {
             const { chatId, userId } = action.payload
-            state.openSingleChat.massage.map((massage) => {
-                if (!massage.isHidden.includes(userId)) {
-                    massage.isHidden.push(userId)
-                }
-            })
+            state.openSingleChat.massage=[]
             state.singleChat.map((chat) => {
                 if (chat._id === chatId) {
-                    chat.massage.map((massage) => {
-                        if (!massage.isHidden.includes(userId)) {
-                            massage.isHidden.push(userId)
-                        }
-                    })
+                    chat.massage=[]
                 }
             })
             return state
@@ -244,18 +236,10 @@ const chatSlice = createSlice({
         },
         clearAllChats_Group(state, action) {
             const { chatId, userId } = action.payload
-            state.openGroupChat.massage.map((massage) => {
-                if (!massage.isHidden.includes(userId)) {
-                    massage.isHidden.push(userId)
-                }
-            })
+            state.openGroupChat.massage=[]
             state.groupChat.map((chat) => {
                 if (chat._id === chatId) {
-                    chat.massage.map((massage) => {
-                        if (!massage.isHidden.includes(userId)) {
-                            massage.isHidden.push(userId)
-                        }
-                    })
+                    chat.massage=[]
                 }
             })
             return state

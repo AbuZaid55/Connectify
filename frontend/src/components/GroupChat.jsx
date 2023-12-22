@@ -18,7 +18,7 @@ const GroupChat = ({search,setShowMcomponent}) => {
             (search)?<>{
               (chat.chatName.toLowerCase().includes(search)) && <div  className='flex items-center py-2 border-b-2 border-primary-800 cursor-pointer hover:bg-hover-200 transition ease-in-out duration-300' onClick={() => { dispatch(openGroupChat(chat)); dispatch(openSingleChat('')) }}>
               <img src={`${(chat.profile.secure_url)?chat.profile.secure_url:'./profile.jpg'}`} className=' w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' />
-              <div >
+              <div className='w-[80%] overflow-hidden'>
                 <h1 className=' text-base h-6 overflow-hidden'>{chat.chatName}</h1>
                 <p className='w-full text-sm h-5 overflow-hidden'>{chat.massage[chat.massage.length-1] && chat.massage[chat.massage.length-1].content}</p>
               </div>
@@ -28,7 +28,7 @@ const GroupChat = ({search,setShowMcomponent}) => {
           :
           <div className='flex items-center py-2 border-b-2 border-primary-800 cursor-pointer hover:bg-hover-200 transition ease-in-out duration-300' onClick={() => { dispatch(openGroupChat(chat)); dispatch(openSingleChat('')) }}>
             <img src={`${(chat.profile.secure_url)?chat.profile.secure_url:'./profile.jpg'}`} className=' w-14 h-14 ml-2 mr-2 border-2 border-primary-800 rounded-full' />
-            <div >
+            <div className='w-[80%] overflow-hidden'>
               <h1 className=' text-base h-6 overflow-hidden'>{chat.chatName}</h1>
               <p className='w-full text-sm h-5 overflow-hidden'>{chat.massage[chat.massage.length-1] && chat.massage[chat.massage.length-1].content}</p>
             </div>

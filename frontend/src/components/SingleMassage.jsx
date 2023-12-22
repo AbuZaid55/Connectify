@@ -227,7 +227,7 @@ const SingleMassage = ({ socket, setShowMcomponent }) => {
             return <div key={massage._id} className={`flex ${(massage.isHidden.includes(user._id)) ? 'hidden' : ''} `}>
               <input className={`${(select) ? '' : 'hidden'}`} type="checkbox" id={massage._id} onChange={(e) => { selectMassage(e) }} value={massage._id} checked={checkedMassage.includes(massage._id)} />
               <label className="w-full flex" htmlFor={(select) ? massage._id : ""}>
-                <div className={` max-w-[50%] min-w-[15%] ${(massage.senderId === user._id) ? 'myMassage' : 'otherMassage'} p-3 rounded-lg my-1 mx-2`}>
+                <div className={`max-w-[80%] sm:max-w-[50%] min-w-[15%] ${(massage.senderId === user._id) ? 'myMassage' : 'otherMassage'} p-3 rounded-lg my-1 mx-2`}>
                   <p className=" break-words" >{massage.content}</p>
                   <p onClick={()=>{navigate(`massageInfo?id=${massage._id}&type=massage`)}} className="cursor-pointer hover:text-[#585858]  text-end">{formateData(massage.createdAt)}</p>
                 </div>
