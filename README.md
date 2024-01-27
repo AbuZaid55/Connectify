@@ -1,9 +1,9 @@
 
 # Chat Application - Full Stack
 
-I have created this chat application without any assistance and without watching any tutorials. I also designed it myself, and the design is responsive.
+_I have created this chat application without any assistance and without watching any tutorials. I also designed it myself, and the design is responsive._
 
-### Functionality Of This Chat Application
+### Functionality of this chat application
 
 ### 1. User Authentication:
 - Users can create new accounts or log in to existing ones.
