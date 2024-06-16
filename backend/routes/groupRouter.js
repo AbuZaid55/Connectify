@@ -16,3 +16,4 @@ router.post('/editgroup',editGroup)
 router.post('/uploadprofile',upload.single('file'),uploadprofile)
 
 module.exports=router
+

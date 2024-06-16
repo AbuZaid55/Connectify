@@ -24,3 +24,4 @@ const massageSchema = mongoose.Schema({
 },{timestamps:true})
 
 module.exports = mongoose.model('massage',massageSchema)
+

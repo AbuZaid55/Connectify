@@ -44,3 +44,4 @@ const groupSchema = mongoose.Schema({
 },{timestamps:true},{_id:false})
 
 module.exports = mongoose.model('groupChat',groupSchema)
+

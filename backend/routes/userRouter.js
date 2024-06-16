@@ -17,3 +17,5 @@ router.post('/uploadpic',upload.single('file'),uploadPic)
 
 
 module.exports = router;
+
+

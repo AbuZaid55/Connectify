@@ -5,3 +5,4 @@ router.post('/createmassage',createMassage)
 router.post('/deletemassage',deleteMassage)
 router.post('/massageinfo',massageInfo)
 module.exports = router
+
