@@ -40,11 +40,6 @@ const ChangePass = () => {
     }
   },[])
 
-  useEffect(() => {
-    if(user.validated){
-     navigate('/')
-    }
-   }, [user])
 
   return (
     <div className="flex items-center justify-center h-screen bg-primary-800">

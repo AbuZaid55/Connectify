@@ -4,6 +4,7 @@ const db_Connect = require('./db/db_connection.js')
 const cloudinary = require('cloudinary')
 const cookie = require('cookie-parser')
 const cors = require('cors')
+const {Redis} = require('ioredis')
 const app = express()
 
 const PORT = process.env.PORT
@@ -29,6 +30,19 @@ cloudinary.v2.config({
     api_secret: process.env.CLOUDINARY_SECRET 
 });
 
+const pub = new Redis({
+    host:process.env.REDIS_HOST,
+    port:process.env.REDIS_PORT,
+    username:process.env.REDIS_USERNAME,
+    password:process.env.REDIS_PASSWORD
+})
+const sub = new Redis({
+    host:process.env.REDIS_HOST,
+    port:process.env.REDIS_PORT,
+    username:process.env.REDIS_USERNAME,
+    password:process.env.REDIS_PASSWORD
+})
+
 const server = app.listen(PORT,HOSTNAME,()=>{
     console.log(`App is listening on port no ${PORT}`)
 })
@@ -41,21 +55,30 @@ const io = require('socket.io')(server,{
     }
 })
 
+sub.subscribe('newMessage')
+sub.on('message',(channal,obj)=>{
+    if(channal==="newMessage"){
+        const {newMassage,chat,user} = JSON.parse(obj)
+        user.loggedIn = []
+        chat.chatName = user.name 
+        chat.profile.secure_url = user.profile.secure_url 
+        chat.massage = [newMassage] 
+        chat.joinChat.map((object)=>{
+            if(!chat.blockList.includes(object._id) && user._id!==object._id){ 
+                io.in(object._id).emit('massageRecieved',chat)   
+            }
+        })
+    }
+})
+
 io.on('connection',(socket)=>{ 
     socket.on('setup',(userId)=>{ 
         socket.join(userId)
         console.log("New user join ", userId)
     })
-    socket.on('newMassage',({newMassage,chat,user})=>{
-        user.loggedIn = []
-        chat.chatName = user.name 
-        chat.profile = user.profile.secure_url 
-        chat.massage = [newMassage] 
-        chat.joinChat.map((object)=>{
-            if(!chat.blockList.includes(object._id) && user._id!==object._id){ 
-                socket.in(object._id).emit('massageRecieved',chat)   
-            }
-        })
+    socket.on('newMassage',async({newMassage,chat,user})=>{
+        const obj = {newMassage,chat,user}
+        await pub.publish("newMessage",JSON.stringify(obj))
     })
 
     socket.on('typing',({chat,userId})=>{
@@ -80,7 +103,7 @@ io.on('connection',(socket)=>{
             }
         })
     })
-
+  
     socket.on('removeGroupUser' ,({chatId,userId})=>{
         socket.in(userId).emit('removeMeGroup',chatId)
     })

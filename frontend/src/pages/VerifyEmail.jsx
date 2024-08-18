@@ -63,11 +63,6 @@ const VerifyEmail = () => {
     }
   }, [location,timer])
 
-  useEffect(() => {
-    if(user.validated){
-     navigate('/')
-    }
-   }, [user])
   return (
     <div className="flex items-center justify-center h-screen bg-primary-800">
       <div className="flex md:w-[90%] px-10 sm:px-16 md:px-0 bg-white rounded-xl m-4">

@@ -111,9 +111,16 @@ const chatSlice = createSlice({
         },
         setChatNMassageIO(state, action) {
             const chat = action.payload
+            if(state.singleChat.length===0){
+                chat.notReadMassage = 1
+                state.singleChat.push(chat)
+                return state
+            }
             let chatIndex=0
+            let getChat = false
             state.singleChat.map((s_chat,i) => {
                 if (s_chat._id === chat._id) {
+                    getChat=true
                     chatIndex=i
                     s_chat.isHidden = []
                     s_chat.massage.push(chat.massage[0])
@@ -124,6 +131,10 @@ const chatSlice = createSlice({
                     }
                 }
             })
+            if(!getChat){
+                chat.notReadMassage = 1
+                state.singleChat.unshift(chat)
+            }
             const currentChat = state.singleChat[chatIndex]
             for(let i=chatIndex;i>0;i--){
                 state.singleChat[i]=state.singleChat[i-1]

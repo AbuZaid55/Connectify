@@ -107,7 +107,7 @@ const unblock = async (req, res) => {
     const { userId, chatId } = req.body
     if (!userId || !chatId) {
         return sendError(res, "Invalid credentials !")
-    }
+    } 
     try {
         const user = await userModel.findById(userId)
         if (!user) {
@@ -177,19 +177,19 @@ const clearAllChats = async (req, res) => {
         chat.massage.map(async (massage) => {
             const dbMassage = await massageModel.findById(massage._id)
             if(chat.joinChat.length-1<=dbMassage.isHidden.length){
-                await massageModel.findByIdAndDelete(massage._id)
+                await massageModel.findByIdAndDelete(massage._id) 
             }
             else if (!dbMassage.isHidden.includes(userId)) {
                 dbMassage.isHidden.push(userId)
                 newMassList.push(massage)
                 await dbMassage.save()
             }
-            count++
-            if(count==chat.massage.length){
-                chat.massage = newMassList 
-                await chat.save()
-            }
         })
+        count++
+        if(count==chat.massage.length){
+            chat.massage = newMassList 
+            await chat.save()
+        }
         sendSuccess(res, { massage: "Clear all chats successfully" })
     } catch (error) {
         sendError(res, "Something went wrong!")
