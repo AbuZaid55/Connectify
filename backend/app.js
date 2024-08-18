@@ -7,8 +7,8 @@ const cors = require('cors')
 const {Redis} = require('ioredis')
 const app = express()
 
-const PORT = process.env.PORT
-const HOSTNAME = process.env.HOSTNAME
+const PORT = process.env.PORT || 5000
+const HOST = process.env.HOSTNAME || '0.0.0.0'
 
 db_Connect()
 
@@ -23,6 +23,9 @@ app.use('/chat',require('./routes/chatRouter.js'))
 app.use('/group',require('./routes/groupRouter.js'))
 app.use('/massage',require('./routes/massageRouter.js'))
 app.use('/groupmassage',require('./routes/groupMassageRouter.js'))
+app.get("*", (req,res)=>{
+    res.status(200).json({message:"404 Page"})
+})
 
 cloudinary.v2.config({ 
     cloud_name: process.env.CLOUDINARY_NAME, 
@@ -43,8 +46,8 @@ const sub = new Redis({
     password:process.env.REDIS_PASSWORD
 })
 
-const server = app.listen(PORT,HOSTNAME,()=>{
-    console.log(`App is listening on port no ${PORT}`)
+const server = app.listen(PORT,HOST,()=>{
+    console.log(`Server is running on http://${HOST}:${PORT}`)
 })
 
 
